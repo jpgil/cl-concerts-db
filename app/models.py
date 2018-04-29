@@ -138,7 +138,7 @@ class MediaLink(db.Model):
     mime_type = db.Column(db.String(20))
     link = db.Column(db.String(200))
     description = db.Column(db.String(150))
-    # ADD event_id
+    event_id = db.Column(db.Integer, db.ForeignKey('event.id'))   
     def __repr__(self):
         return 'MediaLink(mime_type="{}",link="{}"'.format(self.mime_type,self.location)    
 
@@ -171,6 +171,7 @@ class Event(db.Model):
     information = db.Column(db.String(600))  
     event_type_id = db.Column(db.Integer, db.ForeignKey('event_type.id'))
     participants = db.relationship('Participant', backref='event', lazy='dynamic')
+    media = db.relationship('MediaLink', backref='event', lazy='dynamic')
     def __repr__(self):
         return 'Event(name="{}",date="{}",city_id="{}"'.format(self.name,self.date)
 
