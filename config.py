@@ -2,10 +2,7 @@ import os
 from dotenv import load_dotenv
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-
 load_dotenv(os.path.join(basedir, '.env'))
-
-
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'a-real-secret-one'
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
@@ -19,4 +16,5 @@ class Config(object):
     ADMINS = ['your-email@example.com']
     def __init__(self):
        print(os.path.join(basedir, '.env'))    
+       print("Using SQLALCHEMY_DATABASE_URI=%s",SQLALCHEMY_DATABASE_URI)
 

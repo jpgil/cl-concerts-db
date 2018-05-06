@@ -17,24 +17,19 @@ class User(UserMixin, db.Model):
     profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'))
     profile = db.relationship('Profile')
     entries_added = db.relationship('History', backref='author', lazy='dynamic')
-    password_hash = db.Column(db.String(128))
        
     def __repr__(self):
         return 'User(first_name="{}",last_name="{}",email="{}")'.format(self.first_name,
                        self.last_name,self.email)
-
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
-
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
             current_app.config['SECRET_KEY'],
             algorithm='HS256').decode('utf-8')
-
     @staticmethod
     def verify_reset_password_token(token):
         try:
@@ -62,7 +57,7 @@ class History(db.Model):
     operation = db.Column(db.String(20))
     description = db.Column(db.String(200))   
     def __repr__(self):
-        return 'History(user_id="{}",operation="{}", description="{}")'.format(self.user_id,
+        return 'History(user="{}",operation="{}", description="{}")'.format(self.author.email,
                        self.operation,self.description)    
 
 class InstrumentType(db.Model):
@@ -78,7 +73,7 @@ class Instrument(db.Model):
     instrument_type_id = db.Column(db.Integer, db.ForeignKey('instrument_type.id'))
     activities = db.relationship('Activity',backref='instrument')
     def __repr__(self):
-        return 'Instrument(name="{}",type_id={})'.format(self.name,self.instrument_type_id)
+        return 'Instrument(name="{}",type={})'.format(self.name,self.instrument_type.name)
     
 class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -151,7 +146,7 @@ class Activity(db.Model):
     instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'))   
     participants = db.relationship('Participant', backref='activity', lazy='dynamic')
     def __repr__(self):
-        return 'Activity(name="{}",instrument_id="{}"'.format(self.name,self.instrument_id)        
+        return 'Activity(name="{}",instrument="{}"'.format(self.name,self.instrument.name)        
     
 
 class Location(db.Model):
@@ -194,7 +189,7 @@ player = db.Table('player',
 )      
 
 class Participant(db.Model):
-    id = db.Column(db.Integer, primary_key=True)       
+    id = db.Column(db.Integer, primary_key=True)
     person_id = db.Column(db.Integer, db.ForeignKey('person.id'))  
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))      
     activity_id = db.Column(db.Integer, db.ForeignKey('activity.id'))      
