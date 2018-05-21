@@ -7,6 +7,7 @@ from flask_babel import _, lazy_gettext as _l
 from app.models import User, Profile
 from flask_admin.form.widgets import Select2Widget
 
+
 class LoginForm(FlaskForm):
     email = StringField(_l('e-mail'), validators=[DataRequired()])
     password = PasswordField(_l('Contraseña'), validators=[DataRequired()])
@@ -28,6 +29,9 @@ class RegistrationForm(FlaskForm):
                                            EqualTo('password')])
 
     perfil = QuerySelectField(query_factory=profile_query, allow_blank=False, get_label = 'name', widget=Select2Widget())
+
+    
+    
     submit = SubmitField(_l('Registrase'))
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()

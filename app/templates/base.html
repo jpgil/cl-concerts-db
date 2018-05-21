@@ -1,5 +1,6 @@
 {% extends 'bootstrap/base.html' %}
 
+
 {% block title %}
     {% if title %}{{ title }} - CL-CONCERTS-DB {% else %}{{ _('Bienvenido a cl-concerts-db') }}{% endif %}
 {% endblock %}
@@ -20,6 +21,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('main.index') }}">{{ _('Home') }}</a></li>
                     <li><a href="{{ url_for('main.explore') }}">{{ _('Explore') }}</a></li>
+                    <li><a href="{{ url_for('main.view_countries')}}"> {{ _('Países')}}</a></li>
                      {% if not current_user.is_anonymous %}
                         {% if current_user.profile.name == 'Administrador' %}
                             <li><a href="{{ url_for('users.register') }}">{{ _('Agregar Usuario') }}</a></li>
@@ -65,18 +67,7 @@
     {{ super() }}
     {{ moment.include_moment() }}
     {{ moment.lang(g.locale) }}
-    <script>
-        function translate(sourceElem, destElem, sourceLang, destLang) {
-            $(destElem).html('<img src="{{ url_for('static', filename='loading.gif') }}">');
-            $.post('/translate', {
-                text: $(sourceElem).text(),
-                source_language: sourceLang,
-                dest_language: destLang
-            }).done(function(response) {
-                $(destElem).text(response['text'])
-            }).fail(function() {
-                $(destElem).text("{{ _('Error: Could not contact server.') }}");
-            });
-        }
-    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>  
+    <script type = "text/javascript"  src = "{{ url_for('static', filename = 'js/dd_select2.js') }}" ></script>
 {% endblock %}

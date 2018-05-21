@@ -6,7 +6,8 @@ from flask_babel import _, get_locale
 #from guess_language import guess_language
 from app import db
 #from app.main.forms import EditProfileForm, PostForm, SearchForm
-from app.models import User, Profile, History
+from app.main.forms import EditCountryForm, EditSimpleElement
+from app.models import User, Profile, History, Event, Country, City
 #from app.translate import translate
 from app.main import bp
 
@@ -19,6 +20,86 @@ def before_request():
 #        db.session.commit()
 #        g.search_form = SearchForm()
 #    g.locale = str(get_locale())
+
+@bp.route('/view/countries')
+@login_required
+def view_countries():
+    page = request.args.get('page', 1, type=int)
+    countries = Country.query.order_by(Country.name.asc()).paginate(
+        page, current_app.config['ITEMS_PER_PAGE'], False)
+    next_url = url_for('main.view_countries', page=countries.next_num) \
+        if countries.has_next else None
+    prev_url = url_for('main.view_countries', page=countries.prev_num) \
+        if countries.has_prev else None
+    return render_template('countries.html', title=_('Países'),
+                           countries=countries.items, next_url=next_url,
+                           prev_url=prev_url)
+
+#@bp.route('/list/countries')
+#def getCountryList():
+#    page = request.args.get('page', 1, type=int)
+#    q=request.args.get('q', '', type=str)
+#    countries=db.session.query(Country).filter(Country.name.ilike(q+'%')).order_by(Country.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
+#    data={ "results": [], "pagination": { "more": countries.has_next} }
+#    for country in countries.items:
+#        data["results"].append( { 'id' : country.id , 'text': country.name} )
+#    return jsonify(data)
+
+def getItemList(dbmodel,q,page):    
+    itemslist=db.session.query(dbmodel).filter(dbmodel.name.ilike(q+'%')).order_by(dbmodel.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
+    data={ "results": [], "pagination": { "more": itemslist.has_next} }
+    for item in itemslist.items:
+        data["results"].append( { 'id' : item.id , 'text': item.name} )
+    return jsonify(data)
+
+@bp.route('/list/countries')
+def getCountryList():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getItemList(Country,q,page)
+
+@bp.route('/list/cities')
+def getCountryList():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getItemList(City,q,page)
+
+
+@bp.route('/show/countries')
+def testCountries():
+    return render_template('main/testdropdown.html')
+
+
+
+def EditElement(dbmodel,title, original_name,is_new):
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        return render_template(url_for('users.login'))
+    form = EditSimpleElement(dbmodel=dbmodel,title=title,original_name=original_name,is_new=is_new)
+    if form.validate_on_submit():
+        if is_new:
+            db.session.add(dbmodel(name=form.name.data))
+        else:
+            db_elem_instance = dbmodel.query.filter_by(name=form.name.data).first()
+            db_elem_instance.name = form.name.data
+        db.session.commit()
+        flash(_('Tus cambios han sido guardados.'))
+    return render_template('main/edit_simple_element.html',title=title,form=form)
+        
+    
+@bp.route('/edit/country/<country>',methods = ['GET','POST'])
+@login_required
+def EditCountry(country):
+    return EditElement(dbmodel=Country,title='País',original_name=country,is_new=False)
+    
+@bp.route('/new/country', methods = ['GET','POST'])
+@login_required
+def NewCountry():
+    return_value = EditElement(dbmodel=Country,title='País',original_name=None,is_new=True)
+    flash(_('Tus cambios han sido guardados.'))
+    return render_template(url_for('main.countries'))
+
+
 
 
 @bp.route('/', methods=['GET', 'POST'])
@@ -48,13 +129,21 @@ def index():
 #                           posts=posts.items, next_url=next_url,
 #                           prev_url=prev_url)
 
+#@bp.route('/view/country/<country>', methods=['GET'])
+#@login_required
+#def view_country(country_name):
+#    country = Country.query.filter_by(name=country_name).first_or_404()
+#    
+
+
+
 #
 @bp.route('/explore')
 @login_required
 def explore():
     page = request.args.get('page', 1, type=int)
-    events = Events.query.order_by(Event.date.desc.desc()).paginate(
-        page, current_app.config['POSTS_PER_PAGE'], False)
+    events = Event.query.order_by(Event.date.desc.desc()).paginate(
+        page, current_app.config['ITEMS_PER_PAGE'], False)
     next_url = url_for('main.explore', page=events.next_num) \
         if events.has_next else None
     prev_url = url_for('main.explore', page=events.prev_num) \
