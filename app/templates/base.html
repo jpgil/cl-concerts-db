@@ -22,6 +22,8 @@
                     <li><a href="{{ url_for('main.index') }}">{{ _('Home') }}</a></li>
                     <li><a href="{{ url_for('main.explore') }}">{{ _('Explore') }}</a></li>
                     <li><a href="{{ url_for('main.view_countries')}}"> {{ _('Países')}}</a></li>
+                    <li><a href="{{ url_for('main.view_cities')}}"> {{ _('Ciudades')}}</a></li>
+                    <li><a href="{{ url_for('main.view_instrumenttypes')}}"> {{ _('Tipos de Instrumento')}}</a></li>
                      {% if not current_user.is_anonymous %}
                         {% if current_user.profile.name == 'Administrador' %}
                             <li><a href="{{ url_for('users.register') }}">{{ _('Agregar Usuario') }}</a></li>
@@ -67,7 +69,7 @@
     {{ super() }}
     {{ moment.include_moment() }}
     {{ moment.lang(g.locale) }}
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>  
+    <link href="{{ url_for('static', filename = 'css/lib/select2.min.css') }}" rel="stylesheet" />
+    <script src="{{ url_for('static', filename = 'js/lib/select2.min.js') }}"></script>  
     <script type = "text/javascript"  src = "{{ url_for('static', filename = 'js/dd_select2.js') }}" ></script>
 {% endblock %}

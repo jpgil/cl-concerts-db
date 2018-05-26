@@ -5,43 +5,28 @@ from wtforms.validators import ValidationError, DataRequired, Length
 from flask_babel import _, lazy_gettext as _l
 from app.models import User, Country
 
-class EditSimpleElement(FlaskForm):
-    def __init__(self,dbmodel,title, original_name,is_new ,*args, **kwargs):
-        super(EditSimpleElement, self).__init__(*args, **kwargs)
-        self.original_name = original_name
-        self.title = title       
-        self.is_new = is_new
-        self.dbmodel = dbmodel
-        self.name = StringField(self.title,validators=[DataRequired()])
-        if original_name:
-            self.name.data = original_name
-
+class EditSimpleElementForm(FlaskForm):
+    name=StringField(_l('Nombre'),validators=[DataRequired()])
     submit = SubmitField(_l('Guardar'))
-    def validate_name(self):
-        if(self.name.data != self.original_name or self.is_new):
-            db_elem_instance = self.dbmodel.query.filter_by(name=self.name.data).first()
+    def __init__(self,dbmodel, original_name ,*args, **kwargs):
+        super(EditSimpleElementForm, self).__init__(*args, **kwargs)
+        self.original_name = original_name     
+        self.dbmodel = dbmodel
+
+    def validate_name(self,name):
+        if(name.data != self.original_name):
+            db_elem_instance = self.dbmodel.query.filter_by(name=name.data).first()
             if db_elem_instance is not None:
-                raise ValidationError(_('Este %s ya fue ingresado, por favor, use un nombre diferente'%self.title))        
+                raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
         
-        
-        
-    
-class EditCountryForm(FlaskForm):
-    def __init__(self, original_country_name, is_new, *args, **kwargs):
-        super(EditCountryForm, self).__init__(*args, **kwargs)
-        self.original_country_name = original_country_name
-
-#    country_name = StringField(_l('País'), validators=[DataRequired()])
-#        if not self.is_new:
-#            country_name.data = original_country_name  
-#    submit = SubmitField(_l('Guardar'))
-#    def validate_country_name(self, email):
-#        if( country_name.data != original_country_name or self.is_new):
-#            country = Country.query.filter_by(name=country_name.data).first()
-#            if country is not None:
-#                raise ValidationError(_('Este país ya fue ingresado, por favor, use un nombre diferente'))        
-
-
+class NewSimpleElementForm(FlaskForm):
+    name=StringField(_l('Nombre'),validators=[DataRequired()])
+    submit = SubmitField(_l('Guardar'))
+    def validate_name(self,name):
+        db_elem_instance = self.dbmodel.query.filter_by(name=name.data).first()
+        if db_elem_instance is not None:
+                raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
+                
 #
 #class EditProfileForm(FlaskForm):
 #    username = StringField(_l('Username'), validators=[DataRequired()])

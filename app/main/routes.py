@@ -6,8 +6,8 @@ from flask_babel import _, get_locale
 #from guess_language import guess_language
 from app import db
 #from app.main.forms import EditProfileForm, PostForm, SearchForm
-from app.main.forms import EditCountryForm, EditSimpleElement
-from app.models import User, Profile, History, Event, Country, City
+from app.main.forms import EditSimpleElementForm
+from app.models import User, Profile, History, Event, Country, City, InstrumentType
 #from app.translate import translate
 from app.main import bp
 
@@ -20,20 +20,34 @@ def before_request():
 #        db.session.commit()
 #        g.search_form = SearchForm()
 #    g.locale = str(get_locale())
-
+    
+def view_elements(dbmodel,elementsname,title):
+    page = request.args.get('page', 1, type=int)
+    elements = dbmodel.query.order_by(dbmodel.name.asc()).paginate(
+        page, current_app.config['ITEMS_PER_PAGE'], False)
+    next_url = url_for('main.view_'+elementsname, page=elements.next_num) \
+        if elements.has_next else None
+    prev_url = url_for('main.view_'+elementsname, page=elements.prev_num) \
+        if elements.has_prev else None
+    return render_template('main/'+elementsname+'.html', title=title,
+                           elements=elements.items, next_url=next_url,
+                           prev_url=prev_url)
+    
 @bp.route('/view/countries')
 @login_required
 def view_countries():
-    page = request.args.get('page', 1, type=int)
-    countries = Country.query.order_by(Country.name.asc()).paginate(
-        page, current_app.config['ITEMS_PER_PAGE'], False)
-    next_url = url_for('main.view_countries', page=countries.next_num) \
-        if countries.has_next else None
-    prev_url = url_for('main.view_countries', page=countries.prev_num) \
-        if countries.has_prev else None
-    return render_template('countries.html', title=_('Países'),
-                           countries=countries.items, next_url=next_url,
-                           prev_url=prev_url)
+    return view_elements(Country,'countries',_('Países'))
+
+
+@bp.route('/view/cities')
+@login_required
+def view_cities():
+    return view_elements(City,'cities',_('Ciudades'))
+
+@bp.route('/view/instrumenttypes')
+@login_required
+def view_instrumenttypes():
+    return view_elements(InstrumentType,'instrumenttypes',_('Tipos de Instrumentos'))
 
 #@bp.route('/list/countries')
 #def getCountryList():
@@ -59,11 +73,16 @@ def getCountryList():
     return getItemList(Country,q,page)
 
 @bp.route('/list/cities')
-def getCountryList():
+def getCityList():
     page = request.args.get('page', 1, type=int)
     q=request.args.get('q', '', type=str)
     return getItemList(City,q,page)
 
+@bp.route('/list/instrumenttype')
+def getInstrumentTypeList():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getItemList(InstrumentType,q,page)
 
 @bp.route('/show/countries')
 def testCountries():
@@ -71,33 +90,47 @@ def testCountries():
 
 
 
-def EditElement(dbmodel,title, original_name,is_new):
+def EditSimpleElement(dbmodel,title,original_name):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'))
         return render_template(url_for('users.login'))
-    form = EditSimpleElement(dbmodel=dbmodel,title=title,original_name=original_name,is_new=is_new)
+    db_element = dbmodel.query.filter_by(name=original_name).first_or_404()
+    form = EditSimpleElementForm(dbmodel=dbmodel,original_name=original_name)
     if form.validate_on_submit():
-        if is_new:
-            db.session.add(dbmodel(name=form.name.data))
-        else:
-            db_elem_instance = dbmodel.query.filter_by(name=form.name.data).first()
-            db_elem_instance.name = form.name.data
+        db_element.name = form.name.data
         db.session.commit()
         flash(_('Tus cambios han sido guardados.'))
+    elif request.method == 'GET':
+        form.name.data = original_name
     return render_template('main/edit_simple_element.html',title=title,form=form)
-        
-    
+
+
 @bp.route('/edit/country/<country>',methods = ['GET','POST'])
 @login_required
 def EditCountry(country):
-    return EditElement(dbmodel=Country,title='País',original_name=country,is_new=False)
-    
-@bp.route('/new/country', methods = ['GET','POST'])
+    return EditSimpleElement(Country,_('País'),country)
+ 
+@bp.route('/edit/city/<city>',methods = ['GET','POST'])
 @login_required
-def NewCountry():
-    return_value = EditElement(dbmodel=Country,title='País',original_name=None,is_new=True)
-    flash(_('Tus cambios han sido guardados.'))
-    return render_template(url_for('main.countries'))
+def EditCity(city):
+    return EditSimpleElement(City,_('Ciudad'),city)
+
+@bp.route('/edit/instrumenttype/<instrumenttype>',methods = ['GET','POST'])
+@login_required
+def EditInstrumentType(instrumenttype):
+    return EditSimpleElement(InstrumentType,_('Tipo de Instrumento'),instrumenttype) 
+
+
+
+      
+#            db.session.add(dbmodel(name=form.name.data))    
+#    
+#@bp.route('/new/country', methods = ['GET','POST'])
+#@login_required
+#def NewCountry():
+#    return_value = EditElement(dbmodel=Country,title='País',original_name=None,is_new=True)
+#    flash(_('Tus cambios han sido guardados.'))
+#    return render_template(url_for('main.countries'))
 
 
 
