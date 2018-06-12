@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1>{{ _('Ciudades') }}</h1>
+    <h1>{{ _('Instrumentos') }}</h1>
     <table class="table table-hover">
-                <a href="{{ url_for('main.NewCity') }}" class="btn btn-primary" role="button"> {{ _('Nuevo')}}</a>
-              {% for city in elements %}
-                {% include 'main/_city.html' %}
+              <a href="{{ url_for('main.NewInstrument') }}" class="btn btn-primary" role="button"> {{ _('Nuevo')}}</a>
+              {% for instrument in elements %}
+                {% include 'main/_instrument.html' %}
             {% endfor %}
     </table>
 

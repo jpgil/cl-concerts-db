@@ -1,31 +1,53 @@
 from flask import request
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField
+from wtforms import StringField, SubmitField, TextAreaField, SelectMultipleField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Length
 from flask_babel import _, lazy_gettext as _l
-from app.models import User, Country
+from app.models import User, Country, Instrument, InstrumentType
 
+class NonValidatingSelectField(SelectField):
+    def pre_validate(self, form):
+        pass
+
+class NonValidatingSelectMultipleField(SelectMultipleField):
+    def pre_validate(self, form):
+        pass
+    
 class EditSimpleElementForm(FlaskForm):
     name=StringField(_l('Nombre'),validators=[DataRequired()])
     submit = SubmitField(_l('Guardar'))
-    def __init__(self,dbmodel, original_name ,*args, **kwargs):
+    def __init__(self,dbmodel,original_name,*args, **kwargs):
         super(EditSimpleElementForm, self).__init__(*args, **kwargs)
         self.original_name = original_name     
         self.dbmodel = dbmodel
-
     def validate_name(self,name):
         if(name.data != self.original_name):
             db_elem_instance = self.dbmodel.query.filter_by(name=name.data).first()
             if db_elem_instance is not None:
                 raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
-        
-class NewSimpleElementForm(FlaskForm):
+
+
+class EditInstrumentForm(FlaskForm):
     name=StringField(_l('Nombre'),validators=[DataRequired()])
+    instrument_type= NonValidatingSelectMultipleField(label=_("Tipo de Instrumento"),choices=[],validators=[DataRequired()])
     submit = SubmitField(_l('Guardar'))
+    def __init__(self, original_name ,*args, **kwargs):
+        super(EditInstrumentForm, self).__init__(*args, **kwargs)
+        self.original_name = original_name     
     def validate_name(self,name):
-        db_elem_instance = self.dbmodel.query.filter_by(name=name.data).first()
-        if db_elem_instance is not None:
+        if(name.data != self.original_name):
+            db_elem_instance = Instrument.query.filter_by(name=name.data).first()
+            if db_elem_instance is not None:
                 raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
+
+   
+#class NewSimpleElementForm(FlaskForm):
+#    name=StringField(_l('Nombre'),validators=[DataRequired()])
+#    submit = SubmitField(_l('Guardar'))
+#    def validate_name(self,name):
+#        db_elem_instance = self.dbmodel.query.filter_by(name=name.data).first()
+#        if db_elem_instance is not None:
+#                raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
                 
 #
 #class EditProfileForm(FlaskForm):

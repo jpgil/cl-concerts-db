@@ -3,6 +3,7 @@
 {% block app_content %}
     <h1>{{ _('Tipos de Instrumentos') }}</h1>
     <table class="table table-hover">
+              <a href="{{ url_for('main.NewInstrumentType') }}" class="btn btn-primary" role="button"> {{ _('Nuevo')}}</a>
               {% for instrumenttype in elements %}
                 {% include 'main/_instrumenttype.html' %}
             {% endfor %}

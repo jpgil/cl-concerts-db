@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 from flask import render_template, flash, redirect, url_for, request, g, \
     jsonify, current_app
 from flask_login import current_user, login_required
@@ -6,10 +7,19 @@ from flask_babel import _, get_locale
 #from guess_language import guess_language
 from app import db
 #from app.main.forms import EditProfileForm, PostForm, SearchForm
-from app.main.forms import EditSimpleElementForm
-from app.models import User, Profile, History, Event, Country, City, InstrumentType
+from app.main.forms import EditSimpleElementForm, EditInstrumentForm
+from app.models import User, Profile, History, Event, Country, City, \
+    InstrumentType, Instrument
 #from app.translate import translate
 from app.main import bp
+
+
+def list2csv(some_list):
+    return ','.join(map(str, some_list)) 
+
+@bp.route('/favicon.ico')
+def hello():
+    return redirect(url_for('static', filename='favicon.ico'), code=302)
 
 
 @bp.before_app_request
@@ -25,9 +35,9 @@ def view_elements(dbmodel,elementsname,title):
     page = request.args.get('page', 1, type=int)
     elements = dbmodel.query.order_by(dbmodel.name.asc()).paginate(
         page, current_app.config['ITEMS_PER_PAGE'], False)
-    next_url = url_for('main.view_'+elementsname, page=elements.next_num) \
+    next_url = url_for('main.view_'+elementsname, title=title,page=elements.next_num) \
         if elements.has_next else None
-    prev_url = url_for('main.view_'+elementsname, page=elements.prev_num) \
+    prev_url = url_for('main.view_'+elementsname, title=title, page=elements.prev_num) \
         if elements.has_prev else None
     return render_template('main/'+elementsname+'.html', title=title,
                            elements=elements.items, next_url=next_url,
@@ -47,17 +57,12 @@ def view_cities():
 @bp.route('/view/instrumenttypes')
 @login_required
 def view_instrumenttypes():
-    return view_elements(InstrumentType,'instrumenttypes',_('Tipos de Instrumentos'))
+    return view_elements(InstrumentType,'instrumenttypes',_('Tipos de Instrumento'))
 
-#@bp.route('/list/countries')
-#def getCountryList():
-#    page = request.args.get('page', 1, type=int)
-#    q=request.args.get('q', '', type=str)
-#    countries=db.session.query(Country).filter(Country.name.ilike(q+'%')).order_by(Country.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
-#    data={ "results": [], "pagination": { "more": countries.has_next} }
-#    for country in countries.items:
-#        data["results"].append( { 'id' : country.id , 'text': country.name} )
-#    return jsonify(data)
+@bp.route('/view/instruments')
+@login_required
+def view_instruments():
+    return view_elements(Instrument,'instruments',_('Instrumentos'))
 
 def getItemList(dbmodel,q,page):    
     itemslist=db.session.query(dbmodel).filter(dbmodel.name.ilike(q+'%')).order_by(dbmodel.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
@@ -66,11 +71,21 @@ def getItemList(dbmodel,q,page):
         data["results"].append( { 'id' : item.id , 'text': item.name} )
     return jsonify(data)
 
+def getItem(dbmodel,id):
+    item=dbmodel.query.filter_by(id=id).first_or_404()
+    data={ 'id' : item.id , 'text': item.name }
+    return jsonify(data)
+
 @bp.route('/list/countries')
 def getCountryList():
     page = request.args.get('page', 1, type=int)
     q=request.args.get('q', '', type=str)
     return getItemList(Country,q,page)
+
+@bp.route('/list/countries/<id>')
+def getCountryItem(id):
+    return getItem(Country,id)
+
 
 @bp.route('/list/cities')
 def getCityList():
@@ -78,11 +93,31 @@ def getCityList():
     q=request.args.get('q', '', type=str)
     return getItemList(City,q,page)
 
-@bp.route('/list/instrumenttype')
+@bp.route('/list/cities/<id>')
+def getCityItem(id):
+    return getItem(City,id)
+
+
+@bp.route('/list/instrumenttypes')
 def getInstrumentTypeList():
     page = request.args.get('page', 1, type=int)
     q=request.args.get('q', '', type=str)
     return getItemList(InstrumentType,q,page)
+
+@bp.route('/list/instrumenttypes/<id>')
+def getInstrumentTypeItem(id):
+    return getItem(InstrumentType,id)
+
+@bp.route('/list/instrument')
+def getInstrumentList():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getItemList(Instrument,q,page)
+
+@bp.route('/list/instrument/<id>')
+def getInstrumentItem(id):
+    return getItem(Instrument,id)
+
 
 @bp.route('/show/countries')
 def testCountries():
@@ -100,6 +135,7 @@ def EditSimpleElement(dbmodel,title,original_name):
         db_element.name = form.name.data
         db.session.commit()
         flash(_('Tus cambios han sido guardados.'))
+        return redirect(url_for('main.edit_elements'))
     elif request.method == 'GET':
         form.name.data = original_name
     return render_template('main/edit_simple_element.html',title=title,form=form)
@@ -108,38 +144,101 @@ def EditSimpleElement(dbmodel,title,original_name):
 @bp.route('/edit/country/<country>',methods = ['GET','POST'])
 @login_required
 def EditCountry(country):
-    return EditSimpleElement(Country,_('País'),country)
+    return EditSimpleElement(Country,_('Editar País'),country)
  
 @bp.route('/edit/city/<city>',methods = ['GET','POST'])
 @login_required
 def EditCity(city):
-    return EditSimpleElement(City,_('Ciudad'),city)
+    return EditSimpleElement(City,_('Editar Ciudad'),city)
 
 @bp.route('/edit/instrumenttype/<instrumenttype>',methods = ['GET','POST'])
 @login_required
 def EditInstrumentType(instrumenttype):
-    return EditSimpleElement(InstrumentType,_('Tipo de Instrumento'),instrumenttype) 
+    return EditSimpleElement(InstrumentType,_('Editat Tipo de Instrumento'),instrumenttype) 
 
 
+def NewSimpleElement(dbmodel,title):
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        return render_template(url_for('users.login'))
+    form = EditSimpleElementForm(dbmodel=dbmodel,original_name='')   
+    if form.validate_on_submit():
+        if  dbmodel.query.filter_by(name=form.name.data).all().__len__() > 0:
+            flash(_('Este nombre ya ha sido registrado'))
+        else:
+            db.session.add(dbmodel(name=form.name.data))
+            db.session.commit()
+            flash(_('Tus cambios han sido guardados.')) 
+        return redirect('/editelements')
+    return render_template('main/edit_simple_element.html',title=title,form=form)
+ 
+@bp.route('/new/country', methods = ['GET','POST'])
+@login_required
+def NewCountry():
+    return NewSimpleElement(Country,_('Agregar País'))
 
-      
-#            db.session.add(dbmodel(name=form.name.data))    
-#    
-#@bp.route('/new/country', methods = ['GET','POST'])
-#@login_required
-#def NewCountry():
-#    return_value = EditElement(dbmodel=Country,title='País',original_name=None,is_new=True)
-#    flash(_('Tus cambios han sido guardados.'))
-#    return render_template(url_for('main.countries'))
+@bp.route('/new/city', methods = ['GET','POST'])
+@login_required
+def NewCity():
+    return NewSimpleElement(City,_('Agregar Ciudad'))
 
-
-
+@bp.route('/new/instrumenttpye', methods = ['GET','POST'])
+@login_required
+def NewInstrumentType():
+    return NewSimpleElement(InstrumentType,_('Agregar Tipo de Instrumento'))
+    
+@bp.route('/editelements')
+@login_required
+def edit_elements():
+    return render_template('main/edit_elements.html')    
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
   return redirect(url_for('users.edit_profile'))
+
+
+@bp.route('/new/instrument', methods = ['GET','POST'])
+@login_required
+def NewInstrument():
+    dbmodel=Instrument
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        return render_template(url_for('users.login'))
+    form = EditInstrumentForm(dbmodel=Instrument,original_name='')   
+    if form.validate_on_submit():
+        if  Instrument.query.filter_by(name=form.name.data).all().__len__() > 0:
+            flash(_('Este nombre ya ha sido registrado'))
+            return render_template('main/newinstrument.html',form=form,selectedElements=None)
+        else:
+            instrument_type = InstrumentType.query.filter_by(id=int(form.instrument_type.data[0])).first_or_404()
+            db.session.add(Instrument(name=form.name.data,instrument_type=instrument_type))
+            db.session.commit()
+            flash(_('Tus cambios han sido guardados.'))
+        return redirect('/editelements')
+    return render_template('main/newinstrument.html',form=form,selectedElements=None)
+
+@bp.route('/edit/instrument/<instrument>', methods = ['GET','POST'])
+@login_required
+def EditInstrument(instrument):
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        return render_template(url_for('users.login'))
+    instrument = Instrument.query.filter_by(name=instrument).first_or_404()
+    selectedElements=[]
+    selectedElements.append(instrument.instrument_type.id)
+    form = EditInstrumentForm(original_name=instrument.name)
+    if form.validate_on_submit():
+         instrument.name = form.name.data
+         instrument_type = InstrumentType.query.filter_by(id=int(form.instrument_type.data[0])).first_or_404()
+         instrument.instrument_type = instrument_type
+         db.session.commit()
+         flash(_('Tus cambios han sido guardados.'))
+         return redirect('/editelements')
+    elif request.method == 'GET':
+        form.name.data = instrument.name            
+    return render_template('main/newinstrument.html',form=form,selectedElements=list2csv(selectedElements))    
 #    form = PostForm()
 #    if form.validate_on_submit():
 #        language = guess_language(form.post.data)

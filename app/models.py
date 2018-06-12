@@ -73,7 +73,7 @@ class Instrument(db.Model):
     instrument_type_id = db.Column(db.Integer, db.ForeignKey('instrument_type.id'))
     activities = db.relationship('Activity',backref='instrument')
     def __repr__(self):
-        return 'Instrument(name="{}",type={})'.format(self.name,self.instrument_type.name)
+        return 'Instrument(name="{}",instrument_type={})'.format(self.name,self.instrument_type.name)
     
 class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)

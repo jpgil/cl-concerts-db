@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>{{ _('Editar Elementos') }}</h1>
+    <div class="container">
+  <!-- Content here -->
+       <a href="{{ url_for('main.view_countries')}}" class="btn btn-primary btn-lg" role="button"> {{ _('Países')}}</a>
+       <a href="{{ url_for('main.view_cities')}}" class="btn btn-primary btn-lg" role="button"> {{ _('Ciudades')}}</a>
+       <a href="{{ url_for('main.view_instrumenttypes')}}" class="btn btn-primary btn-lg" role="button"> {{ _('Tipos de Instrumento')}}</a>
+       <a href="{{ url_for('main.view_instruments')}}" class="btn btn-primary btn-lg" role="button"> {{ _('Instrumentos')}}</a>
+   </div>
+
+
+{% endblock %}
