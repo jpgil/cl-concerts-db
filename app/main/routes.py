@@ -7,9 +7,9 @@ from flask_babel import _, get_locale
 #from guess_language import guess_language
 from app import db
 #from app.main.forms import EditProfileForm, PostForm, SearchForm
-from app.main.forms import EditSimpleElementForm, EditInstrumentForm
+from app.main.forms import EditSimpleElementForm, EditInstrumentForm, EditPersonForm
 from app.models import User, Profile, History, Event, Country, City, \
-    InstrumentType, Instrument
+    InstrumentType, Instrument, Person, PremiereType
 #from app.translate import translate
 from app.main import bp
 
@@ -59,10 +59,32 @@ def view_cities():
 def view_instrumenttypes():
     return view_elements(InstrumentType,'instrumenttypes',_('Tipos de Instrumento'))
 
+@bp.route('/view/premieretypes')
+@login_required
+def view_premieretypes():
+    return view_elements(PremiereType,'premieretypes',_('Tipos de Premier'))
+
 @bp.route('/view/instruments')
 @login_required
 def view_instruments():
     return view_elements(Instrument,'instruments',_('Instrumentos'))
+
+@bp.route('/view/persons')
+@login_required
+def view_persons():
+    elementsname='persons'
+    title=_('Personas')
+    page = request.args.get('page', 1, type=int)
+    elements = Person.query.order_by(Person.last_name.asc()).paginate(
+        page, current_app.config['ITEMS_PER_PAGE'], False)
+    next_url = url_for('main.view_'+elementsname, title=title,page=elements.next_num) \
+        if elements.has_next else None
+    prev_url = url_for('main.view_'+elementsname, title=title, page=elements.prev_num) \
+        if elements.has_prev else None
+    return render_template('main/'+elementsname+'.html', title=title,
+                           elements=elements.items, next_url=next_url,
+                           prev_url=prev_url)
+
 
 def getItemList(dbmodel,q,page):    
     itemslist=db.session.query(dbmodel).filter(dbmodel.name.ilike(q+'%')).order_by(dbmodel.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
@@ -123,6 +145,15 @@ def getInstrumentItem(id):
 def testCountries():
     return render_template('main/testdropdown.html')
 
+@bp.route('/list/premieretypes')
+def getPremiereTypeList():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getItemList(PremiereType,q,page)
+
+@bp.route('/list/premieretypes/<id>')
+def getPremiereTypeItem(id):
+    return getItem(PremiereType,id)
 
 
 def EditSimpleElement(dbmodel,title,original_name):
@@ -156,6 +187,10 @@ def EditCity(city):
 def EditInstrumentType(instrumenttype):
     return EditSimpleElement(InstrumentType,_('Editat Tipo de Instrumento'),instrumenttype) 
 
+@bp.route('/edit/premieretype/<premieretype>',methods = ['GET','POST'])
+@login_required
+def EditPremiereType(premieretype):
+    return EditSimpleElement(PremiereType,_('Editat Tipo de Instrumento'),premieretype) 
 
 def NewSimpleElement(dbmodel,title):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
@@ -182,11 +217,16 @@ def NewCountry():
 def NewCity():
     return NewSimpleElement(City,_('Agregar Ciudad'))
 
-@bp.route('/new/instrumenttpye', methods = ['GET','POST'])
+@bp.route('/new/instrumenttype', methods = ['GET','POST'])
 @login_required
 def NewInstrumentType():
     return NewSimpleElement(InstrumentType,_('Agregar Tipo de Instrumento'))
     
+@bp.route('/new/premieretype', methods = ['GET','POST'])
+@login_required
+def NewPremiereType():
+    return NewSimpleElement(PremiereType,_('Agregar Tipo de Premiere'))
+
 @bp.route('/editelements')
 @login_required
 def edit_elements():
@@ -202,7 +242,6 @@ def index():
 @bp.route('/new/instrument', methods = ['GET','POST'])
 @login_required
 def NewInstrument():
-    dbmodel=Instrument
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'))
         return render_template(url_for('users.login'))
@@ -210,14 +249,14 @@ def NewInstrument():
     if form.validate_on_submit():
         if  Instrument.query.filter_by(name=form.name.data).all().__len__() > 0:
             flash(_('Este nombre ya ha sido registrado'))
-            return render_template('main/newinstrument.html',form=form,selectedElements=None)
+            return render_template('main/editinstrument.html',form=form,selectedElements=None)
         else:
             instrument_type = InstrumentType.query.filter_by(id=int(form.instrument_type.data[0])).first_or_404()
             db.session.add(Instrument(name=form.name.data,instrument_type=instrument_type))
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'))
         return redirect('/editelements')
-    return render_template('main/newinstrument.html',form=form,selectedElements=None)
+    return render_template('main/editinstrument.html',form=form,selectedElements=None)
 
 @bp.route('/edit/instrument/<instrument>', methods = ['GET','POST'])
 @login_required
@@ -238,34 +277,58 @@ def EditInstrument(instrument):
          return redirect('/editelements')
     elif request.method == 'GET':
         form.name.data = instrument.name            
-    return render_template('main/newinstrument.html',form=form,selectedElements=list2csv(selectedElements))    
-#    form = PostForm()
-#    if form.validate_on_submit():
-#        language = guess_language(form.post.data)
-#        if language == 'UNKNOWN' or len(language) > 5:
-#            language = ''
-#        post = Post(body=form.post.data, author=current_user,
-#                    language=language)
-#        db.session.add(post)
-#        db.session.commit()
-#        flash(_('Your post is now live!'))
-#        return redirect(url_for('main.index'))
-#    page = request.args.get('page', 1, type=int)
-#    posts = current_user.followed_posts().paginate(
-#        page, current_app.config['POSTS_PER_PAGE'], False)
-#    next_url = url_for('main.explore', page=posts.next_num) \
-#        if posts.has_next else None
-#    prev_url = url_for('main.explore', page=posts.prev_num) \
-#        if posts.has_prev else None
-#    return render_template('index.html', title=_('Home'), form=form,
-#                           posts=posts.items, next_url=next_url,
-#                           prev_url=prev_url)
+    return render_template('main/editinstrument.html',form=form,selectedElements=list2csv(selectedElements))    
 
-#@bp.route('/view/country/<country>', methods=['GET'])
-#@login_required
-#def view_country(country_name):
-#    country = Country.query.filter_by(name=country_name).first_or_404()
-#    
+@bp.route('/new/person', methods = ['GET','POST'])
+@login_required
+def NewPerson():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        return render_template(url_for('users.login'))
+    form = EditPersonForm(original_person=None)   
+    if form.validate_on_submit():
+        person = Person(first_name=form.first_name.data,last_name=form.last_name.data)
+        person.birth_date = form.birth_date.data
+        person.death_date = form.death_date.data
+        person.biography= form.biography.data
+        for country_id in form.nationalities.data:
+            person.nationalities.append(Country.query.filter_by(id=country_id).first_or_404())
+        db.session.add(person)
+        db.session.commit()
+        flash(_('Tus cambios han sido guardados.'))
+        return redirect('/editelements')
+    return render_template('main/editperson.html',form=form,title=_('Persona'),selectedElements=None)
+
+@bp.route('/edit/person/<person_id>', methods = ['GET','POST'])
+@login_required
+def EditPerson(person_id):
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        return render_template(url_for('users.login'))
+    person = Person.query.filter_by(id=person_id).first_or_404()
+    form = EditPersonForm(person)
+    selectedElements=[]
+    for nationality in person.nationalities:
+        selectedElements.append(nationality.id)
+    if form.validate_on_submit():
+         person.first_name = form.first_name.data
+         person.last_name = form.last_name.data
+         person.birth_date = form.birth_date.data
+         person.death_date = form.death_date.data
+         person.biography= form.biography.data
+         person.nationalities.clear()
+         for country_id in form.nationalities.data:
+             person.nationalities.append(Country.query.filter_by(id=country_id).first_or_404())
+         db.session.commit()
+         flash(_('Tus cambios han sido guardados.'))
+         return redirect('/editelements')
+    elif request.method == 'GET':
+         form.first_name.data = person.first_name
+         form.last_name.data = person.last_name
+         form.birth_date.data = person.birth_date
+         form.death_date.data = person.death_date
+         form.biography.data = person.biography
+    return render_template('main/editperson.html',form=form,title=_('Persona'),selectedElements=list2csv(selectedElements))    
 
 
 
