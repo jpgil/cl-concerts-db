@@ -7,9 +7,10 @@ from flask_babel import _, get_locale
 #from guess_language import guess_language
 from app import db
 #from app.main.forms import EditProfileForm, PostForm, SearchForm
-from app.main.forms import EditSimpleElementForm, EditInstrumentForm, EditPersonForm
+from app.main.forms import EditSimpleElementForm, EditInstrumentForm, EditPersonForm, \
+    EditLocationForm
 from app.models import User, Profile, History, Event, Country, City, \
-    InstrumentType, Instrument, Person, PremiereType
+    InstrumentType, Instrument, Person, PremiereType, Location
 #from app.translate import translate
 from app.main import bp
 
@@ -68,6 +69,11 @@ def view_premieretypes():
 @login_required
 def view_instruments():
     return view_elements(Instrument,'instruments',_('Instrumentos'))
+
+@bp.route('/view/locations')
+@login_required
+def view_locations():
+    return view_elements(Location,'locations',_('Lugar'))
 
 @bp.route('/view/persons')
 @login_required
@@ -140,10 +146,15 @@ def getInstrumentList():
 def getInstrumentItem(id):
     return getItem(Instrument,id)
 
+@bp.route('/list/location')
+def getLocationList():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getItemList(Location,q,page)
 
-@bp.route('/show/countries')
-def testCountries():
-    return render_template('main/testdropdown.html')
+@bp.route('/list/location/<id>')
+def getLocationItem(id):
+    return getItem(Location,id)
 
 @bp.route('/list/premieretypes')
 def getPremiereTypeList():
@@ -278,6 +289,51 @@ def EditInstrument(instrument):
     elif request.method == 'GET':
         form.name.data = instrument.name            
     return render_template('main/editinstrument.html',form=form,selectedElements=list2csv(selectedElements))    
+
+@bp.route('/new/location', methods = ['GET','POST'])
+@login_required
+def NewLocation():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        return render_template(url_for('users.login'))
+    form = EditLocationForm(dbmodel=Instrument,original_name='')   
+    if form.validate_on_submit():
+        if  Location.query.filter_by(name=form.name.data).all().__len__() > 0:
+            flash(_('Este nombre ya ha sido registrado'))
+            return render_template('main/editlocation.html',form=form,selectedElements=None)
+        else:
+            city = City.query.filter_by(id=int(form.city.data[0])).first_or_404()
+            db.session.add(Location(name=form.name.data,city=city,additional_info=form.additional_info.data,address=form.address.data))
+            db.session.commit()
+            flash(_('Tus cambios han sido guardados.'))
+        return redirect('/editelements')
+    return render_template('main/editlocation.html',form=form,selectedElements=None)
+
+@bp.route('/edit/location/<location>', methods = ['GET','POST'])
+@login_required
+def EditLocation(location):
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        return render_template(url_for('users.login'))
+    original_location = Location.query.filter_by(name=location).first_or_404()
+    selectedElements=[]
+    selectedElements.append(original_location.city.id)
+    form = EditLocationForm(original_name=location)
+    if form.validate_on_submit():
+         original_location.name = form.name.data
+         original_location.additional_info=form.additional_info.data
+         original_location.address=form.address.data
+         city = City.query.filter_by(id=int(form.city.data[0])).first_or_404()
+         original_location.city = city
+         db.session.commit()
+         flash(_('Tus cambios han sido guardados.'))
+         return redirect('/editelements')
+    elif request.method == 'GET':
+        form.name.data = original_location.name
+        form.additional_info.data = original_location.additional_info
+        form.address.data = original_location.address
+    return render_template('main/editlocation.html',form=form,selectedElements=list2csv(selectedElements))    
+
 
 @bp.route('/new/person', methods = ['GET','POST'])
 @login_required

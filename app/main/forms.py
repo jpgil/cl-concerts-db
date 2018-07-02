@@ -4,7 +4,7 @@ from wtforms import StringField, SubmitField, TextAreaField, SelectMultipleField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import ValidationError, DataRequired, Length, Optional
 from flask_babel import _, lazy_gettext as _l
-from app.models import User, Country, Instrument, InstrumentType, Person
+from app.models import User, Country, Instrument, InstrumentType, Person, Location
 
 class NonValidatingSelectField(SelectField):
     def pre_validate(self, form):
@@ -73,43 +73,18 @@ class EditPersonForm(FlaskForm):
             if (self.birth_date.data>self.death_date.data):
                raise ValidationError(_('La fecha de nacimiento no puede ser mayor a la de muerte')) 
 
-#class NewSimpleElementForm(FlaskForm):
-#    name=StringField(_l('Nombre'),validators=[DataRequired()])
-#    submit = SubmitField(_l('Guardar'))
-#    def validate_name(self,name):
-#        db_elem_instance = self.dbmodel.query.filter_by(name=name.data).first()
-#        if db_elem_instance is not None:
-#                raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
-                
-#
-#class EditProfileForm(FlaskForm):
-#    username = StringField(_l('Username'), validators=[DataRequired()])
-#    about_me = TextAreaField(_l('About me'),
-#                             validators=[Length(min=0, max=140)])
-#    submit = SubmitField(_l('Submit'))
-#
-#    def __init__(self, original_username, *args, **kwargs):
-#        super(EditProfileForm, self).__init__(*args, **kwargs)
-#        self.original_username = original_username
-#
-#    def validate_username(self, username):
-#        if username.data != self.original_username:
-#            user = User.query.filter_by(username=self.username.data).first()
-#            if user is not None:
-#                raise ValidationError(_('Please use a different username.'))
-#
-#
-#class PostForm(FlaskForm):
-#    post = TextAreaField(_l('Say something'), validators=[DataRequired()])
-#    submit = SubmitField(_l('Submit'))
-#
-#
-#class SearchForm(FlaskForm):
-#    q = StringField(_l('Search'), validators=[DataRequired()])
-#
-#    def __init__(self, *args, **kwargs):
-#        if 'formdata' not in kwargs:
-#            kwargs['formdata'] = request.args
-#        if 'csrf_enabled' not in kwargs:
-#            kwargs['csrf_enabled'] = False
-#        super(SearchForm, self).__init__(*args, **kwargs)
+
+class EditLocationForm(FlaskForm):
+    name=StringField(_l('Nombre'),validators=[DataRequired()])
+    address=StringField(_l('Dirección'))
+    city= NonValidatingSelectMultipleField(label=_("Ciudad"),choices=[],validators=[DataRequired()])
+    additional_info=TextAreaField(_('Información Adicional'))
+    submit = SubmitField(_l('Guardar'))
+    def __init__(self, original_name ,*args, **kwargs):
+        super(EditLocationForm, self).__init__(*args, **kwargs)
+        self.original_name = original_name     
+    def validate_name(self,name):
+        if(name.data != self.original_name):
+            db_elem_instance = Location.query.filter_by(name=name.data).first()
+            if db_elem_instance is not None:
+                raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
