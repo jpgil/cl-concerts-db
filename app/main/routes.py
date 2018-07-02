@@ -8,9 +8,9 @@ from flask_babel import _, get_locale
 from app import db
 #from app.main.forms import EditProfileForm, PostForm, SearchForm
 from app.main.forms import EditSimpleElementForm, EditInstrumentForm, EditPersonForm, \
-    EditLocationForm
+    EditLocationForm, EditOrganizationForm
 from app.models import User, Profile, History, Event, Country, City, \
-    InstrumentType, Instrument, Person, PremiereType, Location
+    InstrumentType, Instrument, Person, PremiereType, Location, Organization
 #from app.translate import translate
 from app.main import bp
 
@@ -73,7 +73,13 @@ def view_instruments():
 @bp.route('/view/locations')
 @login_required
 def view_locations():
-    return view_elements(Location,'locations',_('Lugar'))
+    return view_elements(Location,'locations',_('Lugares'))
+
+@bp.route('/view/organizations')
+@login_required
+def view_organizations():
+    return view_elements(Organization,'organizations',_('Organizaciones'))
+
 
 @bp.route('/view/persons')
 @login_required
@@ -125,6 +131,15 @@ def getCityList():
 def getCityItem(id):
     return getItem(City,id)
 
+@bp.route('/list/organizations')
+def getOrganizationList():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getItemList(Organization,q,page)
+
+@bp.route('/list/organizations/<id>')
+def getOrganizationItem(id):
+    return getItem(Organization,id)
 
 @bp.route('/list/instrumenttypes')
 def getInstrumentTypeList():
@@ -192,6 +207,7 @@ def EditCountry(country):
 @login_required
 def EditCity(city):
     return EditSimpleElement(City,_('Editar Ciudad'),city)
+
 
 @bp.route('/edit/instrumenttype/<instrumenttype>',methods = ['GET','POST'])
 @login_required
@@ -333,6 +349,46 @@ def EditLocation(location):
         form.additional_info.data = original_location.additional_info
         form.address.data = original_location.address
     return render_template('main/editlocation.html',form=form,selectedElements=list2csv(selectedElements))    
+
+@bp.route('/new/organization', methods = ['GET','POST'])
+@login_required
+def NewOrganization():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        return render_template(url_for('users.login'))
+    form = EditOrganizationForm(dbmodel=Organization,original_name='')   
+    if form.validate_on_submit():
+        if  Organization.query.filter_by(name=form.name.data).all().__len__() > 0:
+            flash(_('Este nombre ya ha sido registrado'))
+            return render_template('main/editorganization.html',form=form)
+        else:
+            db.session.add(Organization(name=form.name.data,additional_info=form.additional_info.data))
+            db.session.commit()
+            flash(_('Tus cambios han sido guardados.'))
+        return redirect('/editelements')
+    return render_template('main/editorganization.html',form=form)
+
+@bp.route('/edit/organization/<organization>', methods = ['GET','POST'])
+@login_required
+def EditOrganization(organization):
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        return render_template(url_for('users.login'))
+    original_organization =Organization.query.filter_by(name=organization).first_or_404()
+    form = EditOrganizationForm(original_name=organization)
+    if form.validate_on_submit():
+         original_organization.name = form.name.data
+         original_organization.additional_info=form.additional_info.data
+         db.session.commit()
+         flash(_('Tus cambios han sido guardados.'))
+         return redirect('/editelements')
+    elif request.method == 'GET':
+        form.name.data = original_organization.name
+        form.additional_info.data = original_organization.additional_info
+
+    return render_template('main/editorganization.html',form=form)    
+
+
 
 
 @bp.route('/new/person', methods = ['GET','POST'])
