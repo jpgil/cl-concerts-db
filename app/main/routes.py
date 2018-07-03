@@ -10,7 +10,8 @@ from app import db
 from app.main.forms import EditSimpleElementForm, EditInstrumentForm, EditPersonForm, \
     EditLocationForm, EditOrganizationForm
 from app.models import User, Profile, History, Event, Country, City, \
-    InstrumentType, Instrument, Person, PremiereType, Location, Organization
+    InstrumentType, Instrument, Person, PremiereType, Location, Organization,\
+    EventType
 #from app.translate import translate
 from app.main import bp
 
@@ -49,6 +50,10 @@ def view_elements(dbmodel,elementsname,title):
 def view_countries():
     return view_elements(Country,'countries',_('Países'))
 
+@bp.route('/view/eventtypes')
+@login_required
+def view_eventtypes():
+    return view_elements(EventType,'eventtypes',_('Tipos de Eventos'))
 
 @bp.route('/view/cities')
 @login_required
@@ -120,6 +125,16 @@ def getCountryList():
 def getCountryItem(id):
     return getItem(Country,id)
 
+
+@bp.route('/list/eventtypes')
+def getEventTypeList():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getItemList(EventType,q,page)
+
+@bp.route('/list/eventtypes/<id>')
+def getEventTypeItem(id):
+    return getItem(EventType,id)
 
 @bp.route('/list/cities')
 def getCityList():
@@ -202,6 +217,13 @@ def EditSimpleElement(dbmodel,title,original_name):
 @login_required
 def EditCountry(country):
     return EditSimpleElement(Country,_('Editar País'),country)
+
+
+@bp.route('/edit/eventtype/<event_type>',methods = ['GET','POST'])
+@login_required
+def EditEventType(event_type):
+    return EditSimpleElement(EventType,_('Editar Tipo de Evento'),event_type)
+
  
 @bp.route('/edit/city/<city>',methods = ['GET','POST'])
 @login_required
@@ -238,6 +260,11 @@ def NewSimpleElement(dbmodel,title):
 @login_required
 def NewCountry():
     return NewSimpleElement(Country,_('Agregar País'))
+
+@bp.route('/new/eventtype', methods = ['GET','POST'])
+@login_required
+def NewEventType():
+    return NewSimpleElement(EventType,_('Agregar Tipo de Evento'))
 
 @bp.route('/new/city', methods = ['GET','POST'])
 @login_required
