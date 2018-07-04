@@ -303,14 +303,14 @@ def NewInstrument():
     if form.validate_on_submit():
         if  Instrument.query.filter_by(name=form.name.data).all().__len__() > 0:
             flash(_('Este nombre ya ha sido registrado'))
-            return render_template('main/editinstrument.html',form=form,selectedElements=None)
+            return render_template('main/editinstrument.html',form=form,title=_('Agregar Instrumento'),selectedElements=None)
         else:
             instrument_type = InstrumentType.query.filter_by(id=int(form.instrument_type.data[0])).first_or_404()
             db.session.add(Instrument(name=form.name.data,instrument_type=instrument_type))
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'))
         return redirect('/editelements')
-    return render_template('main/editinstrument.html',form=form,selectedElements=None)
+    return render_template('main/editinstrument.html',form=form,title=_('Agregar Instrumento'),selectedElements=None)
 
 @bp.route('/edit/instrument/<instrument>', methods = ['GET','POST'])
 @login_required
@@ -331,7 +331,7 @@ def EditInstrument(instrument):
          return redirect('/editelements')
     elif request.method == 'GET':
         form.name.data = instrument.name            
-    return render_template('main/editinstrument.html',form=form,selectedElements=list2csv(selectedElements))    
+    return render_template('main/editinstrument.html',form=form,title=_('Editar Instrumento'),selectedElements=list2csv(selectedElements))    
 
 @bp.route('/new/location', methods = ['GET','POST'])
 @login_required
@@ -343,14 +343,14 @@ def NewLocation():
     if form.validate_on_submit():
         if  Location.query.filter_by(name=form.name.data).all().__len__() > 0:
             flash(_('Este nombre ya ha sido registrado'))
-            return render_template('main/editlocation.html',form=form,selectedElements=None)
+            return render_template('main/editlocation.html',form=form,title=_('Agregar Lugar'),selectedElements=None)
         else:
             city = City.query.filter_by(id=int(form.city.data[0])).first_or_404()
             db.session.add(Location(name=form.name.data,city=city,additional_info=form.additional_info.data,address=form.address.data))
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'))
         return redirect('/editelements')
-    return render_template('main/editlocation.html',form=form,selectedElements=None)
+    return render_template('main/editlocation.html',form=form,title=_('Agregar Lugar'),selectedElements=None)
 
 @bp.route('/edit/location/<location>', methods = ['GET','POST'])
 @login_required
@@ -375,7 +375,7 @@ def EditLocation(location):
         form.name.data = original_location.name
         form.additional_info.data = original_location.additional_info
         form.address.data = original_location.address
-    return render_template('main/editlocation.html',form=form,selectedElements=list2csv(selectedElements))    
+    return render_template('main/editlocation.html',form=form,title=_('Editar Lugar'),selectedElements=list2csv(selectedElements))    
 
 @bp.route('/new/organization', methods = ['GET','POST'])
 @login_required
@@ -387,13 +387,13 @@ def NewOrganization():
     if form.validate_on_submit():
         if  Organization.query.filter_by(name=form.name.data).all().__len__() > 0:
             flash(_('Este nombre ya ha sido registrado'))
-            return render_template('main/editorganization.html',form=form)
+            return render_template('main/editorganization.html',form=form,title=_('Agregar Organización'))
         else:
             db.session.add(Organization(name=form.name.data,additional_info=form.additional_info.data))
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'))
         return redirect('/editelements')
-    return render_template('main/editorganization.html',form=form)
+    return render_template('main/editorganization.html',form=form,title=_('Agregar Organización'))
 
 @bp.route('/edit/organization/<organization>', methods = ['GET','POST'])
 @login_required
@@ -412,10 +412,7 @@ def EditOrganization(organization):
     elif request.method == 'GET':
         form.name.data = original_organization.name
         form.additional_info.data = original_organization.additional_info
-
-    return render_template('main/editorganization.html',form=form)    
-
-
+    return render_template('main/editorganization.html',form=form,title=_('Editar Organización'))    
 
 
 @bp.route('/new/person', methods = ['GET','POST'])
@@ -436,7 +433,7 @@ def NewPerson():
         db.session.commit()
         flash(_('Tus cambios han sido guardados.'))
         return redirect('/editelements')
-    return render_template('main/editperson.html',form=form,title=_('Persona'),selectedElements=None)
+    return render_template('main/editperson.html',form=form,title=_('Agregar Persona'),selectedElements=None)
 
 @bp.route('/edit/person/<person_id>', methods = ['GET','POST'])
 @login_required
@@ -467,7 +464,7 @@ def EditPerson(person_id):
          form.birth_date.data = person.birth_date
          form.death_date.data = person.death_date
          form.biography.data = person.biography
-    return render_template('main/editperson.html',form=form,title=_('Persona'),selectedElements=list2csv(selectedElements))    
+    return render_template('main/editperson.html',form=form,title=_('Editar Persona'),selectedElements=list2csv(selectedElements))    
 
 
 
