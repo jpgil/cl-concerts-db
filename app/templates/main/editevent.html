@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>{{ title }}</h1>
+    <form action="" method="post">
+    {{ form.hidden_tag() }}
+    <div class="container">
+        <div class="row"> {{ form.name.label }} </div>
+        <div class="row">  {{ form.name(size=20) }} </div>                
+        <div class="row">
+                {% for error in form.name.errors %}
+                   <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+        </div>
+        <br>
+        
+        <div class="row"> {{ form.event_date.label }} </div>
+        <div class="row">  {{ form.event_date }} </div>                
+        <div class="row">
+                {% for error in form.event_date.errors %}
+                   <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+        </div>
+        <br>      
+                
+        <div class="row"> {{ form.location.label }} </div>
+        <div class="row">  {{ form.location( **{"class":"dd_select2", "url":"locations", "description":_("Lugar"),  "maxelem":"1" , "selectedElements":selectedElements } ) }}  
+              <a href="{{ url_for('main.NewLocation') }}" target="_blank" class="btn btn-primary" role="button">Nuevo</a>
+        </div> 
+        <div class="row">
+                {% for error in form.location.errors %}
+                   <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+        </div> 
+        <br> 
+        
+        <div class="row"> {{ form.organization.label }} </div>
+        <div class="row">  {{ form.organization( **{"class":"dd_select2", "url":"organizations", "description":_("Organización"),  "maxelem":"1" , "selectedElements":selectedElements } ) }} 
+                        <a href="{{ url_for('main.NewOrganization') }}" target="_blank" class="btn btn-primary" role="button">Nuevo</a> 
+        </div> 
+        <div class="row">
+                {% for error in form.organization.errors %}
+                   <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+        </div> 
+        <br> 
+
+        <div class="row"> {{ form.event_type.label }} </div>
+        <div class="row">  {{ form.event_type( **{"class":"dd_select2", "url":"eventtypes", "description":_("Tipo de Evento"),  "maxelem":"1" , "selectedElements":selectedElements } ) }}  </div> 
+        <div class="row">
+                {% for error in form.event_type.errors %}
+                   <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+        </div> 
+        <br>         
+                
+        <div class="row"> {{ form.information.label }} </div>
+        <div class="row">  {{ form.information(cols="55", rows="15")|safe }} </div>                
+        <div class="row">
+                {% for error in form.information.errors %}
+                   <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+        </div>
+        <br>  
+        
+        
+        <div class="row"></div>
+        <div class="row">
+             {{ form.submit() }} 
+        </div>
+    </div>       
+
+    </form>
+    
+{% endblock %}
+{% block script %}
+{% endblock %}

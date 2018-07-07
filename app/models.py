@@ -15,7 +15,6 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String(40))
     last_name = db.Column(db.String(40))
     profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'))
-    profile = db.relationship('Profile')
     entries_added = db.relationship('History', backref='author', lazy='dynamic')
        
     def __repr__(self):
@@ -47,6 +46,7 @@ class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20))
     description = db.Column(db.String(200))
+    users = db.relationship('User',backref='profile')
     def __repr__(self):
         return 'Profile(name="{}",description="{}")'.format(self.name,
                        self.description)
@@ -71,7 +71,7 @@ class Instrument(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20))
     instrument_type_id = db.Column(db.Integer, db.ForeignKey('instrument_type.id'))
-    activities = db.relationship('Activity',backref='instrument')
+    activity = db.relationship("Activity", uselist=False, backref="instrument")
     def __repr__(self):
         return 'Instrument(name="{}",instrument_type={})'.format(self.name,self.instrument_type.name)
     
@@ -107,7 +107,7 @@ class Country(db.Model):
 class PremiereType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20))    
-    musical_pieces = db.relationship('MusicalPiece', backref='premier_type', lazy='dynamic')
+    performances = db.relationship('Performance', backref='premiere_type', lazy='dynamic')
     def __repr__(self):
         return 'PremiereType(name="{}")'.format(self.name)   
         
@@ -124,7 +124,7 @@ class Person(db.Model):
     death_date = db.Column(db.Date)    
     biography = db.Column(db.String(2000))    
     musical_pieces = db.relationship('MusicalPiece', backref='author', lazy='dynamic') 
-    participations = db.relationship('Participant', backref='person', lazy='dynamic')
+    participants = db.relationship('Participant', backref='person', lazy='dynamic')
     nationalities  = db.relationship('Country',
                     secondary=nationality,
                     backref='persons')    
@@ -143,10 +143,10 @@ class MediaLink(db.Model):
 class Activity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20)) 
-    instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'))   
-    participants = db.relationship('Participant', backref='activity', lazy='dynamic')
+    instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'))
+    participants = db.relationship('Participant', backref = 'activity', lazy='dynamic')
     def __repr__(self):
-        return 'Activity(name="{}",instrument="{}")'.format(self.name,self.instrument.name)        
+        return 'Activity(name="{}",instrument_id="{}")'.format(self.name,self.instrument_id)        
     
 
 class Location(db.Model):
@@ -157,7 +157,7 @@ class Location(db.Model):
     city_id = db.Column(db.Integer, db.ForeignKey('city.id'))
     events = db.relationship('Event', backref='location', lazy='dynamic') 
     def __repr__(self):
-        return 'Location(name="{}",address="{}",city_id="{}"'.format(self.name,self.address,self.city_id)
+        return 'Location(name="{}",address="{}",city_id="{}")'.format(self.name,self.address,self.city_id)
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)                
@@ -168,9 +168,10 @@ class Event(db.Model):
     information = db.Column(db.String(600))  
     event_type_id = db.Column(db.Integer, db.ForeignKey('event_type.id'))
     participants = db.relationship('Participant', backref='event', lazy='dynamic')
+    performances = db.relationship('Performance', backref='event', lazy='dynamic')
     media = db.relationship('MediaLink', backref='event', lazy='dynamic')
     def __repr__(self):
-        return 'Event(name="{}",date="{}",city_id="{}"'.format(self.name,self.date)
+        return 'Event(name="{}",date="{}",location_id="{}", organization_id="{}")'.format(self.name,self.date,self.location_id,self.organization_id)
 
 
 class MusicalPiece(db.Model):
@@ -178,26 +179,37 @@ class MusicalPiece(db.Model):
     name = db.Column(db.String(100))
     creation_date = db.Column(db.Date)
     author_id = db.Column(db.Integer, db.ForeignKey('person.id'))
-    premiere_type_id = db.Column(db.Integer, db.ForeignKey('premiere_type.id'))
+    performances = db.relationship("Performance", back_populates="musical_piece")
     def __repr__(self):
-        return 'MusicalPiece(name="{}",creation_date="{}",author_id="{},premiere_type_id={}"'.format(self.name,self.creation_date,self.author_id,self.premiere_type_id) 
+        return 'MusicalPiece(name="{}",creation_date="{}",author_id="{}")'.format(self.name,self.creation_date,self.author_id) 
 
 
-player = db.Table('player', 
-    db.Column('participant_id', db.Integer, db.ForeignKey('participant.id')),
-    db.Column('musical_piece_id', db.Integer, db.ForeignKey('musical_piece.id'))
-)      
+class Performance(db.Model):
+    id = db.Column(db.Integer, primary_key=True)          
+    premiere_type_id = db.Column(db.Integer, db.ForeignKey('premiere_type.id'))
+    musical_piece_id =  db.Column(db.Integer, db.ForeignKey('musical_piece.id'))
+    event_id = db.Column(db.Integer, db.ForeignKey('event.id'))     
+    def __repr__(self):   
+        return 'Performance(musical_piece_id="{}", participant_id="{}", premiere_type="{}", event_id"{}")'.format(self.musical_piece_id, 
+                           self.participant_id, self.premiere_type_id, self.event_id)
 
 class Participant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     person_id = db.Column(db.Integer, db.ForeignKey('person.id'))  
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))      
-    activity_id = db.Column(db.Integer, db.ForeignKey('activity.id'))      
-    children = db.relationship("MusicalPiece",
-                    secondary=player,
-                    backref="participants")          
+    activity_id = db.Column(db.Integer, db.ForeignKey('activity.id'))     
+    performances = db.relationship(
+        "Performance",
+        secondary=db.Table('participant_performance',
+                    db.Column("participant_id", db.Integer, db.ForeignKey('participant.id'),
+                                primary_key=True),
+                    db.Column("performance_id", db.Integer, db.ForeignKey('performance.id'),
+                                primary_key=True)
+                ),
+        backref="participants"
+        )     
     def __repr__(self):
-        return 'Participant(person="{}",event="{}",activity="{}'.format(self.person,self.event,self.activity)
+        return 'Participant(person="{}",event="{}",activity="{}")'.format(self.person,self.event,self.activity)
 
 
     

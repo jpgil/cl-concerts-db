@@ -8,10 +8,10 @@ from flask_babel import _, get_locale
 from app import db
 #from app.main.forms import EditProfileForm, PostForm, SearchForm
 from app.main.forms import EditSimpleElementForm, EditInstrumentForm, EditPersonForm, \
-    EditLocationForm, EditOrganizationForm
+    EditLocationForm, EditOrganizationForm, EditEventForm
 from app.models import User, Profile, History, Event, Country, City, \
     InstrumentType, Instrument, Person, PremiereType, Location, Organization,\
-    EventType
+    EventType, Event
 #from app.translate import translate
 from app.main import bp
 
@@ -166,23 +166,23 @@ def getInstrumentTypeList():
 def getInstrumentTypeItem(id):
     return getItem(InstrumentType,id)
 
-@bp.route('/list/instrument')
+@bp.route('/list/instruments')
 def getInstrumentList():
     page = request.args.get('page', 1, type=int)
     q=request.args.get('q', '', type=str)
     return getItemList(Instrument,q,page)
 
-@bp.route('/list/instrument/<id>')
+@bp.route('/list/instruments/<id>')
 def getInstrumentItem(id):
     return getItem(Instrument,id)
 
-@bp.route('/list/location')
+@bp.route('/list/locations')
 def getLocationList():
     page = request.args.get('page', 1, type=int)
     q=request.args.get('q', '', type=str)
     return getItemList(Location,q,page)
 
-@bp.route('/list/location/<id>')
+@bp.route('/list/locations/<id>')
 def getLocationItem(id):
     return getItem(Location,id)
 
@@ -466,6 +466,32 @@ def EditPerson(person_id):
          form.biography.data = person.biography
     return render_template('main/editperson.html',form=form,title=_('Editar Persona'),selectedElements=list2csv(selectedElements))    
 
+
+@bp.route('/new/event', methods = ['GET','POST'])
+@login_required
+def NewEvent():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        return render_template(url_for('users.login'))
+    form = EditEventForm(dbmodel=Event,original_event=None)   
+    if form.validate_on_submit():
+        if  Event.query.filter_by(name=form.name.data).all().__len__() > 0:
+            flash(_('Este nombre ya ha sido registrado'))
+            return render_template('main/editevent.html',form=form,title=_('Agregar Evento'),selectedElements=None)
+        else:
+            location = Location.query.filter_by(id=int(form.location.data[0])).first_or_404()
+            organization = Organization.query.filter_by(id=int(form.organization.data[0])).first_or_404()
+            event_type = EventType.query.filter_by(id=int(form.event_type.data[0])).first_or_404()
+            db.session.add(Event(name=form.name.data,
+                                 organization=organization,
+                                 location=location,
+                                 event_type=event_type,
+                                 information=form.information.data,
+                                 date=form.event_date.data))
+            db.session.commit()
+            flash(_('Tus cambios han sido guardados.'))
+        return redirect('/editelements')
+    return render_template('main/editevent.html',form=form,title=_('Agregar Evento'),selectedElements=None)
 
 
 #
