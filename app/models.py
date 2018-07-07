@@ -127,7 +127,7 @@ class Person(db.Model):
     participants = db.relationship('Participant', backref='person', lazy='dynamic')
     nationalities  = db.relationship('Country',
                     secondary=nationality,
-                    backref='persons')    
+                    backref='people')    
     def __repr__(self):
         return 'Person(first_name="{}",last_name="{}")'.format(self.first_name,self.last_name)
 
@@ -179,7 +179,7 @@ class MusicalPiece(db.Model):
     name = db.Column(db.String(100))
     creation_date = db.Column(db.Date)
     author_id = db.Column(db.Integer, db.ForeignKey('person.id'))
-    performances = db.relationship("Performance", back_populates="musical_piece")
+    performances = db.relationship("Performance", backref="musical_piece")
     def __repr__(self):
         return 'MusicalPiece(name="{}",creation_date="{}",author_id="{}")'.format(self.name,self.creation_date,self.author_id) 
 

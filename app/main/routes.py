@@ -86,10 +86,10 @@ def view_organizations():
     return view_elements(Organization,'organizations',_('Organizaciones'))
 
 
-@bp.route('/view/persons')
+@bp.route('/view/people')
 @login_required
-def view_persons():
-    elementsname='persons'
+def view_people():
+    elementsname='people'
     title=_('Personas')
     page = request.args.get('page', 1, type=int)
     elements = Person.query.order_by(Person.last_name.asc()).paginate(
