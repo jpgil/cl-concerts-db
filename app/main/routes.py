@@ -8,10 +8,11 @@ from flask_babel import _, get_locale
 from app import db
 #from app.main.forms import EditProfileForm, PostForm, SearchForm
 from app.main.forms import EditSimpleElementForm, EditInstrumentForm, EditPersonForm, \
-    EditLocationForm, EditOrganizationForm, EditEventForm, EditMusicalPieceForm
+    EditLocationForm, EditOrganizationForm, EditEventForm, EditMusicalPieceForm, \
+    EditActivityForm
 from app.models import User, Profile, History, Event, Country, City, \
     InstrumentType, Instrument, Person, PremiereType, Location, Organization,\
-    EventType, MusicalPiece
+    EventType, MusicalPiece, Activity
 #from app.translate import translate
 from app.main import bp
 
@@ -74,6 +75,11 @@ def view_premieretypes():
 @login_required
 def view_instruments():
     return view_elements(Instrument,'instruments',_('Instrumentos'))
+
+@bp.route('/view/activities')
+@login_required
+def view_activities():
+    return view_elements(Activity,'activities',_('Actividades'))
 
 @bp.route('/view/musicalpieces')
 @login_required
@@ -226,6 +232,17 @@ def getLocationList():
 @bp.route('/list/locations/<id>')
 def getLocationItem(id):
     return getItem(Location,id)
+
+@bp.route('/list/activities')
+def getActivityList():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getItemList(Activity,q,page)
+
+@bp.route('/list/activities/<id>')
+def getActivityItem(id):
+    return getItem(Activity,id)
+
 
 @bp.route('/list/premieretypes')
 def getPremiereTypeList():
@@ -416,6 +433,46 @@ def EditMusicalPiece(id):
         form.composition_year.data = musical_piece.composition_year
     return render_template('main/editmusicalpiece.html',form=form,title=_('Editar Obra Musical'),selectedElements=list2csv(selectedElements))    
 
+
+@bp.route('/new/activity', methods = ['GET','POST'])
+@login_required
+def NewActivity():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        return render_template(url_for('users.login'))
+    form = EditActivityForm(dbmodel=Instrument,original_name='')   
+    if form.validate_on_submit():
+        if  Activity.query.filter_by(name=form.name.data).all().__len__() > 0:
+            flash(_('Este nombre ya ha sido registrado'))
+            return render_template('main/editactivity.html',form=form,title=_('Agregar Actividad'),selectedElements=None)
+        else:
+            instrument = Instrument.query.filter_by(id=int(form.instrument.data[0])).first_or_404()
+            db.session.add(Activity(name=form.name.data,instrument=instrument))
+            db.session.commit()
+            flash(_('Tus cambios han sido guardados.'))
+        return redirect('/editelements')
+    return render_template('main/editactivity.html',form=form,title=_('Agregar Actividad'),selectedElements=None)
+
+@bp.route('/edit/activity/<id>', methods = ['GET','POST'])
+@login_required
+def EditActivity(id):
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        return render_template(url_for('users.login'))
+    original_activity= Activity.query.filter_by(id=id).first_or_404()
+    selectedElements=[]
+    selectedElements.append(original_activity.instrument.id)
+    form = EditActivityForm(original_name=original_activity.name)
+    if form.validate_on_submit():
+         original_activity.name = form.name.data
+         instrument = Instrument.query.filter_by(id=int(form.instrument.data[0])).first_or_404()
+         original_activity.instrument = instrument
+         db.session.commit()
+         flash(_('Tus cambios han sido guardados.'))
+         return redirect('/editelements')
+    elif request.method == 'GET':
+        form.name.data = original_activity.name
+    return render_template('main/editactivity.html',form=form,title=_('Editar Actividad'),selectedElements=list2csv(selectedElements))    
 
 
 

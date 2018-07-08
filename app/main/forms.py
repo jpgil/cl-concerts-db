@@ -5,7 +5,8 @@ from wtforms.fields.html5 import DateField
 from wtforms.validators import ValidationError, DataRequired, Length, Optional, NumberRange
 from flask_babel import _, lazy_gettext as _l
 from app.models import User, Country, Instrument, InstrumentType, Person,\
-                        Location, Organization, EventType, Event, MusicalPiece
+                        Location, Organization, EventType, Event, MusicalPiece,\
+                        Activity
 
 class NonValidatingSelectField(SelectField):
     def pre_validate(self, form):
@@ -55,6 +56,19 @@ class EditMusicalPieceForm(FlaskForm):
             db_elem_instance = MusicalPiece.query.filter_by(name=name.data).first()
             if db_elem_instance is not None:
                 raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
+
+class EditActivityForm(FlaskForm):
+    name=StringField(_l('Nombre'),validators=[DataRequired()])
+    instrument= NonValidatingSelectMultipleField(label=_("Instrumento"),choices=[],validators=[Optional()])
+    submit = SubmitField(_l('Guardar'))
+    def __init__(self, original_name ,*args, **kwargs):
+        super(EditActivityForm, self).__init__(*args, **kwargs)
+        self.original_name = original_name     
+    def validate_name(self,name):
+        if(name.data != self.original_name):
+            db_elem_instance = Activity.query.filter_by(name=name.data).first()
+            if db_elem_instance is not None:
+                raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))       
                 
 
 class EditPersonForm(FlaskForm):
