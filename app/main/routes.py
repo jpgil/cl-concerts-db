@@ -8,10 +8,10 @@ from flask_babel import _, get_locale
 from app import db
 #from app.main.forms import EditProfileForm, PostForm, SearchForm
 from app.main.forms import EditSimpleElementForm, EditInstrumentForm, EditPersonForm, \
-    EditLocationForm, EditOrganizationForm, EditEventForm
+    EditLocationForm, EditOrganizationForm, EditEventForm, EditMusicalPieceForm
 from app.models import User, Profile, History, Event, Country, City, \
     InstrumentType, Instrument, Person, PremiereType, Location, Organization,\
-    EventType, Event
+    EventType, MusicalPiece
 #from app.translate import translate
 from app.main import bp
 
@@ -75,6 +75,11 @@ def view_premieretypes():
 def view_instruments():
     return view_elements(Instrument,'instruments',_('Instrumentos'))
 
+@bp.route('/view/musicalpieces')
+@login_required
+def view_musicalpieces():
+    return view_elements(MusicalPiece,'musicalpieces',_('Obras Musicales'))
+
 @bp.route('/view/locations')
 @login_required
 def view_locations():
@@ -114,6 +119,32 @@ def getItem(dbmodel,id):
     item=dbmodel.query.filter_by(id=id).first_or_404()
     data={ 'id' : item.id , 'text': item.name }
     return jsonify(data)
+
+def getPeople(q,page):    
+    itemslist=db.session.query(Person).filter(Person.last_name.ilike(q+'%')).order_by(Person.last_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
+    data={ "results": [], "pagination": { "more": itemslist.has_next} }
+    for item in itemslist.items:
+        text = '{}, {}'.format(item.last_name,item.first_name) if item.last_name else item.first_name
+        data["results"].append( { 'id' : item.id , 'text': text } )
+    return jsonify(data)
+
+def getPerson(id):
+    item=Person.query.filter_by(id=id).first_or_404()
+    text = '{}, {}'.format(item.last_name,item.first_name) if item.last_name else item.first_name
+    data={ 'id' : item.id , 'text': text }
+    return jsonify(data)
+
+
+
+@bp.route('/list/people')
+def getPeopleList():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getPeople(q,page)
+
+@bp.route('/list/people/<id>')
+def getPeopleItem(id):
+    return getPerson(id)
 
 @bp.route('/list/countries')
 def getCountryList():
@@ -175,6 +206,16 @@ def getInstrumentList():
 @bp.route('/list/instruments/<id>')
 def getInstrumentItem(id):
     return getItem(Instrument,id)
+
+@bp.route('/list/musicalpieces')
+def getMusicalPieceList():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getItemList(MusicalPiece,q,page)
+
+@bp.route('/list/mmusicalpieces/<id>')
+def getMusicalPieceItem(id):
+    return getItem(MusicalPiece,id)
 
 @bp.route('/list/locations')
 def getLocationList():
@@ -332,6 +373,51 @@ def EditInstrument(instrument):
     elif request.method == 'GET':
         form.name.data = instrument.name            
     return render_template('main/editinstrument.html',form=form,title=_('Editar Instrumento'),selectedElements=list2csv(selectedElements))    
+
+@bp.route('/new/musicalpiece', methods = ['GET','POST'])
+@login_required
+def NewMusicalPiece():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        return render_template(url_for('users.login'))
+    form = EditMusicalPieceForm(dbmodel=MusicalPiece,original_name='')   
+    if form.validate_on_submit():
+        if  MusicalPiece.query.filter_by(name=form.name.data).all().__len__() > 0:
+            flash(_('Este nombre ya ha sido registrado'))
+            return render_template('main/editmusicalpiece.html',form=form,title=_('Agregar Obra Musical'),selectedElements=None)
+        else:
+            composer = Person.query.filter_by(id=int(form.composer.data[0])).first_or_404()
+            db.session.add(MusicalPiece(name=form.name.data,composer=composer,composition_year=form.composition_year.data))
+            db.session.commit()
+            flash(_('Tus cambios han sido guardados.'))
+        return redirect('/editelements')
+    return render_template('main/editmusicalpiece.html',form=form,title=_('Agregar Obra Musical'),selectedElements=None)
+
+@bp.route('/edit/musicalpiece/<id>', methods = ['GET','POST'])
+@login_required
+def EditMusicalPiece(id):
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        return render_template(url_for('users.login'))
+    musical_piece = MusicalPiece.query.filter_by(id=id).first_or_404()
+    selectedElements=[]
+    selectedElements.append(musical_piece.composer.id)
+    form = EditMusicalPieceForm(original_name=musical_piece.name)
+    if form.validate_on_submit():
+         musical_piece.name = form.name.data
+         composer = Person.query.filter_by(id=int(form.composer.data[0])).first_or_404()
+         musical_piece.composer = composer
+         musical_piece.composition_year = form.composition_year.data
+         db.session.commit()
+         flash(_('Tus cambios han sido guardados.'))
+         return redirect('/editelements')
+    elif request.method == 'GET':
+        form.name.data = musical_piece.name  
+        form.composition_year.data = musical_piece.composition_year
+    return render_template('main/editmusicalpiece.html',form=form,title=_('Editar Obra Musical'),selectedElements=list2csv(selectedElements))    
+
+
+
 
 @bp.route('/new/location', methods = ['GET','POST'])
 @login_required

@@ -15,7 +15,7 @@ class User(UserMixin, db.Model):
     first_name = db.Column(db.String(40))
     last_name = db.Column(db.String(40))
     profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'))
-    entries_added = db.relationship('History', backref='author', lazy='dynamic')
+    entries_added = db.relationship('History', backref='user', lazy='dynamic')
        
     def __repr__(self):
         return 'User(first_name="{}",last_name="{}",email="{}")'.format(self.first_name,
@@ -57,7 +57,7 @@ class History(db.Model):
     operation = db.Column(db.String(20))
     description = db.Column(db.String(200))   
     def __repr__(self):
-        return 'History(user="{}",operation="{}", description="{}")'.format(self.author.email,
+        return 'History(user="{}",operation="{}", description="{}")'.format(self.user.email,
                        self.operation,self.description)    
 
 class InstrumentType(db.Model):
@@ -123,7 +123,7 @@ class Person(db.Model):
     birth_date = db.Column(db.Date)
     death_date = db.Column(db.Date)    
     biography = db.Column(db.String(2000))    
-    musical_pieces = db.relationship('MusicalPiece', backref='author', lazy='dynamic') 
+    musical_pieces = db.relationship('MusicalPiece', backref='composer', lazy='dynamic') 
     participants = db.relationship('Participant', backref='person', lazy='dynamic')
     nationalities  = db.relationship('Country',
                     secondary=nationality,
@@ -177,11 +177,11 @@ class Event(db.Model):
 class MusicalPiece(db.Model):
     id = db.Column(db.Integer, primary_key=True)                
     name = db.Column(db.String(100))
-    creation_date = db.Column(db.Date)
-    author_id = db.Column(db.Integer, db.ForeignKey('person.id'))
+    composition_year = db.Column(db.Integer)
+    composer_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     performances = db.relationship("Performance", backref="musical_piece")
     def __repr__(self):
-        return 'MusicalPiece(name="{}",creation_date="{}",author_id="{}")'.format(self.name,self.creation_date,self.author_id) 
+        return 'MusicalPiece(name="{}",composition_year="{}",composer_id="{}")'.format(self.name,self.composition_year,self.composer_id) 
 
 
 class Performance(db.Model):
