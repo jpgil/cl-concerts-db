@@ -138,8 +138,13 @@ class EditEventForm(FlaskForm):
     event_date=DateField(_('Fecha del Evento'),validators=[Optional()])
     information=TextAreaField(_('Información'))
     event_type= NonValidatingSelectMultipleField(label=_("Tipo de Evento"),choices=[],validators=[DataRequired()])
+    # the following fields will bo be read used when created a new event. They are placed here just for allowing to 
+    # appear for adding new participants/actividades/performances/relations
+    person= NonValidatingSelectMultipleField(label=_("Persona"),choices=[],validators=[Optional()])
+    activity= NonValidatingSelectMultipleField(label=_("Actividad"),choices=[],validators=[Optional()])
+
     submit = SubmitField(_l('Guardar'))
-    def __init__(self, original_event ,*args, **kwargs):
+    def __init__(self,original_event,*args, **kwargs):
         super(EditEventForm, self).__init__(*args, **kwargs)
         self.original_name=None
         if original_event:
@@ -148,5 +153,5 @@ class EditEventForm(FlaskForm):
         if self.name.data != self.original_name:
             db_elem_instance = Event.query.filter_by(name=self.name.data).first()
             if db_elem_instance is not None:
-                raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))
+                raise ValidationError(_('Este nombre {} | {} ya está registrado, por favor, use uno diferente').format(self.name.data,self.original_name))
   

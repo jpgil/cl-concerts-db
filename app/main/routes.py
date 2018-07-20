@@ -56,6 +56,11 @@ def view_countries():
 def view_eventtypes():
     return view_elements(EventType,'eventtypes',_('Tipos de Eventos'))
 
+@bp.route('/view/event')
+@login_required
+def view_event():
+    return view_elements(Event,'events',_('Eventos'))
+
 @bp.route('/view/cities')
 @login_required
 def view_cities():
@@ -152,6 +157,7 @@ def getPeopleList():
 def getPeopleItem(id):
     return getPerson(id)
 
+
 @bp.route('/list/countries')
 def getCountryList():
     page = request.args.get('page', 1, type=int)
@@ -172,6 +178,17 @@ def getEventTypeList():
 @bp.route('/list/eventtypes/<id>')
 def getEventTypeItem(id):
     return getItem(EventType,id)
+
+
+@bp.route('/list/events')
+def getEventList():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getItemList(Event,q,page)
+
+@bp.route('/list/events/<id>')
+def getEventItem(id):
+    return getItem(Event,id)
 
 @bp.route('/list/cities')
 def getCityList():
@@ -254,7 +271,17 @@ def getPremiereTypeList():
 def getPremiereTypeItem(id):
     return getItem(PremiereType,id)
 
-
+@bp.route('/list/participants/<event_id>')
+def getParticipantsList(event_id):
+    data={ "rows": [], "total": 0 }
+    event=Event.query.filter_by(id=event_id).first()
+    if event:
+        participants=event.participants.all()
+        for participant in participants:
+            data["rows"].append({ 'first_name': participant.person.first_name,'last_name': participant.person.last_name,'activity': participant.activity.name})
+        data["total"]=participants.__len__() 
+    return jsonify(data)
+        
 def EditSimpleElement(dbmodel,title,original_name):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'))
@@ -292,12 +319,12 @@ def EditCity(city):
 @bp.route('/edit/instrumenttype/<instrumenttype>',methods = ['GET','POST'])
 @login_required
 def EditInstrumentType(instrumenttype):
-    return EditSimpleElement(InstrumentType,_('Editat Tipo de Instrumento'),instrumenttype) 
+    return EditSimpleElement(InstrumentType,_('Editar Tipo de Instrumento'),instrumenttype) 
 
 @bp.route('/edit/premieretype/<premieretype>',methods = ['GET','POST'])
 @login_required
 def EditPremiereType(premieretype):
-    return EditSimpleElement(PremiereType,_('Editat Tipo de Instrumento'),premieretype) 
+    return EditSimpleElement(PremiereType,_('Editar Tipo de Instrumento'),premieretype) 
 
 def NewSimpleElement(dbmodel,title):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
@@ -538,7 +565,7 @@ def NewOrganization():
         return redirect('/editelements')
     return render_template('main/editorganization.html',form=form,title=_('Agregar Organización'))
 
-@bp.route('/edit/organization/<organization>', methods = ['GET','POST'])
+@bp.route('/edit/organizatioeventn/<organization>', methods = ['GET','POST'])
 @login_required
 def EditOrganization(organization):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
@@ -620,23 +647,75 @@ def NewEvent():
     if form.validate_on_submit():
         if  Event.query.filter_by(name=form.name.data).all().__len__() > 0:
             flash(_('Este nombre ya ha sido registrado'))
-            return render_template('main/editevent.html',form=form,title=_('Agregar Evento'),selectedElements=None)
+            return render_template('main/newevent.html',form=form,title=_('Agregar Evento'),
+                                   selectedEventTypes=list2csv(form.event_type.data), 
+                                   selectedLocation=list2csv(form.location.data),
+                                   selectedOrganization=list2csv(form.organization.data))
         else:
             location = Location.query.filter_by(id=int(form.location.data[0])).first_or_404()
             organization = Organization.query.filter_by(id=int(form.organization.data[0])).first_or_404()
             event_type = EventType.query.filter_by(id=int(form.event_type.data[0])).first_or_404()
-            db.session.add(Event(name=form.name.data,
+            newevent=Event(name=form.name.data,
                                  organization=organization,
                                  location=location,
                                  event_type=event_type,
                                  information=form.information.data,
-                                 date=form.event_date.data))
+                                 date=form.event_date.data)
+            db.session.add(newevent)
+            db.session.commit()
+            return render_template('main/editevent.html',event_id=newevent.id,form=form,title=_('Agregar Evento'),
+                                   selectedEventTypes=list2csv(form.event_type.data), 
+                                   selectedLocation=list2csv(form.location.data),
+                                   selectedOrganization=list2csv(form.organization.data))
+            flash(_('Tus cambios han sido guardados.'))
+    return render_template('main/newevent.html',form=form,title=_('Agregar Evento'),
+                           selectedEventTypes=None,
+                           selectedLocation=None,
+                           selectedOrganization=None)
+
+@bp.route('/edit/event/<event_id>', methods = ['GET','POST'])
+@login_required
+def EditEvent(event_id):
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        return render_template(url_for('users.login'))
+
+    original_event=Event.query.filter_by(id=event_id).first_or_404()
+    form = EditEventForm(dbmodel=Event,original_event=original_event)       
+    if form.validate_on_submit():
+        if  Event.query.filter_by(name=form.name.data).all().__len__() > 0 and (original_event.name  != form.name.data):
+            flash(_('Este nombre ya ha sido registrado'))
+            return render_template('main/editevent.html',event_id=event_id,form=form,title=_('Editar Evento'))
+#                                   selectedEventTypes=list2csv([form.event_type.data)], 
+#                                   selectedLocation=list2csv([form.location.data]),
+#                                   selectedOrganization=list2csv([form.organization.data]))
+        else:
+            # the next 3 lines is for checking the values actually exists
+            Location.query.filter_by(id=int(form.location.data[0])).first_or_404()
+            Organization.query.filter_by(id=int(form.organization.data[0])).first_or_404()
+            EventType.query.filter_by(id=int(form.event_type.data[0])).first_or_404()
+            original_event.name=form.name.data
+            original_event.organization_id=form.organization.data
+            original_event.location_id=form.location.data
+            original_event.event_type_id=form.event_type.data
+            original_event.information=form.information.data
+            original_event.date=form.event_date.data
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'))
-        return redirect('/editelements')
-    return render_template('main/editevent.html',form=form,title=_('Agregar Evento'),selectedElements=None)
+            return render_template('main/editevent.html',event_id=event_id,form=form,title=_('Editar Evento'),
+                                   selectedEventType=list2csv(form.event_type.data[0]), 
+                                   selectedLocation=list2csv(form.location.data[0]),
+                                   selectedOrganization=list2csv(form.organization.data[0]))
 
-
+    else:
+        form.name.data=original_event.name
+        form.event_date.data=original_event.date
+        form.information.data=original_event.information
+        return render_template('main/editevent.html',event_id=event_id,form=form,title=_('Editar Evento'),
+                           selectedEventType=list2csv([original_event.event_type_id]),
+                           selectedLocation=list2csv([original_event.location_id]),
+                           selectedOrganization=list2csv([original_event.organization_id]))
+    
 #
 @bp.route('/explore')
 @login_required
@@ -652,78 +731,7 @@ def explore():
                            posts=events.items, next_url=next_url,
                            prev_url=prev_url)
 
-#
-#@bp.route('/user/<username>')
-#@login_required
-#def user(username):
-#    user = User.query.filter_by(username=username).first_or_404()
-#    page = request.args.get('page', 1, type=int)
-#    posts = user.posts.order_by(Post.timestamp.desc()).paginate(
-#        page, current_app.config['POSTS_PER_PAGE'], False)
-#    next_url = url_for('main.user', username=user.username,
-#                       page=posts.next_num) if posts.has_next else None
-#    prev_url = url_for('main.user', username=user.username,
-#                       page=posts.prev_num) if posts.has_prev else None
-#    return render_template('user.html', user=user, posts=posts.items,
-#                           next_url=next_url, prev_url=prev_url)
-#
-#
-#@bp.route('/edit_profile', methods=['GET', 'POST'])
-#@login_required
-#def edit_profile():
-#    form = EditProfileForm(current_user.username)
-#    if form.validate_on_submit():
-#        current_user.username = form.username.data
-#        current_user.about_me = form.about_me.data
-#        db.session.commit()
-#        flash(_('Your changes have been saved.'))
-#        return redirect(url_for('main.edit_profile'))
-#    elif request.method == 'GET':
-#        form.username.data = current_user.username
-#        form.about_me.data = current_user.about_me
-#    return render_template('edit_profile.html', title=_('Edit Profile'),
-#                           form=form)
-#
-#
-#@bp.route('/follow/<username>')
-#@login_required
-#def follow(username):
-#    user = User.query.filter_by(username=username).first()
-#    if user is None:
-#        flash(_('User %(username)s not found.', username=username))
-#        return redirect(url_for('main.index'))
-#    if user == current_user:
-#        flash(_('You cannot follow yourself!'))
-#        return redirect(url_for('main.user', username=username))
-#    current_user.follow(user)
-#    db.session.commit()
-#    flash(_('You are following %(username)s!', username=username))
-#    return redirect(url_for('main.user', username=username))
-#
-#
-#@bp.route('/unfollow/<username>')
-#@login_required
-#def unfollow(username):
-#    user = User.query.filter_by(username=username).first()
-#    if user is None:
-#        flash(_('User %(username)s not found.', username=username))
-#        return redirect(url_for('main.index'))
-#    if user == current_user:
-#        flash(_('You cannot unfollow yourself!'))
-#        return redirect(url_for('main.user', username=username))
-#    current_user.unfollow(user)
-#    db.session.commit()
-#    flash(_('You are not following %(username)s.', username=username))
-#    return redirect(url_for('main.user', username=username))
-#
-#
-#@bp.route('/translate', methods=['POST'])
-#@login_required
-#def translate_text():
-#    return jsonify({'text': translate(request.form['text'],
-#                                      request.form['source_language'],
-#                                      request.form['dest_language'])})
-#
+
 #
 #@bp.route('/search')
 #@login_required

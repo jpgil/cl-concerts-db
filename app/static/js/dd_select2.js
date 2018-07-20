@@ -22,21 +22,20 @@ for (var i = 0; i < dropsdowns.length; i++) {
       },
       maximumSelectionLength: (dropsdowns[i].hasAttribute('maxelem')) ? parseInt(dropsdowns[i].getAttribute('maxelem')) : 1
     })
-    
     selectedItems=dropsdowns[i].getAttribute('selectedElements').split(','); 
-    var ddown=$(dropsdowns[i])
     for (var k = 0; k < selectedItems.length; k++) {    
         // Fetch the preselected item, and add to the control
+
         $.ajax({
             type: 'GET',
-            url: '/list/'+dropsdowns[i].getAttribute('url')+'/'+selectedItems[k]
+            url: '/list/'+dropsdowns[i].getAttribute('url')+'/'+selectedItems[k],
+            async: false
         }).then(function (data) {
         // create the option and append to Select2
-        var option = new Option(data.text, data.id, true, true);      
-        ddown.append(option).trigger('change');
-        // manually trigger the `select2:select` event
-        // $(dropsdowns[i]).trigger({  type: 'select2:select',  params: { data: data }  } );
+            var option = new Option(data.text, data.id, true, true);  
+            $(dropsdowns[i]).append(option).trigger('change');
         });
     }
+
     //$(dropsdowns[i]).select2("val",dropsdowns[i].getAttribute('selectedElements').split(','));    
 }
