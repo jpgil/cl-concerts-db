@@ -142,7 +142,9 @@ class EditEventForm(FlaskForm):
     # appear for adding new participants/actividades/performances/relations
     person= NonValidatingSelectMultipleField(label=_("Persona"),choices=[],validators=[Optional()])
     activity= NonValidatingSelectMultipleField(label=_("Actividad"),choices=[],validators=[Optional()])
-
+    musical_piece= NonValidatingSelectMultipleField(label=_("Obra"),choices=[],validators=[Optional()])
+    premiere_type= NonValidatingSelectMultipleField(label=_("Estreno"),choices=[],validators=[Optional()])
+    
     submit = SubmitField(_l('Guardar'))
     def __init__(self,original_event,*args, **kwargs):
         super(EditEventForm, self).__init__(*args, **kwargs)

@@ -278,9 +278,23 @@ def getParticipantsList(event_id):
     if event:
         participants=event.participants.all()
         for participant in participants:
-            data["rows"].append({ 'first_name': participant.person.first_name,'last_name': participant.person.last_name,'activity': participant.activity.name})
+            data["rows"].append({ 'first_name': participant.person.first_name,'last_name': participant.person.last_name,'activity': participant.activity.name,'participant_id':participant.id})
         data["total"]=participants.__len__() 
     return jsonify(data)
+
+@bp.route('/list/performances/<event_id>')
+def getPerformancesList(event_id):
+    data={ "rows": [], "total": 0 }
+    event=Event.query.filter_by(id=event_id).first()
+    if event:
+        performances=event.performances.all()
+        for performance in performances:
+            premiere_type_string=' ({})'.format(performance.premiere_type.name) if performance.premiere_type.name != 'No' else ''                
+            data["rows"].append({ 'musical_piece_name': '{}{}'.format(performance.musical_piece.name,premiere_type_string),'performance_id':performance.id})
+        data["total"]=performances.__len__() 
+    return jsonify(data)
+        
+
         
 def EditSimpleElement(dbmodel,title,original_name):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
