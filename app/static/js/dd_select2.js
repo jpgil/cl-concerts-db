@@ -1,8 +1,9 @@
 var dropsdowns=document.getElementsByClassName("dd_select2")
 for (var i = 0; i < dropsdowns.length; i++) {
+    console.log('/list/'+dropsdowns[i].getAttribute('url'))
     $(dropsdowns[i]).select2({
-      placeholder: 'Seleccionar - '+  dropsdowns[i].getAttribute('description'),
-      width : '192px',
+      placeholder: dropsdowns[i].getAttribute('description'),
+      width : '250px',
       ajax: {
         url: '/list/'+dropsdowns[i].getAttribute('url'),
         dataType: 'json',
@@ -22,10 +23,14 @@ for (var i = 0; i < dropsdowns.length; i++) {
       },
       maximumSelectionLength: (dropsdowns[i].hasAttribute('maxelem')) ? parseInt(dropsdowns[i].getAttribute('maxelem')) : 1
     })
-    selectedItems=dropsdowns[i].getAttribute('selectedElements').split(','); 
+    selectedItems=[]
+    if ( dropsdowns[i].getAttribute('selectedElements') != "" ) {
+        selectedItems=dropsdowns[i].getAttribute('selectedElements').split(','); 
+    }
+    
     for (var k = 0; k < selectedItems.length; k++) {    
         // Fetch the preselected item, and add to the control
-
+        console.log('searching for '+'/list/'+dropsdowns[i].getAttribute('url')+'/'+selectedItems[k])
         $.ajax({
             type: 'GET',
             url: '/list/'+dropsdowns[i].getAttribute('url')+'/'+selectedItems[k],

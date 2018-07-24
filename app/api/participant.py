@@ -8,7 +8,6 @@ from flask import jsonify
 
 @bp.route('/participant/add',methods=['POST'])
 def add_participant():
-    print('request: {}'.format(request.form))
     if not request.form['event_id'] or not request.form['person_id'] or not request.form['activity_id']:
         return bad_request(_('debe incluir evento, persona y actividad'))
     activity=Activity.query.filter_by(id=request.form['activity_id']).first()
@@ -20,7 +19,7 @@ def add_participant():
     event=Event.query.filter_by(id=request.form['event_id']).first()
     if not event:
         return bad_request(_('evento no encontrado'))   
-    participants=event.participants.all()
+    participants=event.participants.order_by(Participant.person_id).all()
     for participant in participants:
         # if the participant already exists, we return an error
         if ( participant.person_id == int(request.form['person_id']) and participant.activity_id == int(request.form['activity_id'])):
@@ -48,7 +47,6 @@ def remove_participant():
 
 @bp.route('/performance/add',methods=['POST'])
 def add_performance():
-    print('request: {}'.format(request.form))
     if not request.form['event_id'] or not request.form['musical_piece_id'] or not request.form['musical_piece_id']:
         return bad_request(_('debe incluir evento, obra musical y tipo de estreno'))
     musical_piece=MusicalPiece.query.filter_by(id=request.form['musical_piece_id']).first()
@@ -76,7 +74,7 @@ def add_performance():
 @bp.route('/performance/delete', methods=['POST'])
 def remove_performance():
     if not request.form['performance_id']:
-        return bad_request(_('debe incluir performance'))    
+        return bad_request(_('debe incluir interpretación'))    
     performance=Performance.query.filter_by(id=request.form['performance_id']).first()
     db.session.delete(performance)
     db.session.commit()
@@ -84,3 +82,40 @@ def remove_performance():
     response.status_code = 201
 #    response.headers['Location'] = url_for('api.get_user', id=user.id)
     return response    
+
+@bp.route('/performancedetail/add', methods=['POST'])
+def add_performance_detail():
+    if not request.form['performance_id']:
+        return bad_request(_('debe incluir interpretación'))    
+    if not request.form['participant_id']:
+        return bad_request(_('debe participante'))
+    performance=Performance.query.filter_by(id=request.form['performance_id']).first()
+    participant=Participant.query.filter_by(id=request.form['participant_id']).first()
+    if participant in performance.participants:
+        return bad_request(_('participante ya agregado'))
+    performance.participants.append(participant)
+    db.session.commit()
+    response = jsonify({})
+    response.status_code = 201
+#    response.headers['Location'] = url_for('api.get_user', id=user.id)
+    return response
+    
+    
+
+@bp.route('/performancedetail/delete', methods=['POST'])
+def delete_performance_detail():
+    if not request.form['performance_id']:
+        return bad_request(_('debe incluir interpretación'))    
+    if not request.form['participant_id']:
+        return bad_request(_('debe incluir participante'))    
+    print('performance_id:  {}, participant_id:  {}'.format(request.form['performance_id'],request.form['participant_id']))
+    performance=Performance.query.filter_by(id=request.form['performance_id']).first()
+    participant=Participant.query.filter_by(id=request.form['participant_id']).first()
+    if participant not in performance.participants:
+        return bad_request(_('participante no está agregado a esta presentación'))
+    performance.participants.remove(participant)
+    db.session.commit()
+    response = jsonify({})
+    response.status_code = 201
+#    response.headers['Location'] = url_for('api.get_user', id=user.id)
+    return response

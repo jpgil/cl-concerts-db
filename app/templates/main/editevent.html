@@ -78,24 +78,22 @@
         <div id="sectionParticipants" class="tab-pane fade">
         
             <div><h2>{{ _("Participantes") }} </h2> </div>
-            {{ _("Agregar participante")}}
+            {{ _("Agregar participante: ")}}
             {{ form.person( **{"class":"dd_select2", "url":"people", "description":_("Persona"),  "maxelem":"1", "selectedElements" : "" } ) }}
             {{ form.activity( **{"class":"dd_select2", "url":"activities", "description":_("Actividad"),  "maxelem":"1", "selectedElements" : "" } ) }}
-            <button type="button"  onclick="addParticipant()" class="btn btn-primary">Agregar</button>
+            <button type="button"  onclick="addParticipant({{event_id}})" class="btn btn-primary">Agregar</button>
             <table id="table-participants"
                data-toggle="table"
                data-show-footer="false"
-               data-striped="true"
                data-side-pagination="server"
                data-only-info-pagination="false"
                data-pagination="true"
-               data-url={{ url_for("main.getParticipantsList",event_id=event_id) }}  >
+               data-url={{ url_for("main.getParticipantsListTable",event_id=event_id) }}  >
                 <thead>
                     <tr>
-                        <th data-field="first_name">First Name</th>
-                        <th data-field="last_name">Last Name</th>
-                        <th data-field="activity">Activity</th>
-                        <th data-field="participant_id" data-formatter="deleteParticipantCol"></th>
+                        <th data-field="name">{{ _("Nombre") }}</th>
+                        <th data-field="activity">{{ _("Actividad") }}</th>
+                        <th data-field="id" data-formatter="deleteParticipantCol"></th>
                     </tr>
                 </thead>
             </table> 
@@ -106,23 +104,48 @@
             {{ _("Agregar Interpretación")}}
             {{ form.musical_piece( **{"class":"dd_select2", "url":"musicalpieces", "description":_("Obra"),  "maxelem":"1", "selectedElements" : "" } ) }}
             {{ form.premiere_type( **{"class":"dd_select2", "url":"premieretypes", "description":_("Estreno"),  "maxelem":"1", "selectedElements" : "" } ) }}
-            <button type="button"  onclick="addPerformance()" class="btn btn-primary">Agregar</button>
+            <button type="button"  onclick="addPerformance({{event_id}})" class="btn btn-primary">Agregar</button>
+            
             <table id="table-musical-pieces"
                data-toggle="table"
-
                data-show-footer="false"
+               data-only-info-pagination="false"
+               data-side-pagination="server"
                data-striped="true"
+               data-pagination="true"
+               data-url={{ url_for("main.getPerformancesListTable",event_id=event_id) }}  >
+                <thead>
+                    <tr>
+                        <th data-field="text">{{ _("Obra") }}</th>
+                        <th data-field="id" data-formatter="deletePerformanceCol"></th>
+                    </tr>
+                </thead>
+            </table>
+            <br>
+            <div><h2>{{ _("Detalle de Participación") }}</h2> </div>
+            {{ _("Agregar")}}
+            {{ form.performance( **{"class":"dd_select2", "url":"performances/"+event_id, "description":_("Interpretación"),  "maxelem":"1", "selectedElements" : "" } ) }}
+            {{ form.participant( **{"class":"dd_select2", "url":"participants/"+event_id, "description":_("Participante"),  "maxelem":"1", "selectedElements" : "" } ) }}
+            <button type="button"  onclick="addPerformanceDetail({{event_id}})" class="btn btn-primary">Agregar</button>
+            
+            <table id="table-performance-participant"
+               data-toggle="table"
+               data-show-footer="false"
                data-only-info-pagination="false"
                data-side-pagination="server"
                data-pagination="true"
-               data-url={{ url_for("main.getPerformancesList",event_id=event_id) }}  >
+               data-url={{ url_for("main.getPerformanceDetailList",event_id=event_id) }}  >
                 <thead>
                     <tr>
-                        <th data-field="musical_piece_name">Obra</th>
-                        <th data-field="performance_id" data-formatter="deletePerformanceCol"></th>
+                        <th data-field="performance_name">Obra</th>
+                        <th data-field="participant_name">Nombre</th>
+                        <th data-field="participant_activity">Actividad</th>
+                        <th data-field="performance_participant_id" data-formatter="deletePerformanceDetailCol"></th>
                     </tr>
                 </thead>
-            </table> 
+            </table>
+            <br>
+             
         </div>
         <div id="sectionMedia" class="tab-pane fade">
         </div>
@@ -130,85 +153,10 @@
     </form>
 
 
-<script type="text/javascript">
-function addParticipant() {
-    var activity = document.getElementById("activity");
-    var person = document.getElementById("person");
-     if (person.selectedIndex == -1){
-        alert("Debe seleccionar una persona")
-        return
-    }
-    if (activity.selectedIndex == -1){
-        alert("Debe seleccionar una actividad")
-        return
-    }
-    data = {
-        'event_id' : {{ event_id }},
-        'person_id' : parseInt(person.options[person.selectedIndex].value),
-        'activity_id' : parseInt(activity.options[activity.selectedIndex].value)
-    }
-     
-    $.post('/api/participant/add',data ).done( function(msg) { 
-            $('#table-participants').bootstrapTable('refresh'); } )
-    .fail( function(xhr, textStatus, errorThrown) {
-        alert(xhr.responseText);
-    });
-};
-
-function deleteParticipantCol(value, row, index){
-    return '<i class="glyphicon glyphicon-trash"  onclick="deleteParticipant('+value+')"></i>'           
-}
-function deleteParticipant(participant_id)
-{
-    $.post('/api/participant/delete', { 'participant_id':participant_id } ).done( function(msg) { 
-            $('#table-participants').bootstrapTable('refresh'); } )
-    .fail( function(xhr, textStatus, errorThrown) {
-        alert(xhr.responseText);
-    });    
-}
-
-
-function addPerformance() {
-    var musical_piece = document.getElementById("musical_piece");
-    var premiere_type = document.getElementById("premiere_type");
-     if (musical_piece.selectedIndex == -1){
-        alert("Debe seleccionar una obra")
-        return
-    }
-    if (premiere_type.selectedIndex == -1){
-        alert("Debe seleccionar un tipo de estreno")
-        return
-    }
-    data = {
-        'event_id' : {{ event_id }},
-        'musical_piece_id' : parseInt(musical_piece.options[musical_piece.selectedIndex].value),
-        'premiere_type_id' : parseInt(premiere_type.options[premiere_type.selectedIndex].value)
-    }
-     
-    $.post('/api/performance/add',data ).done( function(msg) { 
-             $('#table-musical-pieces').bootstrapTable('refresh'); } )
-    .fail( function(xhr, textStatus, errorThrown) {
-        alert(xhr.responseText);
-    });
-};
-function deletePerformanceCol(value, row, index){
-    return '<i class="glyphicon glyphicon-trash"  onclick="deletePerformance('+value+')"></i>'           
-}
-function deletePerformance(performance_id)
-{
-    $.post('/api/performance/delete', { 'performance_id':performance_id } ).done( function(msg) { 
-            $('#table-musical-pieces').bootstrapTable('refresh'); } )
-    .fail( function(xhr, textStatus, errorThrown) {
-        alert(xhr.responseText);
-    });    
-}
-
-$(document).ready(function(){ 
-    $("#myTab li:eq(1) a").tab('show');
-});
-</script>    
 {% endblock %}
-{% block script %}
+{% block scripts %}
+{{ super() }}
 
+<script src="{{url_for('static', filename='js/events.js')}}"></script>
 
 {% endblock %}

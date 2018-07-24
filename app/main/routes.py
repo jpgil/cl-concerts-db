@@ -7,12 +7,8 @@ from flask_babel import _, get_locale
 #from guess_language import guess_language
 from app import db
 #from app.main.forms import EditProfileForm, PostForm, SearchForm
-from app.main.forms import EditSimpleElementForm, EditInstrumentForm, EditPersonForm, \
-    EditLocationForm, EditOrganizationForm, EditEventForm, EditMusicalPieceForm, \
-    EditActivityForm
-from app.models import User, Profile, History, Event, Country, City, \
-    InstrumentType, Instrument, Person, PremiereType, Location, Organization,\
-    EventType, MusicalPiece, Activity
+from app.main.forms import *
+from app.models import *
 #from app.translate import translate
 from app.main import bp
 
@@ -271,31 +267,80 @@ def getPremiereTypeList():
 def getPremiereTypeItem(id):
     return getItem(PremiereType,id)
 
-@bp.route('/list/participants/<event_id>')
-def getParticipantsList(event_id):
+@bp.route('/listtable/participants/<event_id>')
+def getParticipantsListTable(event_id):
     data={ "rows": [], "total": 0 }
     event=Event.query.filter_by(id=event_id).first()
     if event:
-        participants=event.participants.all()
+        participants=event.participants.order_by(Participant.person_id).all()
         for participant in participants:
-            data["rows"].append({ 'first_name': participant.person.first_name,'last_name': participant.person.last_name,'activity': participant.activity.name,'participant_id':participant.id})
+            data["rows"].append({ 'name': '{}, {}'.format(participant.person.last_name,participant.person.first_name),
+                'activity': participant.activity.name,
+                'id': participant.id, 
+                'text': '{}, {} - {}'.format(participant.person.last_name,participant.person.first_name,participant.activity.name) })
         data["total"]=participants.__len__() 
+    return jsonify(data)
+
+@bp.route('/list/participants/<event_id>')
+def getParticipantsList(event_id):
+    data={ "results": [], "pagination": { "more": False} }
+    event=Event.query.filter_by(id=event_id).first()
+    if event:
+        participants=event.participants.order_by(Participant.person_id).all()
+        for participant in participants:
+            data["results"].append({ 'name': '{}, {}'.format(participant.person.last_name,participant.person.first_name),
+                'activity': participant.activity.name,
+                'id': participant.id, 
+                'text': '{}, {} - {}'.format(participant.person.last_name,participant.person.first_name,participant.activity.name) })
+    return jsonify(data)
+
+
+@bp.route('/listtable/performances/<event_id>')
+def getPerformancesListTable(event_id):
+    data={ "rows": [], "total": 0 }
+    event=Event.query.filter_by(id=event_id).first()
+    if event:
+        performances=event.performances.order_by(Performance.musical_piece_id).all()
+        for performance in performances:
+            premiere_type_string=' ({})'.format(performance.premiere_type.name) if performance.premiere_type.name != 'No' else ''                
+            data["rows"].append({ 'text': '{}{}'.format(performance.musical_piece.name,premiere_type_string),'id':performance.id})
+        data["total"]=performances.__len__() 
     return jsonify(data)
 
 @bp.route('/list/performances/<event_id>')
 def getPerformancesList(event_id):
-    data={ "rows": [], "total": 0 }
+    data={ "results": [], "pagination": { "more": False} }
     event=Event.query.filter_by(id=event_id).first()
     if event:
-        performances=event.performances.all()
+        performances=event.performances.order_by(Performance.musical_piece_id).all()
         for performance in performances:
             premiere_type_string=' ({})'.format(performance.premiere_type.name) if performance.premiere_type.name != 'No' else ''                
-            data["rows"].append({ 'musical_piece_name': '{}{}'.format(performance.musical_piece.name,premiere_type_string),'performance_id':performance.id})
-        data["total"]=performances.__len__() 
+            data["results"].append({ 'text': '{}{}'.format(performance.musical_piece.name,premiere_type_string),'id':performance.id})
     return jsonify(data)
-        
 
-        
+
+
+@bp.route('/listtable/performancesdetails/<event_id>') 
+def getPerformanceDetailList(event_id):
+    data={ "rows": [], "total": 0 }
+    event=Event.query.filter_by(id=event_id).first()
+    total=0
+    if event:
+       
+        performances=event.performances.order_by(Performance.musical_piece_id).all()
+        for performance in performances:
+            for participant in performance.participants:
+                total=total+1
+                performance_name=performance.musical_piece.name
+                participant_name='{}, {}'.format(participant.person.last_name,participant.person.first_name)
+                participant_activity=participant.activity.name
+                data["rows"].append({ 'performance_name': performance_name,
+                                  'participant_name': participant_name, 
+                                  'participant_activity': participant_activity,
+                                  'performance_participant_id': '{},{}'.format(performance.id,participant.id) })
+    data["total"]=total
+    return jsonify(data)
+    
 def EditSimpleElement(dbmodel,title,original_name):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'))

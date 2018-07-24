@@ -190,8 +190,7 @@ class Performance(db.Model):
     musical_piece_id =  db.Column(db.Integer, db.ForeignKey('musical_piece.id'))
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))     
     def __repr__(self):   
-        return 'Performance(musical_piece_id="{}", participant_id="{}", premiere_type="{}", event_id"{}")'.format(self.musical_piece_id, 
-                           self.participant_id, self.premiere_type_id, self.event_id)
+        return 'Performance(musical_piece_id="{}", premiere_type_id="{}", event_id"{}")'.format(self.musical_piece_id, self.premiere_type_id, self.event_id)
 
 class Participant(db.Model):
     id = db.Column(db.Integer, primary_key=True)

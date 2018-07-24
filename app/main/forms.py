@@ -144,6 +144,8 @@ class EditEventForm(FlaskForm):
     activity= NonValidatingSelectMultipleField(label=_("Actividad"),choices=[],validators=[Optional()])
     musical_piece= NonValidatingSelectMultipleField(label=_("Obra"),choices=[],validators=[Optional()])
     premiere_type= NonValidatingSelectMultipleField(label=_("Estreno"),choices=[],validators=[Optional()])
+    performance= NonValidatingSelectMultipleField(label=_("Interpretación"),choices=[],validators=[Optional()])
+    participant= NonValidatingSelectMultipleField(label=_("Participante"),choices=[],validators=[Optional()])
     
     submit = SubmitField(_l('Guardar'))
     def __init__(self,original_event,*args, **kwargs):
