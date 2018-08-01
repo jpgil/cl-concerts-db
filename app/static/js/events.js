@@ -2,11 +2,11 @@ function addParticipant(event_id) {
     var activity = document.getElementById("activity");
     var person = document.getElementById("person");
      if (person.selectedIndex == -1){
-        alert("Debe seleccionar una persona")
+        flash("Debe seleccionar una persona","warning")
         return
     }
     if (activity.selectedIndex == -1){
-        alert("Debe seleccionar una actividad")
+        flash("Debe seleccionar una actividad","warning")
         return
     }
     data = {
@@ -18,7 +18,7 @@ function addParticipant(event_id) {
     $.post('/api/participant/add',data ).done( function(msg) { 
             $('#table-participants').bootstrapTable('refresh');
       }).fail( function(xhr, textStatus, errorThrown) {
-        alert(xhr.responseText);
+        flash(xhr.responseText,"error");
     });
 };
 
@@ -30,7 +30,7 @@ function deleteParticipant(participant_id)
     $.post('/api/participant/delete', { 'participant_id':participant_id } ).done( function(msg) { 
             $('#table-participants').bootstrapTable('refresh');} )
     .fail( function(xhr, textStatus, errorThrown) {
-        alert(xhr.responseText);
+        flash(xhr.responseText,'error');
     });    
 }
 
@@ -39,11 +39,11 @@ function addPerformance(event_id) {
     var musical_piece = document.getElementById("musical_piece");
     var premiere_type = document.getElementById("premiere_type");
      if (musical_piece.selectedIndex == -1){
-        alert("Debe seleccionar una obra")
+        flash("Debe seleccionar una obra","warning")
         return
     }
     if (premiere_type.selectedIndex == -1){
-        alert("Debe seleccionar un tipo de estreno")
+        flash("Debe seleccionar un tipo de estreno","warning")
         return
     }
     data = {
@@ -55,7 +55,7 @@ function addPerformance(event_id) {
     $.post('/api/performance/add',data ).done( function(msg) { 
              $('#table-musical-pieces').bootstrapTable('refresh'); } )
     .fail( function(xhr, textStatus, errorThrown) {
-        alert(xhr.responseText);
+        flash(xhr.responseText,"error");
     });
 };
 function deletePerformanceCol(value, row, index){
@@ -66,12 +66,11 @@ function deletePerformance(performance_id)
     $.post('/api/performance/delete', { 'performance_id':performance_id } ).done( function(msg) { 
             $('#table-musical-pieces').bootstrapTable('refresh'); } )
     .fail( function(xhr, textStatus, errorThrown) {
-        alert(xhr.responseText);
+        flash(xhr.responseText,"error");
     });    
 }
 
 function mergeRows(table_name, field_name,index, rowspan) {
-    console.log('merging '+field_name, index + ',', rowspan);
     $('#'+table_name).bootstrapTable('mergeCells', {
         index: index,
         field: field_name,
@@ -129,11 +128,11 @@ function addPerformanceDetail(event_id) {
     var performance = document.getElementById("performance");
     var participant = document.getElementById("participant");
      if (performance.selectedIndex == -1){
-        alert("Debe seleccionar una interpretación")
+        flash("Debe seleccionar una interpretación","warning")
         return
     }
     if (participant.selectedIndex == -1){
-        alert("Debe seleccionar un participante")
+        flash("Debe seleccionar un participante","warning")
         return
     }
     data = {
@@ -145,7 +144,7 @@ function addPerformanceDetail(event_id) {
     $.post('/api/performancedetail/add',data ).done( function(msg) { 
             $('#table-performance-participant').bootstrapTable('refresh');
       }).fail( function(xhr, textStatus, errorThrown) {
-        alert(xhr.responseText);
+        flash(xhr.responseText,"error");
     });
 };
 function deletePerformanceDetailCol(value, row, index){
@@ -153,11 +152,63 @@ function deletePerformanceDetailCol(value, row, index){
         
 }
 
+function deleteFileCol(value, row, index){
+    return '<i class="glyphicon glyphicon-trash"  onclick="deleteFile('+value+')"></i>'               
+}
+
 function deletePerformanceDetail(performance_id,participant_id)
 {
     $.post('/api/performancedetail/delete', { 'performance_id':performance_id , 'participant_id': participant_id } ).done( function(msg) { 
             $('#table-performance-participant').bootstrapTable('refresh'); } )
     .fail( function(xhr, textStatus, errorThrown) {
-        alert(xhr.responseText);
+        flash(xhr.responseText,"error");
     });    
 }
+
+function deleteFile(medialink_id)
+{
+    $.post('/api/medialink/delete', { 'medialink_id':medialink_id } ).done( function(msg) { 
+            $('#table-medialink').bootstrapTable('refresh'); } )
+    .fail( function(xhr, textStatus, errorThrown) {
+        flash(xhr.responseText['message'],"error");
+    });    
+}
+
+
+
+function linkCol(value, row, index){
+    return '<a class="glyphicon glyphicon-download" href="'+value+'"></a>'            
+}
+
+
+$(function() {
+    $('#uploadButton').click(function() {
+        event.preventDefault();
+        var form_data = new FormData($('#uploadform')[0]);
+        form_data.append("description",$('#description')[0].value)
+        for (var [key, value] of form_data.entries()) { 
+          console.log(key, value);
+        }
+        console.log($('#description'))
+        $.ajax({
+            type: 'POST',
+            url: '/api/uploadajax',
+            data: form_data,
+            contentType: false,
+            processData: false,
+            dataType: 'json'
+        }).done(function(data, textStatus, jqXHR){
+            console.log(data);
+            console.log(textStatus);
+            console.log(jqXHR);
+            console.log('Success!');
+            $('#table-medialink').bootstrapTable('refresh');
+            $('#description')[0].value=''
+//             $("#resultFilename").text(data['name']);
+//            $("#resultFilesize").text(data['size']);
+//  here we should update the table
+        }).fail(function(xhr, textStatus, errorThrown){
+            alert(xhr.responseText);
+        });
+    });
+});

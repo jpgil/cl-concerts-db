@@ -137,9 +137,9 @@
                data-url={{ url_for("main.getPerformanceDetailList",event_id=event_id) }}  >
                 <thead>
                     <tr>
-                        <th data-field="performance_name">Obra</th>
-                        <th data-field="participant_name">Nombre</th>
-                        <th data-field="participant_activity">Actividad</th>
+                        <th data-field="performance_name">{{ _("Obra") }}</th>
+                        <th data-field="participant_name">{{ _("Nombre") }}</th>
+                        <th data-field="participant_activity">{{ _("Actividad") }}</th>
                         <th data-field="performance_participant_id" data-formatter="deletePerformanceDetailCol"></th>
                     </tr>
                 </thead>
@@ -147,10 +147,43 @@
             <br>
              
         </div>
-        <div id="sectionMedia" class="tab-pane fade">
+        </form>
+        <div id="sectionMedia" class="tab-pane fade"><br>
+            <h3>{{ _("Agregar un archivo") }} </h3>
+            <br>
+            <form id="uploadform" method="post" enctype="multipart/form-data">
+                <label for="file">{{ _("Seleccionar un Archivo") }} </label>
+                <input name="file" type="file">
+                <input type="hidden" id="event_id" name="event_id" value="{{event_id}}">
+                <br>
+                <div class="form-group">
+                  <label for="description">{{ _("Descripción") }}</label>
+                  <input type="text" class="form-control" id="description">
+                </div>
+                <button id="uploadButton" type="button">{{ _("Subir Archivo") }}</button>
+            </form>
+            <br>
+            <h3>{{ _("Archivos") }} </h3>
+            <table id="table-medialink"
+               data-toggle="table"
+               data-show-footer="false"
+               data-only-info-pagination="false"
+               data-side-pagination="server"
+               data-pagination="true"
+               data-url={{ url_for("main.getMediaLinkListTable",event_id=event_id) }}  >
+                <thead>
+                    <tr>
+                        <th data-field="filename">{{ _("Archivo") }}</th>
+                        <th data-field="type">{{ _("Tipo") }} </th>
+                        <th data-field="description">{{ _("Descripción") }} </th>
+                        <th data-field="url" data-formatter="linkCol"></th>
+                        <th data-field="id" data-formatter="deleteFileCol"></th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
-    </form>
+
 
 
 {% endblock %}

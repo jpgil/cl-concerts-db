@@ -3,26 +3,21 @@
 
 {% block app_content %}
     <h1>{{ _('Editar Elementos') }}</h1>
-<div class="container">
+<div class="dropdown-item">
   <!-- Content here -->
-    <div class="pt-4 row" >
-            <a href="{{ url_for('main.view_countries')}}" class="btn btn-primary btn-lg" role="button"> {{ _('Países') }}</a>
-            <a href="{{ url_for('main.view_cities')}}" class="btn btn-primary btn-lg" role="button"> {{ _('Ciudades') }}</a>
-            <a href="{{ url_for('main.view_instrumenttypes')}}" class="btn btn-primary btn-lg" role="button"> {{ _('Tipos de Instrumento') }}</a>
-            <a href="{{ url_for('main.view_premieretypes')}}" class="btn btn-primary btn-lg" role="button"> {{ _('Tipos de Premiere') }}</a>
-    </div>
-    <div class="pt-4 row">
-            <a href="{{ url_for('main.view_instruments')}}" class="btn btn-primary btn-lg" role="button"> {{ _('Instrumentos') }}</a>
-            <a href="{{ url_for('main.view_people')}}" class="btn btn-primary btn-lg" role="button"> {{ _('Personas') }}</a>
-            <a href="{{ url_for('main.view_locations')}}" class="btn btn-primary btn-lg" role="button"> {{ _('Lugares') }}</a>
-            <a href="{{ url_for('main.view_organizations')}}" class="btn btn-primary btn-lg" role="button"> {{ _('Organizaciones') }}</a>
-    </div>
-    <div class="pt-4 row">
-            <a href="{{ url_for('main.view_eventtypes')}}" class="btn btn-primary btn-lg" role="button"> {{ _('Tipos de Evento') }}</a>  
-            <a href="{{ url_for('main.view_musicalpieces')}}" class="btn btn-primary btn-lg" role="button"> {{ _('Obras Musicales') }}</a>     
-            <a href="{{ url_for('main.view_activities')}}" class="btn btn-primary btn-lg" role="button"> {{ _('Actividades') }}</a>     
-            <a href="{{ url_for('main.view_event')}}" class="btn btn-primary btn-lg" role="button"> {{ _('Eventos') }}</a>  
+    <div class="dropdown-item" >
+            <a href="{{ url_for('main.view_countries')}}" class="dropdown-item"> {{ _('Países') }}</a>
+            <a href="{{ url_for('main.view_cities')}}" class="dropdown-item"> {{ _('Ciudades') }}</a>
+            <a href="{{ url_for('main.view_instrumenttypes')}}" class="dropdown-item"> {{ _('Tipos de Instrumento') }}</a>
+            <a href="{{ url_for('main.view_premieretypes')}}" class="dropdown-item"> {{ _('Tipos de Premiere') }}</a>
+            <a href="{{ url_for('main.view_instruments')}}" class="dropdown-item"> {{ _('Instrumentos') }}</a>
+            <a href="{{ url_for('main.view_people')}}" class="dropdown-item"> {{ _('Personas') }}</a>
+            <a href="{{ url_for('main.view_locations')}}" class="dropdown-item"> {{ _('Lugares') }}</a>
+            <a href="{{ url_for('main.view_organizations')}}" class="dropdown-item"> {{ _('Organizaciones') }}</a>
+            <a href="{{ url_for('main.view_eventtypes')}}" class="dropdown-item"> {{ _('Tipos de Evento') }}</a>  
+            <a href="{{ url_for('main.view_musicalpieces')}}" class="dropdown-item"> {{ _('Obras Musicales') }}</a>     
+            <a href="{{ url_for('main.view_activities')}}" class="dropdown-item"> {{ _('Actividades') }}</a>     
+            <a href="{{ url_for('main.view_event')}}" class="dropdown-item"> {{ _('Eventos') }}</a>  
     </div>
 </div>
-
 {% endblock %}

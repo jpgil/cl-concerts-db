@@ -134,11 +134,12 @@ class Person(db.Model):
 class MediaLink(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mime_type = db.Column(db.String(20))
-    link = db.Column(db.String(200))
+    filename = db.Column(db.String(200))
+    url = db.Column(db.String(512))
     description = db.Column(db.String(150))
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))   
     def __repr__(self):
-        return 'MediaLink(mime_type="{}",link="{}")'.format(self.mime_type,self.location)    
+        return 'MediaLink(mime_type="{}",filename="{}")'.format(self.mime_type,self.filename)    
 
 class Activity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -169,7 +170,7 @@ class Event(db.Model):
     event_type_id = db.Column(db.Integer, db.ForeignKey('event_type.id'))
     participants = db.relationship('Participant', backref='event', lazy='dynamic')
     performances = db.relationship('Performance', backref='event', lazy='dynamic')
-    media = db.relationship('MediaLink', backref='event', lazy='dynamic')
+    medialinks = db.relationship('MediaLink', backref='event', lazy='dynamic')
     def __repr__(self):
         return 'Event(name="{}",date="{}",location_id="{}", organization_id="{}")'.format(self.name,self.date,self.location_id,self.organization_id)
 

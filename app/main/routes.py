@@ -11,6 +11,11 @@ from app.main.forms import *
 from app.models import *
 #from app.translate import translate
 from app.main import bp
+from flask_uploads import UploadSet, configure_uploads, DEFAULTS, AUDIO, ARCHIVES, IMAGES
+import os
+
+
+
 
 
 def list2csv(some_list):
@@ -281,6 +286,22 @@ def getParticipantsListTable(event_id):
         data["total"]=participants.__len__() 
     return jsonify(data)
 
+@bp.route('/listtable/medialink/<event_id>')
+def getMediaLinkListTable(event_id):
+    data={ "rows": [], "total": 0 }
+    event=Event.query.filter_by(id=event_id).first()
+    if event:
+        medialinks=event.medialinks.order_by(MediaLink.filename).all()
+        for file in medialinks:
+            (path,filename)=os.path.split(file.filename)
+            data["rows"].append({ 'filename': filename ,
+                'description': file.description,
+                'id': file.id, 
+                'type': file.mime_type,
+                'url': file.url })
+        data["total"]=medialinks.__len__() 
+    return jsonify(data)
+
 @bp.route('/list/participants/<event_id>')
 def getParticipantsList(event_id):
     data={ "results": [], "pagination": { "more": False} }
@@ -343,15 +364,15 @@ def getPerformanceDetailList(event_id):
     
 def EditSimpleElement(dbmodel,title,original_name):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
-        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return render_template(url_for('users.login'))
     db_element = dbmodel.query.filter_by(name=original_name).first_or_404()
     form = EditSimpleElementForm(dbmodel=dbmodel,original_name=original_name)
     if form.validate_on_submit():
         db_element.name = form.name.data
         db.session.commit()
-        flash(_('Tus cambios han sido guardados.'))
-        return redirect(url_for('main.edit_elements'))
+        flash(_('Tus cambios han sido guardados.'),'info')
+        return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
         form.name.data = original_name
     return render_template('main/edit_simple_element.html',title=title,form=form)
@@ -387,17 +408,17 @@ def EditPremiereType(premieretype):
 
 def NewSimpleElement(dbmodel,title):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
-        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return render_template(url_for('users.login'))
     form = EditSimpleElementForm(dbmodel=dbmodel,original_name='')   
     if form.validate_on_submit():
         if  dbmodel.query.filter_by(name=form.name.data).all().__len__() > 0:
-            flash(_('Este nombre ya ha sido registrado'))
+            flash(_('Este nombre ya ha sido registrado'),'error')
         else:
             db.session.add(dbmodel(name=form.name.data))
             db.session.commit()
-            flash(_('Tus cambios han sido guardados.')) 
-        return redirect('/editelements')
+            flash(_('Tus cambios han sido guardados.'),'info') 
+        return redirect(url_for('main.index',user=current_user.first_name))
     return render_template('main/edit_simple_element.html',title=title,form=form)
  
 @bp.route('/new/country', methods = ['GET','POST'])
@@ -434,33 +455,33 @@ def edit_elements():
 @bp.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-  return redirect(url_for('users.edit_profile'))
+  return render_template('main/index.html',user=current_user.first_name)
 
 
 @bp.route('/new/instrument', methods = ['GET','POST'])
 @login_required
 def NewInstrument():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
-        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return render_template(url_for('users.login'))
     form = EditInstrumentForm(dbmodel=Instrument,original_name='')   
     if form.validate_on_submit():
         if  Instrument.query.filter_by(name=form.name.data).all().__len__() > 0:
-            flash(_('Este nombre ya ha sido registrado'))
+            flash(_('Este nombre ya ha sido registrado'),'error')
             return render_template('main/editinstrument.html',form=form,title=_('Agregar Instrumento'),selectedElements=None)
         else:
             instrument_type = InstrumentType.query.filter_by(id=int(form.instrument_type.data[0])).first_or_404()
             db.session.add(Instrument(name=form.name.data,instrument_type=instrument_type))
             db.session.commit()
-            flash(_('Tus cambios han sido guardados.'))
-        return redirect('/editelements')
+            flash(_('Tus cambios han sido guardados.'),'info')
+        return redirect(url_for('main.index',user=current_user.first_name))
     return render_template('main/editinstrument.html',form=form,title=_('Agregar Instrumento'),selectedElements=None)
 
 @bp.route('/edit/instrument/<instrument>', methods = ['GET','POST'])
 @login_required
 def EditInstrument(instrument):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
-        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return render_template(url_for('users.login'))
     instrument = Instrument.query.filter_by(name=instrument).first_or_404()
     selectedElements=[]
@@ -471,8 +492,8 @@ def EditInstrument(instrument):
          instrument_type = InstrumentType.query.filter_by(id=int(form.instrument_type.data[0])).first_or_404()
          instrument.instrument_type = instrument_type
          db.session.commit()
-         flash(_('Tus cambios han sido guardados.'))
-         return redirect('/editelements')
+         flash(_('Tus cambios han sido guardados.'),'info')
+         return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
         form.name.data = instrument.name            
     return render_template('main/editinstrument.html',form=form,title=_('Editar Instrumento'),selectedElements=list2csv(selectedElements))    
@@ -481,26 +502,26 @@ def EditInstrument(instrument):
 @login_required
 def NewMusicalPiece():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
-        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return render_template(url_for('users.login'))
     form = EditMusicalPieceForm(dbmodel=MusicalPiece,original_name='')   
     if form.validate_on_submit():
         if  MusicalPiece.query.filter_by(name=form.name.data).all().__len__() > 0:
-            flash(_('Este nombre ya ha sido registrado'))
+            flash(_('Este nombre ya ha sido registrado'),'error')
             return render_template('main/editmusicalpiece.html',form=form,title=_('Agregar Obra Musical'),selectedElements=None)
         else:
             composer = Person.query.filter_by(id=int(form.composer.data[0])).first_or_404()
             db.session.add(MusicalPiece(name=form.name.data,composer=composer,composition_year=form.composition_year.data))
             db.session.commit()
-            flash(_('Tus cambios han sido guardados.'))
-        return redirect('/editelements')
+            flash(_('Tus cambios han sido guardados.'),'info')
+        return redirect(url_for('main.index',user=current_user.first_name))
     return render_template('main/editmusicalpiece.html',form=form,title=_('Agregar Obra Musical'),selectedElements=None)
 
 @bp.route('/edit/musicalpiece/<id>', methods = ['GET','POST'])
 @login_required
 def EditMusicalPiece(id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
-        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return render_template(url_for('users.login'))
     musical_piece = MusicalPiece.query.filter_by(id=id).first_or_404()
     selectedElements=[]
@@ -512,8 +533,8 @@ def EditMusicalPiece(id):
          musical_piece.composer = composer
          musical_piece.composition_year = form.composition_year.data
          db.session.commit()
-         flash(_('Tus cambios han sido guardados.'))
-         return redirect('/editelements')
+         flash(_('Tus cambios han sido guardados.'),'info')
+         return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
         form.name.data = musical_piece.name  
         form.composition_year.data = musical_piece.composition_year
@@ -524,26 +545,26 @@ def EditMusicalPiece(id):
 @login_required
 def NewActivity():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
-        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return render_template(url_for('users.login'))
     form = EditActivityForm(dbmodel=Instrument,original_name='')   
     if form.validate_on_submit():
         if  Activity.query.filter_by(name=form.name.data).all().__len__() > 0:
-            flash(_('Este nombre ya ha sido registrado'))
+            flash(_('Este nombre ya ha sido registrado'),'error')
             return render_template('main/editactivity.html',form=form,title=_('Agregar Actividad'),selectedElements=None)
         else:
             instrument = Instrument.query.filter_by(id=int(form.instrument.data[0])).first_or_404()
             db.session.add(Activity(name=form.name.data,instrument=instrument))
             db.session.commit()
-            flash(_('Tus cambios han sido guardados.'))
-        return redirect('/editelements')
+            flash(_('Tus cambios han sido guardados.'),'info')
+        return redirect(url_for('main.index',user=current_user.first_name))
     return render_template('main/editactivity.html',form=form,title=_('Agregar Actividad'),selectedElements=None)
 
 @bp.route('/edit/activity/<id>', methods = ['GET','POST'])
 @login_required
 def EditActivity(id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
-        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return render_template(url_for('users.login'))
     original_activity= Activity.query.filter_by(id=id).first_or_404()
     selectedElements=[]
@@ -554,8 +575,8 @@ def EditActivity(id):
          instrument = Instrument.query.filter_by(id=int(form.instrument.data[0])).first_or_404()
          original_activity.instrument = instrument
          db.session.commit()
-         flash(_('Tus cambios han sido guardados.'))
-         return redirect('/editelements')
+         flash(_('Tus cambios han sido guardados.'),'info')
+         return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
         form.name.data = original_activity.name
     return render_template('main/editactivity.html',form=form,title=_('Editar Actividad'),selectedElements=list2csv(selectedElements))    
@@ -566,26 +587,26 @@ def EditActivity(id):
 @login_required
 def NewLocation():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
-        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return render_template(url_for('users.login'))
     form = EditLocationForm(dbmodel=Instrument,original_name='')   
     if form.validate_on_submit():
         if  Location.query.filter_by(name=form.name.data).all().__len__() > 0:
-            flash(_('Este nombre ya ha sido registrado'))
+            flash(_('Este nombre ya ha sido registrado'),'error')
             return render_template('main/editlocation.html',form=form,title=_('Agregar Lugar'),selectedElements=None)
         else:
             city = City.query.filter_by(id=int(form.city.data[0])).first_or_404()
             db.session.add(Location(name=form.name.data,city=city,additional_info=form.additional_info.data,address=form.address.data))
             db.session.commit()
-            flash(_('Tus cambios han sido guardados.'))
-        return redirect('/editelements')
+            flash(_('Tus cambios han sido guardados.'),'info')
+        return redirect(url_for('main.index',user=current_user.first_name))
     return render_template('main/editlocation.html',form=form,title=_('Agregar Lugar'),selectedElements=None)
 
 @bp.route('/edit/location/<location>', methods = ['GET','POST'])
 @login_required
 def EditLocation(location):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
-        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return render_template(url_for('users.login'))
     original_location = Location.query.filter_by(name=location).first_or_404()
     selectedElements=[]
@@ -598,8 +619,8 @@ def EditLocation(location):
          city = City.query.filter_by(id=int(form.city.data[0])).first_or_404()
          original_location.city = city
          db.session.commit()
-         flash(_('Tus cambios han sido guardados.'))
-         return redirect('/editelements')
+         flash(_('Tus cambios han sido guardados.'),'info')
+         return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
         form.name.data = original_location.name
         form.additional_info.data = original_location.additional_info
@@ -610,25 +631,25 @@ def EditLocation(location):
 @login_required
 def NewOrganization():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
-        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return render_template(url_for('users.login'))
     form = EditOrganizationForm(dbmodel=Organization,original_name='')   
     if form.validate_on_submit():
         if  Organization.query.filter_by(name=form.name.data).all().__len__() > 0:
-            flash(_('Este nombre ya ha sido registrado'))
+            flash(_('Este nombre ya ha sido registrado'),'error')
             return render_template('main/editorganization.html',form=form,title=_('Agregar Organización'))
         else:
             db.session.add(Organization(name=form.name.data,additional_info=form.additional_info.data))
             db.session.commit()
-            flash(_('Tus cambios han sido guardados.'))
-        return redirect('/editelements')
+            flash(_('Tus cambios han sido guardados.'),'info')
+        return redirect(url_for('main.index',user=current_user.first_name))
     return render_template('main/editorganization.html',form=form,title=_('Agregar Organización'))
 
 @bp.route('/edit/organizatioeventn/<organization>', methods = ['GET','POST'])
 @login_required
 def EditOrganization(organization):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
-        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return render_template(url_for('users.login'))
     original_organization =Organization.query.filter_by(name=organization).first_or_404()
     form = EditOrganizationForm(original_name=organization)
@@ -636,8 +657,8 @@ def EditOrganization(organization):
          original_organization.name = form.name.data
          original_organization.additional_info=form.additional_info.data
          db.session.commit()
-         flash(_('Tus cambios han sido guardados.'))
-         return redirect('/editelements')
+         flash(_('Tus cambios han sido guardados.'),'info')
+         return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
         form.name.data = original_organization.name
         form.additional_info.data = original_organization.additional_info
@@ -648,7 +669,7 @@ def EditOrganization(organization):
 @login_required
 def NewPerson():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
-        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return render_template(url_for('users.login'))
     form = EditPersonForm(original_person=None)   
     if form.validate_on_submit():
@@ -660,15 +681,15 @@ def NewPerson():
             person.nationalities.append(Country.query.filter_by(id=country_id).first_or_404())
         db.session.add(person)
         db.session.commit()
-        flash(_('Tus cambios han sido guardados.'))
-        return redirect('/editelements')
+        flash(_('Tus cambios han sido guardados.'),'info')
+        return redirect(url_for('main.index',user=current_user.first_name))
     return render_template('main/editperson.html',form=form,title=_('Agregar Persona'),selectedElements=None)
 
 @bp.route('/edit/person/<person_id>', methods = ['GET','POST'])
 @login_required
 def EditPerson(person_id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
-        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return render_template(url_for('users.login'))
     person = Person.query.filter_by(id=person_id).first_or_404()
     form = EditPersonForm(person)
@@ -685,8 +706,8 @@ def EditPerson(person_id):
          for country_id in form.nationalities.data:
              person.nationalities.append(Country.query.filter_by(id=country_id).first_or_404())
          db.session.commit()
-         flash(_('Tus cambios han sido guardados.'))
-         return redirect('/editelements')
+         flash(_('Tus cambios han sido guardados.'),'info')
+         return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
          form.first_name.data = person.first_name
          form.last_name.data = person.last_name
@@ -700,12 +721,12 @@ def EditPerson(person_id):
 @login_required
 def NewEvent():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
-        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return render_template(url_for('users.login'))
     form = EditEventForm(dbmodel=Event,original_event=None)   
     if form.validate_on_submit():
         if  Event.query.filter_by(name=form.name.data).all().__len__() > 0:
-            flash(_('Este nombre ya ha sido registrado'))
+            flash(_('Este nombre ya ha sido registrado'),'error')
             return render_template('main/newevent.html',form=form,title=_('Agregar Evento'),
                                    selectedEventTypes=list2csv(form.event_type.data), 
                                    selectedLocation=list2csv(form.location.data),
@@ -726,7 +747,7 @@ def NewEvent():
                                    selectedEventTypes=list2csv(form.event_type.data), 
                                    selectedLocation=list2csv(form.location.data),
                                    selectedOrganization=list2csv(form.organization.data))
-            flash(_('Tus cambios han sido guardados.'))
+            flash(_('Tus cambios han sido guardados.'),'info')
     return render_template('main/newevent.html',form=form,title=_('Agregar Evento'),
                            selectedEventTypes=None,
                            selectedLocation=None,
@@ -736,14 +757,14 @@ def NewEvent():
 @login_required
 def EditEvent(event_id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
-        flash(_('Debe ser Administrador/Editor para entrar a esta página'))
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return render_template(url_for('users.login'))
 
     original_event=Event.query.filter_by(id=event_id).first_or_404()
     form = EditEventForm(dbmodel=Event,original_event=original_event)       
     if form.validate_on_submit():
         if  Event.query.filter_by(name=form.name.data).all().__len__() > 0 and (original_event.name  != form.name.data):
-            flash(_('Este nombre ya ha sido registrado'))
+            flash(_('Este nombre ya ha sido registrado'),'error')
             return render_template('main/editevent.html',event_id=event_id,form=form,title=_('Editar Evento'))
 #                                   selectedEventTypes=list2csv([form.event_type.data)], 
 #                                   selectedLocation=list2csv([form.location.data]),
@@ -760,7 +781,7 @@ def EditEvent(event_id):
             original_event.information=form.information.data
             original_event.date=form.event_date.data
             db.session.commit()
-            flash(_('Tus cambios han sido guardados.'))
+            flash(_('Tus cambios han sido guardados.'),'info')
             return render_template('main/editevent.html',event_id=event_id,form=form,title=_('Editar Evento'),
                                    selectedEventType=list2csv(form.event_type.data[0]), 
                                    selectedLocation=list2csv(form.location.data[0]),
@@ -775,20 +796,9 @@ def EditEvent(event_id):
                            selectedLocation=list2csv([original_event.location_id]),
                            selectedOrganization=list2csv([original_event.organization_id]))
     
-#
-@bp.route('/explore')
-@login_required
-def explore():
-    page = request.args.get('page', 1, type=int)
-    events = Event.query.order_by(Event.date.desc.desc()).paginate(
-        page, current_app.config['ITEMS_PER_PAGE'], False)
-    next_url = url_for('main.explore', page=events.next_num) \
-        if events.has_next else None
-    prev_url = url_for('main.explore', page=events.prev_num) \
-        if events.has_prev else None
-    return render_template('index.html', title=_('Explore'),
-                           posts=events.items, next_url=next_url,
-                           prev_url=prev_url)
+
+        
+
 
 
 #

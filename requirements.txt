@@ -9,6 +9,7 @@ cloudpickle==0.5.2
 decorator==4.3.0
 dominate==2.3.1
 Flask==0.12.2
+Flask-Admin==1.5.1
 Flask-Babel==0.11.2
 Flask-Bootstrap==3.3.7.1
 Flask-Login==0.4.1
@@ -17,6 +18,7 @@ Flask-Migrate==2.1.1
 Flask-Moment==0.6.0
 flask-shell-ipython==0.3.0
 Flask-SQLAlchemy==2.3.2
+Flask-Uploads==0.2.1
 Flask-WTF==0.14.2
 idna==2.6
 ipykernel==4.8.2

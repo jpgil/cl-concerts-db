@@ -1,10 +1,12 @@
 from app.api import bp
-from flask import request
+from flask import request, current_app, jsonify, flash
 from app import db
-from app.api.errors import bad_request
-from app.models import Activity, Event, Person, Participant, MusicalPiece, PremiereType, Performance
+from app.api.errors import bad_request, server_error
+from app.models import Activity, Event, Person, Participant, MusicalPiece, PremiereType, Performance, MediaLink
 from flask_babel import _
-from flask import jsonify
+from app import files_collection
+import os
+
 
 @bp.route('/participant/add',methods=['POST'])
 def add_participant():
@@ -40,7 +42,7 @@ def remove_participant():
     db.session.delete(participant)
     db.session.commit()
     response = jsonify({})
-    response.status_code = 201
+    response.status_code = 200
 #    response.headers['Location'] = url_for('api.get_user', id=user.id)
     return response    
 
@@ -79,7 +81,7 @@ def remove_performance():
     db.session.delete(performance)
     db.session.commit()
     response = jsonify({})
-    response.status_code = 201
+    response.status_code = 200
 #    response.headers['Location'] = url_for('api.get_user', id=user.id)
     return response    
 
@@ -116,6 +118,43 @@ def delete_performance_detail():
     performance.participants.remove(participant)
     db.session.commit()
     response = jsonify({})
+    response.status_code = 200
+#    response.headers['Location'] = url_for('api.get_user', id=user.id)
+    return response
+
+@bp.route('/uploadajax', methods=['POST'])
+def upldfile():
+    files = request.files['file']
+    if not files:
+        return bad_request(_('debe incluir al menos un archivo'))    
+    if not request.form['event_id']:
+        return bad_request(_('debe incluir el id del evento'))
+    if not request.form['description']:
+        return bad_request(_('debe incluir una descripcion'))   
+    if files:
+        filename = files_collection.save(request.files['file'],folder=request.form['event_id'])
+        url = files_collection.url(filename)            
+        current_app.logger.info('FileName: ' + filename)
+        db.session.add(MediaLink(event_id=int(request.form['event_id']), filename=filename, mime_type=files.mimetype,url=url, description=request.form['description']))
+        db.session.commit()
+    response = jsonify({})
     response.status_code = 201
 #    response.headers['Location'] = url_for('api.get_user', id=user.id)
     return response
+        
+@bp.route('/medialink/delete', methods=['POST'])
+def deleteFile():
+    if not request.form['medialink_id']:
+        return bad_request(_('id de archivo no incluído'))
+    file=MediaLink.query.filter_by(id=request.form['medialink_id']).first()        
+    try:
+        os.remove(files_collection.path(file.filename))
+        db.session.delete(file)
+        db.session.commit()
+        response = jsonify({})
+        response.status_code = 200
+        return response
+    except:
+        return server_error("Error removing {}".format(files_collection.path(file.filename)))
+  
+

@@ -13,12 +13,12 @@ from app.users.email import send_password_reset_email
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.index',user=current_user.last_name))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash(_('e-mail o contraseña incorrecta'))
+            flash(_('e-mail o contraseña incorrecta'),'error')
             return redirect(url_for('users.login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
@@ -31,14 +31,14 @@ def login():
 @bp.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('main.index'))
+    return redirect(url_for('main.index',user=''))
 
 
 @bp.route('/register', methods=['GET', 'POST'])
 @login_required
 def register():
     if current_user.profile.name != 'Administrador':
-        flash(_('Debe ser un Administrador para entrar a esta página'))
+        flash(_('Debe ser un Administrador para entrar a esta página'),'error')
         return redirect(url_for('users.login'))
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -46,7 +46,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash(_('Usuario {} agregado'.format(form.first_name.data+" "+form.last_name.data)))
+        flash(_('Usuario {} agregado'.format(form.first_name.data+" "+form.last_name.data)),'info')
         return redirect(url_for('users.login'))
     return render_template('users/register.html', title=_('Register'),
                            form=form)
@@ -56,14 +56,14 @@ def register():
 @login_required
 def reset_password_request():
     if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.index'),user=current_user.last_name)
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             send_password_reset_email(user)
         flash(
-            _('Check your email for the instructions to reset your password'))
+            _('Revise su correo por instrucciones sobre como recuperar su contraseña'),'info')
         return redirect(url_for('users.login'))
     return render_template('users/reset_password_request.html',
                            title=_('Reset Password'), form=form)
@@ -73,15 +73,15 @@ def reset_password_request():
 @login_required
 def reset_password(token):
     if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.index'),user=current_user.last_name)
     user = User.verify_reset_password_token(token)
     if not user:
-        return redirect(url_for('main.index'))
+        return redirect(url_for('main.index'),user='')
     form = ResetPasswordForm()
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
-        flash(_('Your password has been reset.'))
+        flash(_('Su contraseña ha sido reseteada'),'info')
         return redirect(url_for('users.login'))
     return render_template('users/reset_password.html', form=form)
 
@@ -93,7 +93,7 @@ def edit_profile():
         current_user.first_name = form.first_name.data
         current_user.last_name = form.last_name.data
         db.session.commit()
-        flash(_('Tus cambios han sido guardados.'))
+        flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('users.edit_profile'))
     elif request.method == 'GET':
         form.first_name.data = current_user.first_name

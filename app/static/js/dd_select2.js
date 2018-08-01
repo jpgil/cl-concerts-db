@@ -1,6 +1,5 @@
 var dropsdowns=document.getElementsByClassName("dd_select2")
 for (var i = 0; i < dropsdowns.length; i++) {
-    console.log('/list/'+dropsdowns[i].getAttribute('url'))
     $(dropsdowns[i]).select2({
       placeholder: dropsdowns[i].getAttribute('description'),
       width : '250px',

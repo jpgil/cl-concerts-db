@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '.env'))
 class Config(object):
@@ -14,6 +15,7 @@ class Config(object):
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ITEMS_PER_PAGE = int(os.environ.get('ITEMS_PER_PAGE') or 5)
+    UPLOADS_DEFAULT_DEST = basedir
     LANGUAGES = ['es', 'en']
     ADMINS = ['your-email@example.com']
     def __init__(self):

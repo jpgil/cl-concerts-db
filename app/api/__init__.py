@@ -2,5 +2,5 @@ from flask import Blueprint
 
 bp = Blueprint('api', __name__)
 
-from app.api import participant, errors
+from app.api import api_methods, errors
 
