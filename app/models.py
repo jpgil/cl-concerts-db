@@ -44,7 +44,7 @@ def load_user(id):
 
 class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20))
+    name = db.Column(db.String(40))
     description = db.Column(db.String(200))
     users = db.relationship('User',backref='profile')
     def __repr__(self):
@@ -54,7 +54,7 @@ class Profile(db.Model):
 class History(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id =  db.Column(db.Integer, db.ForeignKey('user.id'))
-    operation = db.Column(db.String(20))
+    operation = db.Column(db.String(40))
     description = db.Column(db.String(200))   
     def __repr__(self):
         return 'History(user="{}",operation="{}", description="{}")'.format(self.user.email,
@@ -62,14 +62,14 @@ class History(db.Model):
 
 class InstrumentType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20))
+    name = db.Column(db.String(40))
     instruments = db.relationship('Instrument',backref='instrument_type')
     def __repr__(self):
         return 'InstrumentType(name="{}")'.format(self.name)
 
 class Instrument(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20))
+    name = db.Column(db.String(40))
     instrument_type_id = db.Column(db.Integer, db.ForeignKey('instrument_type.id'))
     activity = db.relationship("Activity", uselist=False, backref="instrument")
     def __repr__(self):
@@ -77,7 +77,7 @@ class Instrument(db.Model):
     
 class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(25))
+    name = db.Column(db.String(45))
     locations = db.relationship('Location', backref='city', lazy='dynamic')
     def __repr__(self):
         return 'City(name="{}")'.format(self.name)   
@@ -85,14 +85,14 @@ class City(db.Model):
 class Organization(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(65)) 
-    additional_info = db.Column(db.String(1000))
+    additional_info = db.Column(db.String(4000))
     events = db.relationship('Event', backref='organization', lazy='dynamic') 
     def __repr__(self):
         return 'Organization(name="{}")'.format(self.name)   
 
 class EventType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20)) 
+    name = db.Column(db.String(40)) 
     description = db.Column(db.String(200))
     events = db.relationship('Event', backref='event_type', lazy='dynamic') 
     def __repr__(self):
@@ -100,13 +100,13 @@ class EventType(db.Model):
         
 class Country(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(25))
+    name = db.Column(db.String(45))
     def __repr__(self):
         return 'Country(name="{}")'.format(self.name)   
         
 class PremiereType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20))    
+    name = db.Column(db.String(40))    
     performances = db.relationship('Performance', backref='premiere_type', lazy='dynamic')
     def __repr__(self):
         return 'PremiereType(name="{}")'.format(self.name)   
@@ -122,7 +122,7 @@ class Person(db.Model):
     last_name = db.Column(db.String(40))
     birth_date = db.Column(db.Date)
     death_date = db.Column(db.Date)    
-    biography = db.Column(db.String(2000))    
+    biography = db.Column(db.String(8000))    
     musical_pieces = db.relationship('MusicalPiece', backref='composer', lazy='dynamic') 
     participants = db.relationship('Participant', backref='person', lazy='dynamic')
     nationalities  = db.relationship('Country',
@@ -133,7 +133,7 @@ class Person(db.Model):
 
 class MediaLink(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    mime_type = db.Column(db.String(20))
+    mime_type = db.Column(db.String(40))
     filename = db.Column(db.String(200))
     url = db.Column(db.String(512))
     description = db.Column(db.String(150))
@@ -143,7 +143,7 @@ class MediaLink(db.Model):
 
 class Activity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20)) 
+    name = db.Column(db.String(40)) 
     instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'))
     participants = db.relationship('Participant', backref = 'activity', lazy='dynamic')
     def __repr__(self):
@@ -152,9 +152,9 @@ class Activity(db.Model):
 
 class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(25))    
-    address = db.Column(db.String(200))    
-    additional_info = db.Column(db.String(300))
+    name = db.Column(db.String(45))    
+    address = db.Column(db.String(300))    
+    additional_info = db.Column(db.String(4000))
     city_id = db.Column(db.Integer, db.ForeignKey('city.id'))
     events = db.relationship('Event', backref='location', lazy='dynamic') 
     def __repr__(self):
@@ -166,7 +166,7 @@ class Event(db.Model):
     date = db.Column(db.Date)
     location_id = db.Column(db.Integer, db.ForeignKey('location.id'))
     organization_id = db.Column(db.Integer, db.ForeignKey('organization.id'))
-    information = db.Column(db.String(600))  
+    information = db.Column(db.String(4000))  
     event_type_id = db.Column(db.Integer, db.ForeignKey('event_type.id'))
     participants = db.relationship('Participant', backref='event', lazy='dynamic')
     performances = db.relationship('Performance', backref='event', lazy='dynamic')
@@ -177,7 +177,7 @@ class Event(db.Model):
 
 class MusicalPiece(db.Model):
     id = db.Column(db.Integer, primary_key=True)                
-    name = db.Column(db.String(100))
+    name = db.Column(db.String(200))
     composition_year = db.Column(db.Integer)
     composer_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     performances = db.relationship("Performance", backref="musical_piece")

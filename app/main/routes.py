@@ -75,7 +75,7 @@ def view_instrumenttypes():
 @bp.route('/view/premieretypes')
 @login_required
 def view_premieretypes():
-    return view_elements(PremiereType,'premieretypes',_('Tipos de Premier'))
+    return view_elements(PremiereType,'premieretypes',_('Tipos de Estreno'))
 
 @bp.route('/view/instruments')
 @login_required
@@ -444,7 +444,7 @@ def NewInstrumentType():
 @bp.route('/new/premieretype', methods = ['GET','POST'])
 @login_required
 def NewPremiereType():
-    return NewSimpleElement(PremiereType,_('Agregar Tipo de Premiere'))
+    return NewSimpleElement(PremiereType,_('Agregar Tipo de Estreno'))
 
 @bp.route('/editelements')
 @login_required

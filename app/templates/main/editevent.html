@@ -66,7 +66,7 @@
              <br><br>         
                         
             {{ form.information.label }} <br>
-            {{ form.information(cols="55", rows="15")|safe }} <br>                
+            {{ form.information(cols="55", rows="10")|safe }} <br>                
             
             {% for error in form.information.errors %}
                 <span style="color: red;">[{{ error }}]</span>
@@ -79,9 +79,9 @@
         
             <div><h2>{{ _("Participantes") }} </h2> </div>
             {{ _("Agregar participante: ")}}
-            {{ form.person( **{"class":"dd_select2", "url":"people", "description":_("Persona"),  "maxelem":"1", "selectedElements" : "" } ) }}
-            {{ form.activity( **{"class":"dd_select2", "url":"activities", "description":_("Actividad"),  "maxelem":"1", "selectedElements" : "" } ) }}
-            <button type="button"  onclick="addParticipant({{event_id}})" class="btn btn-primary">Agregar</button>
+                {{ form.person( **{"class":"dd_select2", "url":"people", "description":_("Persona"),  "maxelem":"1", "selectedElements" : "" } ) }}
+                {{ form.activity( **{"class":"dd_select2", "url":"activities", "description":_("Actividad"),  "maxelem":"1", "selectedElements" : "" } ) }}
+                <button type="button"  onclick="addParticipant({{event_id}})" class="btn btn-primary">Agregar</button>
             <table id="table-participants"
                data-toggle="table"
                data-show-footer="false"

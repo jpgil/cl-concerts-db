@@ -14,7 +14,7 @@ from flask_uploads import UploadSet, configure_uploads, DEFAULTS, ARCHIVES
 from config import Config
 
 db = SQLAlchemy()
-migrate = Migrate()
+migrate = Migrate(compare_type=True)
 login = LoginManager()
 login.login_view = 'users.login'
 login.login_message = _l('Por favor, loguearse para ver esta página.')
