@@ -74,8 +74,8 @@ class EditPersonForm(FlaskForm):
     first_name=StringField(_l('Nombre'))
     last_name=StringField(_l('Apellido'))    
     nationalities= NonValidatingSelectMultipleField(label=_("Nacionalidades"),choices=[])
-    birth_date=DateField(_('Nacimiento (YYYY=MM-DD)'),validators=[Optional()])
-    death_date=DateField(_('Muerte (YYYY=MM-DD)''),validators=[Optional()])
+    birth_date=DateField(_('Nacimiento (YYYY-MM-DD)'),validators=[Optional()])
+    death_date=DateField(_('Muerte (YYYY-MM-DD)'),validators=[Optional()])
     biography=TextAreaField(_('Información Biográfica'))
     submit = SubmitField(_l('Guardar'))
     def __init__(self, original_person ,*args, **kwargs):
@@ -134,7 +134,7 @@ class EditEventForm(FlaskForm):
     name=StringField(_l('Nombre del Evento'))
     organization= NonValidatingSelectMultipleField(label=_("Organizador"),choices=[],validators=[DataRequired()])
     location= NonValidatingSelectMultipleField(label=_("Lugar"),choices=[],validators=[DataRequired()])
-    event_date=DateField(_('Fecha del Evento (YYYY=MM-DD)''),validators=[Optional()])
+    event_date=DateField(_('Fecha del Evento (YYYY=MM-DD)'),validators=[Optional()])
     information=TextAreaField(_('Información'))
     event_type= NonValidatingSelectMultipleField(label=_("Tipo de Evento"),choices=[],validators=[DataRequired()])
     # the following fields will bo be read used when created a new event. They are placed here just for allowing to 
