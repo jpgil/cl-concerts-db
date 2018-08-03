@@ -28,7 +28,8 @@ function deleteParticipantCol(value, row, index){
 function deleteParticipant(participant_id)
 {
     $.post('/api/participant/delete', { 'participant_id':participant_id } ).done( function(msg) { 
-            $('#table-participants').bootstrapTable('refresh');} )
+            $('#table-participants').bootstrapTable('refresh');
+            $('#table-performance-participant').bootstrapTable('refresh'); } )
     .fail( function(xhr, textStatus, errorThrown) {
         flash(xhr.responseText,'error');
     });    
@@ -64,7 +65,9 @@ function deletePerformanceCol(value, row, index){
 function deletePerformance(performance_id)
 {
     $.post('/api/performance/delete', { 'performance_id':performance_id } ).done( function(msg) { 
-            $('#table-musical-pieces').bootstrapTable('refresh'); } )
+            $('#table-musical-pieces').bootstrapTable('refresh');
+            $('#table-performance-participant').bootstrapTable('refresh');
+             } )
     .fail( function(xhr, textStatus, errorThrown) {
         flash(xhr.responseText,"error");
     });    

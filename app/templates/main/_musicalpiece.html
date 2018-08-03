@@ -1,9 +1,9 @@
 <tr>
     <td width="70px">
     {% if ( current_user.profile.name == 'Administrador') or ( current_user.profile.name == 'Editor')   %}
-        <a href={{ url_for('main.EditMusicalPiece',id= musical_piece.id) }}>{{ musical_piece.name }}<a/>
+        <a href={{ url_for('main.EditMusicalPiece',id= musical_piece.id) }}>«{{ musical_piece.name }}» ({{musical_piece.composer.get_full_name() }})<a/>
     {% else %}
-        {{ musical_piece.name }}}
+        «{{ musical_piece.name }}» ({{musical_piece.composer.get_full_name()}})
     {% endif %}
     </td>
 <tr>

@@ -130,6 +130,8 @@ class Person(db.Model):
                     backref='people')    
     def __repr__(self):
         return 'Person(first_name="{}",last_name="{}")'.format(self.first_name,self.last_name)
+    def get_full_name(self):
+        return '{}, {}'.format(self.last_name,self.first_name) if self.last_name else self.first_name
 
 class MediaLink(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -124,7 +124,7 @@
             <br>
             <div><h2>{{ _("Detalle de Participación") }}</h2> </div>
             {{ _("Agregar")}}
-            {{ form.performance( **{"class":"dd_select2", "url":"performances/"+event_id, "description":_("Interpretación"),  "maxelem":"1", "selectedElements" : "" } ) }}
+            {{ form.performance( **{"class":"dd_select2", "url":"performances/"+event_id, "description":_("Interpretación"),  "maxelem":"1", "selectedElements" : "" , "multiple" : "false" } ) }}
             {{ form.participant( **{"class":"dd_select2", "url":"participants/"+event_id, "description":_("Participante"),  "maxelem":"1", "selectedElements" : "" } ) }}
             <button type="button"  onclick="addPerformanceDetail({{event_id}})" class="btn btn-primary">Agregar</button>
             

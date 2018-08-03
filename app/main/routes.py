@@ -87,10 +87,7 @@ def view_instruments():
 def view_activities():
     return view_elements(Activity,'activities',_('Actividades'))
 
-@bp.route('/view/musicalpieces')
-@login_required
-def view_musicalpieces():
-    return view_elements(MusicalPiece,'musicalpieces',_('Obras Musicales'))
+
 
 @bp.route('/view/locations')
 @login_required
@@ -119,6 +116,22 @@ def view_people():
                            elements=elements.items, next_url=next_url,
                            prev_url=prev_url)
 
+@bp.route('/view/musicalpieces')
+@login_required
+def view_musicalpieces():
+    elementsname='musicalpieces'
+    title=_('Obras Musicales')
+    page = request.args.get('page', 1, type=int)
+    elements = MusicalPiece.query.order_by(MusicalPiece.name.asc()).paginate(
+        page, current_app.config['ITEMS_PER_PAGE'], False)
+    next_url = url_for('main.view_'+elementsname, title=title,page=elements.next_num) \
+        if elements.has_next else None
+    prev_url = url_for('main.view_'+elementsname, title=title, page=elements.prev_num) \
+        if elements.has_prev else None
+    return render_template('main/'+elementsname+'.html', title=title,
+                           elements=elements.items, next_url=next_url,
+                           prev_url=prev_url)
+
 
 def getItemList(dbmodel,q,page):    
     itemslist=db.session.query(dbmodel).filter(dbmodel.name.ilike(q+'%')).order_by(dbmodel.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
@@ -136,17 +149,29 @@ def getPeople(q,page):
     itemslist=db.session.query(Person).filter(Person.last_name.ilike(q+'%')).order_by(Person.last_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
     data={ "results": [], "pagination": { "more": itemslist.has_next} }
     for item in itemslist.items:
-        text = '{}, {}'.format(item.last_name,item.first_name) if item.last_name else item.first_name
+        text = item.get_full_name()
         data["results"].append( { 'id' : item.id , 'text': text } )
     return jsonify(data)
 
 def getPerson(id):
     item=Person.query.filter_by(id=id).first_or_404()
-    text = '{}, {}'.format(item.last_name,item.first_name) if item.last_name else item.first_name
+    text = item.get_full_name()
     data={ 'id' : item.id , 'text': text }
     return jsonify(data)
 
+def getMusicalPiece(id):
+    item=MusicalPiece.query.filter_by(id=id).first_or_404()
+    text = '{} ({})'.format(item.name, item.composer.get_full_name())
+    data={ 'id' : item.id , 'text': text }
+    return jsonify(data)
 
+def getMusicalPieces(q,page):    
+    itemslist=db.session.query(MusicalPiece).filter(MusicalPiece.name.ilike(q+'%')).order_by(MusicalPiece.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
+    data={ "results": [], "pagination": { "more": itemslist.has_next} }
+    for item in itemslist.items:
+        text = '{} ({})'.format(item.name, item.composer.get_full_name())
+        data["results"].append( { 'id' : item.id , 'text': text } )
+    return jsonify(data)
 
 @bp.route('/list/people')
 def getPeopleList():
@@ -235,11 +260,11 @@ def getInstrumentItem(id):
 def getMusicalPieceList():
     page = request.args.get('page', 1, type=int)
     q=request.args.get('q', '', type=str)
-    return getItemList(MusicalPiece,q,page)
+    return getMusicalPieces(q,page)
 
 @bp.route('/list/mmusicalpieces/<id>')
 def getMusicalPieceItem(id):
-    return getItem(MusicalPiece,id)
+    return getMusicalPiece(id)
 
 @bp.route('/list/locations')
 def getLocationList():
@@ -279,10 +304,10 @@ def getParticipantsListTable(event_id):
     if event:
         participants=event.participants.order_by(Participant.person_id).all()
         for participant in participants:
-            data["rows"].append({ 'name': '{}, {}'.format(participant.person.last_name,participant.person.first_name),
+            data["rows"].append({ 'name': participant.person.get_full_name(),
                 'activity': participant.activity.name,
                 'id': participant.id, 
-                'text': '{}, {} - {}'.format(participant.person.last_name,participant.person.first_name,participant.activity.name) })
+                'text': '{} ({})'.format(participant.person.get_full_name(),participant.activity.name) })
         data["total"]=participants.__len__() 
     return jsonify(data)
 
@@ -309,10 +334,10 @@ def getParticipantsList(event_id):
     if event:
         participants=event.participants.order_by(Participant.person_id).all()
         for participant in participants:
-            data["results"].append({ 'name': '{}, {}'.format(participant.person.last_name,participant.person.first_name),
+            data["results"].append({ 'name': participant.person.get_full_name(),
                 'activity': participant.activity.name,
                 'id': participant.id, 
-                'text': '{}, {} - {}'.format(participant.person.last_name,participant.person.first_name,participant.activity.name) })
+                'text': '{} ({})'.format(participant.person.get_full_name(),participant.activity.name) })
     return jsonify(data)
 
 
@@ -323,8 +348,11 @@ def getPerformancesListTable(event_id):
     if event:
         performances=event.performances.order_by(Performance.musical_piece_id).all()
         for performance in performances:
-            premiere_type_string=' ({})'.format(performance.premiere_type.name) if performance.premiere_type.name != 'No' else ''                
-            data["rows"].append({ 'text': '{}{}'.format(performance.musical_piece.name,premiere_type_string),'id':performance.id})
+            premiere_type_string=' [{}] '.format(performance.premiere_type.name) if performance.premiere_type.name != 'No' else ''                
+            data["rows"].append({ 'text': '{}«{}» ({})'.format(premiere_type_string, 
+                                                    performance.musical_piece.name,
+                                                    performance.musical_piece.composer.get_full_name()),
+                                   'id':performance.id})
         data["total"]=performances.__len__() 
     return jsonify(data)
 
@@ -335,8 +363,10 @@ def getPerformancesList(event_id):
     if event:
         performances=event.performances.order_by(Performance.musical_piece_id).all()
         for performance in performances:
-            premiere_type_string=' ({})'.format(performance.premiere_type.name) if performance.premiere_type.name != 'No' else ''                
-            data["results"].append({ 'text': '{}{}'.format(performance.musical_piece.name,premiere_type_string),'id':performance.id})
+            #premiere_type_string='[{}] '.format(performance.premiere_type.name) if performance.premiere_type.name != 'No' else ''                
+            data["results"].append({ 'text': '«{}» ({})'.format(
+                            performance.musical_piece.name,
+                            performance.musical_piece.composer.get_full_name()),'id':performance.id})
     return jsonify(data)
 
 
@@ -352,8 +382,8 @@ def getPerformanceDetailList(event_id):
         for performance in performances:
             for participant in performance.participants:
                 total=total+1
-                performance_name=performance.musical_piece.name
-                participant_name='{}, {}'.format(participant.person.last_name,participant.person.first_name)
+                performance_name='«{}» ({}) '.format(performance.musical_piece.name,performance.musical_piece.composer.get_full_name())
+                participant_name=participant.person.get_full_name()
                 participant_activity=participant.activity.name
                 data["rows"].append({ 'performance_name': performance_name,
                                   'participant_name': participant_name, 
@@ -416,7 +446,6 @@ def NewSimpleElement(dbmodel,title):
             flash(_('Este nombre ya ha sido registrado'),'error')
         else:
             db.session.add(dbmodel(name=form.name.data))
-            db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info') 
         return redirect(url_for('main.index',user=current_user.first_name))
     return render_template('main/edit_simple_element.html',title=title,form=form)
