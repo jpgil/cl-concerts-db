@@ -12,10 +12,10 @@ from app.models import *
 #from app.translate import translate
 from app.main import bp
 from flask_uploads import UploadSet, configure_uploads, DEFAULTS, AUDIO, ARCHIVES, IMAGES
+from werkzeug.local import LocalProxy
 import os
 
-
-
+log = LocalProxy(lambda: current_app.logger)
 
 
 def list2csv(some_list):
@@ -446,7 +446,9 @@ def NewSimpleElement(dbmodel,title):
             flash(_('Este nombre ya ha sido registrado'),'error')
         else:
             db.session.add(dbmodel(name=form.name.data))
+            db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info') 
+            
         return redirect(url_for('main.index',user=current_user.first_name))
     return render_template('main/edit_simple_element.html',title=title,form=form)
  
