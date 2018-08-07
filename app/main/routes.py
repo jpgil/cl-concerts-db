@@ -11,7 +11,7 @@ from app.main.forms import *
 from app.models import *
 #from app.translate import translate
 from app.main import bp
-from flask_uploads import UploadSet, configure_uploads, DEFAULTS, AUDIO, ARCHIVES, IMAGES
+
 from werkzeug.local import LocalProxy
 import os
 
@@ -20,6 +20,13 @@ log = LocalProxy(lambda: current_app.logger)
 
 def list2csv(some_list):
     return ','.join(map(str, some_list)) 
+
+def addHistoryEntry(operation,description):
+    db.session.add(History(
+            user_id=current_user.id,
+            timestamp=datetime.now(),
+            operation=operation,
+            description=description))
 
 @bp.route('/favicon.ico')
 def hello():
@@ -57,9 +64,10 @@ def view_countries():
 def view_eventtypes():
     return view_elements(EventType,'eventtypes',_('Tipos de Eventos'))
 
-@bp.route('/view/event')
+
+@bp.route('/view/events')
 @login_required
-def view_event():
+def view_events():
     return view_elements(Event,'events',_('Eventos'))
 
 @bp.route('/view/cities')
@@ -395,11 +403,12 @@ def getPerformanceDetailList(event_id):
 def EditSimpleElement(dbmodel,title,original_name):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
-        return render_template(url_for('users.login'))
+        return redirect(url_for('users.login'))
     db_element = dbmodel.query.filter_by(name=original_name).first_or_404()
     form = EditSimpleElementForm(dbmodel=dbmodel,original_name=original_name)
     if form.validate_on_submit():
         db_element.name = form.name.data
+        addHistoryEntry('Modificado','{}: {}'.format(title[8:],form.name.data))
         db.session.commit()
         flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.index',user=current_user.first_name))
@@ -439,13 +448,17 @@ def EditPremiereType(premieretype):
 def NewSimpleElement(dbmodel,title):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
-        return render_template(url_for('users.login'))
+        return redirect(url_for('users.login'))
     form = EditSimpleElementForm(dbmodel=dbmodel,original_name='')   
     if form.validate_on_submit():
         if  dbmodel.query.filter_by(name=form.name.data).all().__len__() > 0:
             flash(_('Este nombre ya ha sido registrado'),'error')
         else:
             db.session.add(dbmodel(name=form.name.data))
+            try:
+                addHistoryEntry('Agregado','{}: {}'.format(title[8:],form.name.data))
+            except:
+                log.error('Failed adding history entry')
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info') 
             
@@ -494,7 +507,7 @@ def index():
 def NewInstrument():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
-        return render_template(url_for('users.login'))
+        return redirect(url_for('users.login'))
     form = EditInstrumentForm(dbmodel=Instrument,original_name='')   
     if form.validate_on_submit():
         if  Instrument.query.filter_by(name=form.name.data).all().__len__() > 0:
@@ -503,6 +516,7 @@ def NewInstrument():
         else:
             instrument_type = InstrumentType.query.filter_by(id=int(form.instrument_type.data[0])).first_or_404()
             db.session.add(Instrument(name=form.name.data,instrument_type=instrument_type))
+            addHistoryEntry('Agregado','Instrumento: {}'.format(form.name.data))
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.index',user=current_user.first_name))
@@ -513,7 +527,7 @@ def NewInstrument():
 def EditInstrument(instrument):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
-        return render_template(url_for('users.login'))
+        return redirect(url_for('users.login'))
     instrument = Instrument.query.filter_by(name=instrument).first_or_404()
     selectedElements=[]
     selectedElements.append(instrument.instrument_type.id)
@@ -522,6 +536,7 @@ def EditInstrument(instrument):
          instrument.name = form.name.data
          instrument_type = InstrumentType.query.filter_by(id=int(form.instrument_type.data[0])).first_or_404()
          instrument.instrument_type = instrument_type
+         addHistoryEntry('Modificado','Instrumento: {}'.format(form.name.data))
          db.session.commit()
          flash(_('Tus cambios han sido guardados.'),'info')
          return redirect(url_for('main.index',user=current_user.first_name))
@@ -534,7 +549,7 @@ def EditInstrument(instrument):
 def NewMusicalPiece():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
-        return render_template(url_for('users.login'))
+        return redirect(url_for('users.login'))
     form = EditMusicalPieceForm(dbmodel=MusicalPiece,original_name='')   
     if form.validate_on_submit():
         if  MusicalPiece.query.filter_by(name=form.name.data).all().__len__() > 0:
@@ -542,6 +557,7 @@ def NewMusicalPiece():
             return render_template('main/editmusicalpiece.html',form=form,title=_('Agregar Obra Musical'),selectedElements=None)
         else:
             composer = Person.query.filter_by(id=int(form.composer.data[0])).first_or_404()
+            addHistoryEntry('Agregado','Obra Musical: {}'.format(form.name.data))
             db.session.add(MusicalPiece(name=form.name.data,composer=composer,composition_year=form.composition_year.data))
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info')
@@ -553,7 +569,7 @@ def NewMusicalPiece():
 def EditMusicalPiece(id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
-        return render_template(url_for('users.login'))
+        return redirect(url_for('users.login'))
     musical_piece = MusicalPiece.query.filter_by(id=id).first_or_404()
     selectedElements=[]
     selectedElements.append(musical_piece.composer.id)
@@ -563,6 +579,7 @@ def EditMusicalPiece(id):
          composer = Person.query.filter_by(id=int(form.composer.data[0])).first_or_404()
          musical_piece.composer = composer
          musical_piece.composition_year = form.composition_year.data
+         addHistoryEntry('Modificado','Obra Musical: {}'.format(form.name.data))
          db.session.commit()
          flash(_('Tus cambios han sido guardados.'),'info')
          return redirect(url_for('main.index',user=current_user.first_name))
@@ -577,7 +594,7 @@ def EditMusicalPiece(id):
 def NewActivity():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
-        return render_template(url_for('users.login'))
+        return redirect(url_for('users.login'))
     form = EditActivityForm(dbmodel=Instrument,original_name='')   
     if form.validate_on_submit():
         if  Activity.query.filter_by(name=form.name.data).all().__len__() > 0:
@@ -586,6 +603,7 @@ def NewActivity():
         else:
             instrument = Instrument.query.filter_by(id=int(form.instrument.data[0])).first_or_404()
             db.session.add(Activity(name=form.name.data,instrument=instrument))
+            addHistoryEntry('Agregado','Actividad: {}'.format(form.name.data))            
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.index',user=current_user.first_name))
@@ -596,7 +614,7 @@ def NewActivity():
 def EditActivity(id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
-        return render_template(url_for('users.login'))
+        return redirect(url_for('users.login'))
     original_activity= Activity.query.filter_by(id=id).first_or_404()
     selectedElements=[]
     selectedElements.append(original_activity.instrument.id)
@@ -605,6 +623,7 @@ def EditActivity(id):
          original_activity.name = form.name.data
          instrument = Instrument.query.filter_by(id=int(form.instrument.data[0])).first_or_404()
          original_activity.instrument = instrument
+         addHistoryEntry('Modificado','Actividad: {}'.format(form.name.data))
          db.session.commit()
          flash(_('Tus cambios han sido guardados.'),'info')
          return redirect(url_for('main.index',user=current_user.first_name))
@@ -619,7 +638,7 @@ def EditActivity(id):
 def NewLocation():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
-        return render_template(url_for('users.login'))
+        return redirect(url_for('users.login'))
     form = EditLocationForm(dbmodel=Instrument,original_name='')   
     if form.validate_on_submit():
         if  Location.query.filter_by(name=form.name.data).all().__len__() > 0:
@@ -628,6 +647,7 @@ def NewLocation():
         else:
             city = City.query.filter_by(id=int(form.city.data[0])).first_or_404()
             db.session.add(Location(name=form.name.data,city=city,additional_info=form.additional_info.data,address=form.address.data))
+            addHistoryEntry('Agregado','Lugar: {}'.format(form.name.data))
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.index',user=current_user.first_name))
@@ -638,7 +658,7 @@ def NewLocation():
 def EditLocation(location):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
-        return render_template(url_for('users.login'))
+        return redirect(url_for('users.login'))
     original_location = Location.query.filter_by(name=location).first_or_404()
     selectedElements=[]
     selectedElements.append(original_location.city.id)
@@ -649,6 +669,7 @@ def EditLocation(location):
          original_location.address=form.address.data
          city = City.query.filter_by(id=int(form.city.data[0])).first_or_404()
          original_location.city = city
+         addHistoryEntry('Modificado','Lugar: {}'.format(form.name.data))
          db.session.commit()
          flash(_('Tus cambios han sido guardados.'),'info')
          return redirect(url_for('main.index',user=current_user.first_name))
@@ -663,7 +684,7 @@ def EditLocation(location):
 def NewOrganization():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
-        return render_template(url_for('users.login'))
+        return redirect(url_for('users.login'))
     form = EditOrganizationForm(dbmodel=Organization,original_name='')   
     if form.validate_on_submit():
         if  Organization.query.filter_by(name=form.name.data).all().__len__() > 0:
@@ -671,6 +692,7 @@ def NewOrganization():
             return render_template('main/editorganization.html',form=form,title=_('Agregar Organización'))
         else:
             db.session.add(Organization(name=form.name.data,additional_info=form.additional_info.data))
+            addHistoryEntry('Agregado','Organización: {}'.format(form.name.data))
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.index',user=current_user.first_name))
@@ -681,12 +703,13 @@ def NewOrganization():
 def EditOrganization(organization):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
-        return render_template(url_for('users.login'))
+        return redirect(url_for('users.login'))
     original_organization =Organization.query.filter_by(name=organization).first_or_404()
     form = EditOrganizationForm(original_name=organization)
     if form.validate_on_submit():
          original_organization.name = form.name.data
          original_organization.additional_info=form.additional_info.data
+         addHistoryEntry('Modificado','Organización: {}'.format(form.name.data))
          db.session.commit()
          flash(_('Tus cambios han sido guardados.'),'info')
          return redirect(url_for('main.index',user=current_user.first_name))
@@ -701,7 +724,7 @@ def EditOrganization(organization):
 def NewPerson():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
-        return render_template(url_for('users.login'))
+        return redirect(url_for('users.login'))
     form = EditPersonForm(original_person=None)   
     if form.validate_on_submit():
         person = Person(first_name=form.first_name.data,last_name=form.last_name.data)
@@ -711,6 +734,7 @@ def NewPerson():
         for country_id in form.nationalities.data:
             person.nationalities.append(Country.query.filter_by(id=country_id).first_or_404())
         db.session.add(person)
+        addHistoryEntry('Agregado','Persona: {} {}'.format(form.first_name.data,form.last_name.data))
         db.session.commit()
         flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.index',user=current_user.first_name))
@@ -721,7 +745,7 @@ def NewPerson():
 def EditPerson(person_id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
-        return render_template(url_for('users.login'))
+        return redirect(url_for('users.login'))
     person = Person.query.filter_by(id=person_id).first_or_404()
     form = EditPersonForm(person)
     selectedElements=[]
@@ -736,6 +760,7 @@ def EditPerson(person_id):
          person.nationalities.clear()
          for country_id in form.nationalities.data:
              person.nationalities.append(Country.query.filter_by(id=country_id).first_or_404())
+         addHistoryEntry('Modificado','Persona: {} {}'.format(form.first_name.data,form.last_name.data))
          db.session.commit()
          flash(_('Tus cambios han sido guardados.'),'info')
          return redirect(url_for('main.index',user=current_user.first_name))
@@ -753,15 +778,12 @@ def EditPerson(person_id):
 def NewEvent():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
-        return render_template(url_for('users.login'))
+        return redirect(url_for('users.login'))
     form = EditEventForm(dbmodel=Event,original_event=None)   
     if form.validate_on_submit():
         if  Event.query.filter_by(name=form.name.data).all().__len__() > 0:
             flash(_('Este nombre ya ha sido registrado'),'error')
-            return render_template('main/newevent.html',form=form,title=_('Agregar Evento'),
-                                   selectedEventTypes=list2csv(form.event_type.data), 
-                                   selectedLocation=list2csv(form.location.data),
-                                   selectedOrganization=list2csv(form.organization.data))
+            return render_template('main/newevent.html',form=form,title=_('Agregar Evento'))
         else:
             location = Location.query.filter_by(id=int(form.location.data[0])).first_or_404()
             organization = Organization.query.filter_by(id=int(form.organization.data[0])).first_or_404()
@@ -773,33 +795,26 @@ def NewEvent():
                                  information=form.information.data,
                                  date=form.event_date.data)
             db.session.add(newevent)
+            addHistoryEntry('Agregado','Evento: {}'.format(form.name.data))
             db.session.commit()
-            return render_template('main/editevent.html',event_id=newevent.id,form=form,title=_('Agregar Evento'),
-                                   selectedEventTypes=list2csv(form.event_type.data), 
-                                   selectedLocation=list2csv(form.location.data),
-                                   selectedOrganization=list2csv(form.organization.data))
-            flash(_('Tus cambios han sido guardados.'),'info')
-    return render_template('main/newevent.html',form=form,title=_('Agregar Evento'),
-                           selectedEventTypes=None,
-                           selectedLocation=None,
-                           selectedOrganization=None)
+            flash(_('Tus cambios han sido guardados.'),'info') 
+            return redirect(url_for('main.EditEvent',event_id=newevent.id))
+    return render_template('main/newevent.html',form=form,title=_('Agregar Evento'))
+
 
 @bp.route('/edit/event/<event_id>', methods = ['GET','POST'])
 @login_required
 def EditEvent(event_id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
-        return render_template(url_for('users.login'))
+        return redirect(url_for('users.login'))
 
     original_event=Event.query.filter_by(id=event_id).first_or_404()
     form = EditEventForm(dbmodel=Event,original_event=original_event)       
     if form.validate_on_submit():
         if  Event.query.filter_by(name=form.name.data).all().__len__() > 0 and (original_event.name  != form.name.data):
             flash(_('Este nombre ya ha sido registrado'),'error')
-            return render_template('main/editevent.html',event_id=event_id,form=form,title=_('Editar Evento'))
-#                                   selectedEventTypes=list2csv([form.event_type.data)], 
-#                                   selectedLocation=list2csv([form.location.data]),
-#                                   selectedOrganization=list2csv([form.organization.data]))
+            return redirect('main/editevent.html',event_id=event_id,form=form,title=_('Editar Evento'))
         else:
             # the next 3 lines is for checking the values actually exists
             Location.query.filter_by(id=int(form.location.data[0])).first_or_404()
@@ -811,25 +826,18 @@ def EditEvent(event_id):
             original_event.event_type_id=form.event_type.data
             original_event.information=form.information.data
             original_event.date=form.event_date.data
+            addHistoryEntry('Modificado','Evento: {}'.format(form.name.data))
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info')
-            return render_template('main/editevent.html',event_id=event_id,form=form,title=_('Editar Evento'),
-                                   selectedEventType=list2csv(form.event_type.data[0]), 
-                                   selectedLocation=list2csv(form.location.data[0]),
-                                   selectedOrganization=list2csv(form.organization.data[0]))
-
+            return redirect(url_for('main.EditEvent',event_id=event_id))
     else:
         form.name.data=original_event.name
         form.event_date.data=original_event.date
         form.information.data=original_event.information
         return render_template('main/editevent.html',event_id=event_id,form=form,title=_('Editar Evento'),
-                           selectedEventType=list2csv([original_event.event_type_id]),
-                           selectedLocation=list2csv([original_event.location_id]),
-                           selectedOrganization=list2csv([original_event.organization_id]))
-    
-
-        
-
+                                   selectedEventType=str(original_event.event_type_id), 
+                                   selectedLocation=str(original_event.location_id),
+                                   selectedOrganization=str(original_event.organization_id))
 
 
 #

@@ -9,7 +9,7 @@ from flask_mail import Mail
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_babel import Babel, lazy_gettext as _l
-from flask_uploads import UploadSet, configure_uploads, DEFAULTS, ARCHIVES
+from flask_uploads import UploadSet, configure_uploads, AllExcept
 #from elasticsearch import Elasticsearch
 from config import Config
 
@@ -22,7 +22,7 @@ mail = Mail()
 bootstrap = Bootstrap()
 moment = Moment()
 babel = Babel()
-files_collection = UploadSet('uploads', DEFAULTS+ARCHIVES)
+files_collection = UploadSet('uploads', AllExcept(('exe', 'iso')))
 
 
 def create_app(config_class=Config):

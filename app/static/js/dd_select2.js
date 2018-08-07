@@ -2,7 +2,7 @@ var dropsdowns=document.getElementsByClassName("dd_select2")
 for (var i = 0; i < dropsdowns.length; i++) {
     $(dropsdowns[i]).select2({
       placeholder: dropsdowns[i].getAttribute('description'),
-      width : '250px',
+      width : '350px',
       ajax: {
         url: '/list/'+dropsdowns[i].getAttribute('url'),
         dataType: 'json',

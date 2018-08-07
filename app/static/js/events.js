@@ -186,7 +186,7 @@ function linkCol(value, row, index){
 
 $(function() {
     $('#uploadButton').click(function() {
-        event.preventDefault();
+        //event.preventDefault();
         var form_data = new FormData($('#uploadform')[0]);
         form_data.append("description",$('#description')[0].value)
         for (var [key, value] of form_data.entries()) { 
