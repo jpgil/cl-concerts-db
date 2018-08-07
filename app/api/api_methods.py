@@ -166,7 +166,7 @@ def deleteFile():
     file=MediaLink.query.filter_by(id=request.form['medialink_id']).first()        
     try:
         os.remove(files_collection.path(file.filename))
-        addHistoryEntry('Eliminado','Archivo: {} a {}'.format(file.filename,file.event.name))
+        addHistoryEntry('Eliminado','Archivo: {} de {}'.format(file.filename,file.event.name))
         db.session.delete(file)
         db.session.commit()
         response = jsonify({})

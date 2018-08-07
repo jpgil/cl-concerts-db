@@ -48,6 +48,7 @@
               <li role="separator" class="divider"></li>
               <li><a href="{{ url_for('main.view_events')}}" > {{ _('Eventos') }}</a></li>            
           </ul>
+                <li><a href="{{ url_for('main.view_history')}}" > {{ _('Historial') }}</a></li>
         </li>
         <li>
                     {% if current_user.is_anonymous %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <h1>{{ _('Historial') }}</h1>
+                <table id="table-medialink"
+               data-toggle="table"
+               data-sort-name="datetime" 
+               data-sort-order="desc"
+               data-sort-stable="true"
+               data-show-footer="false"
+               data-only-info-pagination="false"
+               data-side-pagination="server"
+               data-pagination="true"
+               data-page-size="20"
+               data-page-list="[20, 50, 100, 200]"
+               data-url={{ url_for("main.getHistoryTable") }}  >
+                <thead>
+                    <tr>
+                        <th data-field="datetime">{{ _("Fecha/Hora") }} </th>
+                        <th data-field="user">{{ _("Usuario") }} </th>
+                        <th data-field="operation">{{ _("Operación") }} </th>
+                        <th data-field="description">{{ _("Descripción") }} </th>
+                    </tr>
+                </thead>
+            </table>
+{% endblock %}
