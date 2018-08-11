@@ -23,7 +23,7 @@
                 {% endfor %}
         </div>
         <br>
-                
+        
         <div class="row"> {{ form.composer.label }} </div>
         <div class="row">  {{ form.composer( **{"class":"dd_select2", "url":"people", "description":_("Compositor"),  "maxelem":"1" , "selectedElements":selectedElements } ) }}  </div> 
         <div class="row">
@@ -32,7 +32,18 @@
                 {% endfor %}
         </div> 
         <br> 
-        
+                
+
+        <div class="row"> {{ form.instrument.label }} </div>
+        <div class="row">  {{ form.instrument( **{"class":"dd_select2", "url":"instruments", "description":_("Instrumento"),  "maxelem":"1" , "selectedElements":selectedInstrument } ) }}  </div> 
+        <div class="row">
+                {% for error in form.instrument.errors %}
+                   <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+        </div> 
+        <br> 
+                        
+
         
         
         <div class="row"></div>

@@ -46,6 +46,7 @@ class EditMusicalPieceForm(FlaskForm):
     name=StringField(_l('Nombre'),validators=[DataRequired()])
     composer= NonValidatingSelectMultipleField(label=_("Compositor"),choices=[],validators=[DataRequired()])
     composition_year=IntegerField(_('Año de composición'),validators=[Optional(), NumberRange(min=1, max=3000, message=_('El año ingresado no es válido'))])
+    instrument = NonValidatingSelectMultipleField(label=_("Instrumento"),choices=[],validators=[DataRequired()])
     submit = SubmitField(_l('Guardar'))
     def __init__(self, original_name ,*args, **kwargs):
         super(EditMusicalPieceForm, self).__init__(*args, **kwargs)
@@ -74,17 +75,20 @@ class EditPersonForm(FlaskForm):
     first_name=StringField(_l('Nombre'))
     last_name=StringField(_l('Apellido'))    
     nationalities= NonValidatingSelectMultipleField(label=_("Nacionalidades"),choices=[])
-    birth_date=DateField(_('Nacimiento (YYYY-MM-DD)'),validators=[Optional()])
-    death_date=DateField(_('Muerte (YYYY-MM-DD)'),validators=[Optional()])
+    birth_year=IntegerField(_('Año de Nacimiento'),validators=[Optional()])
+    death_year=IntegerField(_('Año de Muerte'),validators=[Optional()])
+    gender= NonValidatingSelectMultipleField(label=_("Sexo"),choices=[],validators=[DataRequired()])
     biography=TextAreaField(_('Información Biográfica'))
     submit = SubmitField(_l('Guardar'))
     def __init__(self, original_person ,*args, **kwargs):
         super(EditPersonForm, self).__init__(*args, **kwargs)
         self.original_first_name=None
         self.original_last_name=None
+        self.original_gender=None
         if original_person:
             self.original_first_name=original_person.first_name
             self.original_last_name=original_person.last_name
+            self.original_gender=original_person.gender.id
     def validate_name(self,name):
         if(self.first_name.data != self.original_first_name and self.last_name.data != self.original_last_name):
             db_elem_instance = Person.query.filter_by(first_name=self.first_name.data).filter_by(last_name=self.last_name.data).first()
@@ -96,9 +100,9 @@ class EditPersonForm(FlaskForm):
         self.validate_name(first_name)
     def validate_last_name(self,last_name):
         self.validate_name(last_name)
-    def validate_birth_date(self,birth):
-        if self.birth_date.data and self.death_date.data:
-            if (self.birth_date.data>self.death_date.data):
+    def validate_birth_year(self,birth):
+        if self.birth_year.data and self.death_year.data:
+            if (int(self.birth_year.data)>int(self.death_year.data)):
                raise ValidationError(_('La fecha de nacimiento no puede ser mayor a la de muerte')) 
 
 

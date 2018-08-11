@@ -2,7 +2,7 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
-    <h1>{{ title }}</h1>
+    <h1>{{ title }}</h1> 
     <form action="" method="post">
     {{ form.hidden_tag() }}
     <div class="container">
@@ -24,19 +24,28 @@
         </div>
         <br>
 
-        <div class="row"> {{ form.birth_date.label }} </div>
-        <div class="row">  {{ form.birth_date }} </div>                
+        <div class="row"> {{ form.gender.label }} </div>
+        <div class="row">  {{ form.gender( **{"class":"dd_select2", "url":"genders", "description":_("Sexo"),  "maxelem":"1" , "selectedElements":selectedElementGender } ) }}  </div> 
         <div class="row">
-                {% for error in form.birth_date.errors %}
+                {% for error in form.gender.errors %}
+                   <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+        </div> 
+        <br> 
+        
+        <div class="row"> {{ form.birth_year.label }} </div>
+        <div class="row">  {{ form.birth_year }} </div>                
+        <div class="row">
+                {% for error in form.birth_year.errors %}
                    <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
         </div>
         <br>
 
-        <div class="row"> {{ form.death_date.label }} </div>
-        <div class="row">  {{ form.death_date }} </div>                
+        <div class="row"> {{ form.death_year.label }} </div>
+        <div class="row">  {{ form.death_year }} </div>                
         <div class="row">
-                {% for error in form.death_date.errors %}
+                {% for error in form.death_year.errors %}
                    <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
         </div>

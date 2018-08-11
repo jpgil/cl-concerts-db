@@ -274,6 +274,18 @@ def getMusicalPieceList():
 def getMusicalPieceItem(id):
     return getMusicalPiece(id)
 
+
+@bp.route('/list/genders')
+def getGenderList():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getItemList(Gender,q,page)
+
+@bp.route('/list/genders/<id>')
+def getGenderItem(id):
+    return getItem(Gender,id)
+
+
 @bp.route('/list/locations')
 def getLocationList():
     page = request.args.get('page', 1, type=int)
@@ -579,8 +591,9 @@ def NewMusicalPiece():
             return render_template('main/editmusicalpiece.html',form=form,title=_('Agregar Obra Musical'),selectedElements=None)
         else:
             composer = Person.query.filter_by(id=int(form.composer.data[0])).first_or_404()
+            instrument = Instrument.query.filter_by(id=int(form.instrument.data[0])).first_or_404()
             addHistoryEntry('Agregado','Obra Musical: {}'.format(form.name.data))
-            db.session.add(MusicalPiece(name=form.name.data,composer=composer,composition_year=form.composition_year.data))
+            db.session.add(MusicalPiece(name=form.name.data,composer=composer,composition_year=form.composition_year.data,instrument=instrument))
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.index',user=current_user.first_name))
@@ -595,11 +608,12 @@ def EditMusicalPiece(id):
     musical_piece = MusicalPiece.query.filter_by(id=id).first_or_404()
     selectedElements=[]
     selectedElements.append(musical_piece.composer.id)
+    selectedInstrument=str(musical_piece.instrument_id)
     form = EditMusicalPieceForm(original_name=musical_piece.name)
     if form.validate_on_submit():
          musical_piece.name = form.name.data
-         composer = Person.query.filter_by(id=int(form.composer.data[0])).first_or_404()
-         musical_piece.composer = composer
+         musical_piece.composer  = Person.query.filter_by(id=int(form.composer.data[0])).first_or_404()
+         musical_piece.instrument = Instrument.query.filter_by(id=int(form.instrument.data[0])).first_or_404()
          musical_piece.composition_year = form.composition_year.data
          addHistoryEntry('Modificado','Obra Musical: {}'.format(form.name.data))
          db.session.commit()
@@ -608,7 +622,7 @@ def EditMusicalPiece(id):
     elif request.method == 'GET':
         form.name.data = musical_piece.name  
         form.composition_year.data = musical_piece.composition_year
-    return render_template('main/editmusicalpiece.html',form=form,title=_('Editar Obra Musical'),selectedElements=list2csv(selectedElements))    
+    return render_template('main/editmusicalpiece.html',form=form,title=_('Editar Obra Musical'),selectedElements=list2csv(selectedElements),selectedInstrument=selectedInstrument)    
 
 
 @bp.route('/new/activity', methods = ['GET','POST'])
@@ -750,9 +764,10 @@ def NewPerson():
     form = EditPersonForm(original_person=None)   
     if form.validate_on_submit():
         person = Person(first_name=form.first_name.data,last_name=form.last_name.data)
-        person.birth_date = form.birth_date.data
-        person.death_date = form.death_date.data
+        person.birth_year = form.birth_year.data
+        person.death_year = form.death_year.data
         person.biography= form.biography.data
+        person.gender=Gender.query.filter_by(id= int(form.gender.data[0])).first_or_404()
         for country_id in form.nationalities.data:
             person.nationalities.append(Country.query.filter_by(id=country_id).first_or_404())
         db.session.add(person)
@@ -773,12 +788,14 @@ def EditPerson(person_id):
     selectedElements=[]
     for nationality in person.nationalities:
         selectedElements.append(nationality.id)
+    selectedElementGender=str(person.gender.id)
     if form.validate_on_submit():
          person.first_name = form.first_name.data
          person.last_name = form.last_name.data
-         person.birth_date = form.birth_date.data
-         person.death_date = form.death_date.data
+         person.birth_year = form.birth_year.data
+         person.death_year = form.death_year.data
          person.biography= form.biography.data
+         person.gender = Gender.query.filter_by(id=int(form.gender.data[0])).first_or_404()
          person.nationalities.clear()
          for country_id in form.nationalities.data:
              person.nationalities.append(Country.query.filter_by(id=country_id).first_or_404())
@@ -789,10 +806,10 @@ def EditPerson(person_id):
     elif request.method == 'GET':
          form.first_name.data = person.first_name
          form.last_name.data = person.last_name
-         form.birth_date.data = person.birth_date
-         form.death_date.data = person.death_date
+         form.birth_year.data = person.birth_year
+         form.death_year.data = person.death_year
          form.biography.data = person.biography
-    return render_template('main/editperson.html',form=form,title=_('Editar Persona'),selectedElements=list2csv(selectedElements))    
+    return render_template('main/editperson.html',form=form,title=_('Editar Persona'),selectedElements=list2csv(selectedElements),selectedElementGender=selectedElementGender)    
 
 
 @bp.route('/new/event', methods = ['GET','POST'])

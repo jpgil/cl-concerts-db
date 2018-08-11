@@ -73,6 +73,7 @@ class Instrument(db.Model):
     name = db.Column(db.String(80))
     instrument_type_id = db.Column(db.Integer, db.ForeignKey('instrument_type.id'))
     activity = db.relationship("Activity", uselist=False, backref="instrument")
+    musical_pieces = db.relationship("MusicalPiece", backref="instrument")
     def __repr__(self):
         return 'Instrument(name="{}",instrument_type={})'.format(self.name,self.instrument_type.name)
     
@@ -83,6 +84,13 @@ class City(db.Model):
     def __repr__(self):
         return 'City(name="{}")'.format(self.name)   
 
+class Gender(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30)) 
+    persons= db.relationship('Person', backref='gender')
+    def __repr__(self):
+        return 'Gender(name="{}")'.format(self.name)
+    
 class Organization(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(65)) 
@@ -121,9 +129,10 @@ class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(80))
     last_name = db.Column(db.String(80))
-    birth_date = db.Column(db.Date)
-    death_date = db.Column(db.Date)    
+    birth_year = db.Column(db.Integer)
+    death_year = db.Column(db.Integer)    
     biography = db.Column(db.String(8000))    
+    gender_id = db.Column(db.Integer, db.ForeignKey('gender.id'))
     musical_pieces = db.relationship('MusicalPiece', backref='composer', lazy='dynamic') 
     participants = db.relationship('Participant', backref='person', lazy='dynamic')
     nationalities  = db.relationship('Country',
@@ -184,6 +193,7 @@ class MusicalPiece(db.Model):
     composition_year = db.Column(db.Integer)
     composer_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     performances = db.relationship("Performance", backref="musical_piece")
+    instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'))
     def __repr__(self):
         return 'MusicalPiece(name="{}",composition_year="{}",composer_id="{}")'.format(self.name,self.composition_year,self.composer_id) 
 
