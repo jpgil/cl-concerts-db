@@ -43,7 +43,7 @@ class EditInstrumentForm(FlaskForm):
                 raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
 
 class EditMusicalPieceForm(FlaskForm):
-    name=StringField(_l('Nombre'),validators=[DataRequired()])
+    name=StringField(_l('Título'),validators=[DataRequired()])
     composer= NonValidatingSelectMultipleField(label=_("Compositor"),choices=[],validators=[DataRequired()])
     composition_year=IntegerField(_('Año de composición'),validators=[Optional(), NumberRange(min=1, max=3000, message=_('El año ingresado no es válido'))])
     instrument = NonValidatingSelectMultipleField(label=_("Instrumento"),choices=[],validators=[DataRequired()])
