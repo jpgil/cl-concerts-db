@@ -3,6 +3,20 @@
 {% block app_content %}
     <h2>{{ _("Hola ") }}{{ user }},</h2>
     <br>
+    <h1>{{ _("Bienvenid@ a cl-concerts-db") }}</h1>
     <br>
-    <h1>{{ _("Bienvenid@ a cl-concerts-db") }}<h1>
+    <h3>{{ _("Últimas actualizaciones") }}</h3>
+    <div class="container">
+      <div class="panel panel-default">
+        <div class="panel-heading">2018-08-14</div>
+        <div class="panel-body">
+          <ul>
+            <li>Corregido un error guardando el historial</li>
+            <li>Agregado botón 'Nueva Persona' al tab de Participantes en la edición de Eventos</li>
+            <li>Agregado botón 'Nueva Actividad' al tab de Participantes en la edición de Eventos</li>            
+          </ul>
+        </div>
+      </div>
+    </div>
+    
 {% endblock %}
