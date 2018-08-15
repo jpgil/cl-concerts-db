@@ -78,10 +78,23 @@
         <div id="sectionParticipants" class="tab-pane fade">
         
             <div><h2>{{ _("Participantes") }} </h2> </div>
-            {{ _("Agregar participante: ")}}
-                {{ form.person( **{"class":"dd_select2", "url":"people", "description":_("Persona"),  "maxelem":"1", "selectedElements" : "" } ) }}
-                {{ form.activity( **{"class":"dd_select2", "url":"activities", "description":_("Actividad"),  "maxelem":"1", "selectedElements" : "" } ) }}
-                <button type="button"  onclick="addParticipant({{event_id}})" class="btn btn-primary">Agregar</button>
+
+              
+           
+             <div class="row">           
+                 <div class="col-sm-2"> {{ _("Agregar participante: ")}}</div>
+                 <div class="col-sm-4"> {{ form.person( **{"class":"dd_select2", "url":"people", "description":_("Persona"),  "maxelem":"1", "selectedElements" : "" } ) }} </div>
+                 <div class="col-sm-4"> {{ form.activity( **{"class":"dd_select2", "url":"activities", "description":_("Actividad"),  "maxelem":"1", "selectedElements" : "" } ) }} </div>
+                 <div class="col-sm-1"><button type="button"  onclick="addParticipant({{event_id}})" class="btn btn-primary">Agregar</button> </div>
+            </div>
+             <div class="row justify-content-start">           
+                 <div class="col-sm-2"> </div>
+                 <div class="col-sm-4"><a href="{{ url_for('main.NewPerson') }}" target="_blank" class="btn btn-default" role="button">{{ _("Nueva Persona") }} </a>  </div>
+                 <div class="col-sm-4"><a href="{{ url_for('main.NewActivity') }}" target="_blank" class="btn btn-default" role="button">{{ _("Nueva Actividad") }} </a>  </div>
+                 <div class="col-sm-1"> </div>
+            </div>
+                        
+            <br>    
             <table id="table-participants"
                data-toggle="table"
                data-show-footer="false"
