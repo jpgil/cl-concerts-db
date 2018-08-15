@@ -442,7 +442,7 @@ def EditSimpleElement(dbmodel,title,original_name):
     form = EditSimpleElementForm(dbmodel=dbmodel,original_name=original_name)
     if form.validate_on_submit():
         db_element.name = form.name.data
-        addHistoryEntry('Modificado','{}: {}'.format(title[8:],form.name.data))
+        addHistoryEntry('Modificado','{}: {}'.format(' '.join(title.split(' ')[1:]),form.name.data))
         db.session.commit()
         flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.index',user=current_user.first_name))
