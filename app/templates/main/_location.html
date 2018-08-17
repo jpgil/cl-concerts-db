@@ -1,9 +1,9 @@
 <tr>
     <td width="70px">
     {% if ( current_user.profile.name == 'Administrador') or ( current_user.profile.name == 'Editor')   %}
-        <a href={{ url_for('main.EditLocation',location= location.name) }}>{{ location.name }},{{ location.city.name }} <a/>
+        <a href={{ url_for('main.EditLocation',location= location.name) }}>{{ location.name }}, {{ location.city.name }} <a/>
     {% else %}
-        {{ location.name }},{{ location.city.name  }}
+        {{ location.name }}, {{ location.city.name  }}
     {% endif %}
     </td>
 <tr>

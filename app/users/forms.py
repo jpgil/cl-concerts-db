@@ -28,10 +28,7 @@ class RegistrationForm(FlaskForm):
         _l('Repetir Contraseña'), validators=[DataRequired(),
                                            EqualTo('password')])
 
-    perfil = QuerySelectField(query_factory=profile_query, allow_blank=False, get_label = 'name', widget=Select2Widget())
-
-    
-    
+    perfil = QuerySelectField(query_factory=profile_query, allow_blank=False, get_label = 'name', widget=Select2Widget()) 
     submit = SubmitField(_l('Registrase'))
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
@@ -55,4 +52,7 @@ class EditProfileForm(FlaskForm):
     first_name = StringField(_l('Nombre'), validators=[DataRequired()])
     last_name = StringField(_l('Apellido'), validators=[DataRequired()])
     email = StringField(_l('e-mail'),render_kw={'readonly': True})
-    submit = SubmitField(_l('Submit'))
+    password = PasswordField(_l('Contraseña (dejar en blanco para mantener)'))
+    password2 = PasswordField(
+        _l('Repetir Contraseña'), validators=[ EqualTo('password')])
+    submit = SubmitField(_l('Guardar Cambios'))

@@ -394,6 +394,7 @@ def getHistoryTable():
     return jsonify(data)    
     
 @bp.route('/view/history')
+@login_required
 def view_history():
     return render_template('main/history.html')
     

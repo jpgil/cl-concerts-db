@@ -63,8 +63,8 @@ def create_app(config_class=Config):
                 secure = ()
             mail_handler = SMTPHandler(
                 mailhost=(app.config['MAIL_SERVER'], app.config['MAIL_PORT']),
-                fromaddr='no-reply@' + app.config['MAIL_SERVER'],
-                toaddrs=app.config['ADMINS'], subject='Error en cl-concerts-db',
+                fromaddr=app.config['MAIL_SENDER'],
+                toaddrs=app.config['MAIL_RECEIVER'], subject='Error en cl-concerts-db',
                 credentials=auth, secure=secure)
             mail_handler.setLevel(logging.ERROR)
             app.logger.addHandler(mail_handler)
