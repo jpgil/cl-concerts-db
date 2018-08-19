@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from flask_babel import _, lazy_gettext as _l
@@ -27,7 +27,6 @@ class RegistrationForm(FlaskForm):
     password2 = PasswordField(
         _l('Repetir Contraseña'), validators=[DataRequired(),
                                            EqualTo('password')])
-
     perfil = QuerySelectField(query_factory=profile_query, allow_blank=False, get_label = 'name', widget=Select2Widget()) 
     submit = SubmitField(_l('Registrase'))
     def validate_email(self, email):
@@ -56,3 +55,22 @@ class EditProfileForm(FlaskForm):
     password2 = PasswordField(
         _l('Repetir Contraseña'), validators=[ EqualTo('password')])
     submit = SubmitField(_l('Guardar Cambios'))
+
+class EditUserForm(FlaskForm):
+    profile_id = HiddenField('original_profile_id')
+    first_name = StringField(_l('Nombre'), validators=[DataRequired()])
+    last_name = StringField(_l('Apellido'), validators=[DataRequired()])
+    email = StringField(_l('Email'), validators=[DataRequired(), Email()])
+    perfil = QuerySelectField(query_factory=profile_query, allow_blank=False, get_label = 'name', widget=Select2Widget(), render_kw={'autocomplete': False}) 
+    password = PasswordField(_l('Contraseña (dejar en blanco para mantener)'), render_kw={'autocomplete': False})
+    password2 = PasswordField(
+        _l('Repetir Contraseña'), validators=[ EqualTo('password')], render_kw={'autocomplete': False})
+    submit = SubmitField(_l('Guardar Cambios'))
+    def __init__(self, original_email ,*args, **kwargs):
+        super(EditUserForm, self).__init__(*args, **kwargs)
+        self.original_email = original_email    
+    def validate_email(self, email):
+        if email.data != self.original_email:
+            user = User.query.filter_by(email=email.data).first()
+            if user is not None:
+                raise ValidationError(_('E-mail ya registrado, por favor, use un e-mail diferente.'))

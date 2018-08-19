@@ -1,0 +1,9 @@
+<tr>
+    <td width="70px">
+    {% if ( current_user.profile.name == 'Administrador')   %}
+        <a href={{ url_for('users.edit_user',user_id= user.id) }}>{{ user.get_full_name() }} <a/>
+    {% else %}
+        {{ user.get_full_name() }}
+    {% endif %}
+    </td>
+<tr>

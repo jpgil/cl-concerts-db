@@ -20,6 +20,9 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return 'User(first_name="{}",last_name="{}",email="{}")'.format(self.first_name,
                        self.last_name,self.email)
+    def get_full_name(self):
+        return '{}, {}'.format(self.last_name,self.first_name) if self.last_name else self.first_name
+    
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
     def check_password(self, password):
