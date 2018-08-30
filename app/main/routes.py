@@ -376,16 +376,18 @@ def getPerformancesListTable(event_id):
         data["total"]=performances.__len__() 
     return jsonify(data)
 
+
 @bp.route('/listtable/historytable')
 def getHistoryTable():
     data={ "rows": [], "total":  db.session.query(History.timestamp).count() }
     limit = request.args.get('limit', 10, type=int)
     offset = request.args.get('offset', 0, type=int)
     order = request.args.get('order', '', type=str)
+    search = request.args.get('search', '', type=str)
     if order.upper() == 'ASC':
-        entries=History.query.order_by(History.timestamp.asc()).limit(limit).offset(offset).all()
+        entries=History.query.filter(History.description.ilike('%{}%'.format(search))).order_by(History.timestamp.asc()).limit(limit).offset(offset).all()
     else:
-        entries=History.query.order_by(History.timestamp.desc()).limit(limit).offset(offset).all()
+        entries=History.query.filter(History.description.ilike('%{}%'.format(search))).order_by(History.timestamp.desc()).limit(limit).offset(offset).all()
     for entry in entries:
         data["rows"].append({ "user" : "{} {}".format(entry.user.first_name,entry.user.last_name),
                               "datetime" : entry.timestamp.isoformat(),
