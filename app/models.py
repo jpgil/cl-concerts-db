@@ -109,6 +109,13 @@ class EventType(db.Model):
     events = db.relationship('Event', backref='event_type', lazy='dynamic') 
     def __repr__(self):
         return 'EventType(name="{}")'.format(self.name)   
+
+class Cycle(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80)) 
+    events = db.relationship('Event', backref='cycle', lazy='dynamic') 
+    def __repr__(self):
+        return 'Cycle(name="{}")'.format(self.name)  
         
 class Country(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -183,6 +190,7 @@ class Event(db.Model):
     organization_id = db.Column(db.Integer, db.ForeignKey('organization.id'))
     information = db.Column(db.String(4000))  
     event_type_id = db.Column(db.Integer, db.ForeignKey('event_type.id'))
+    cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
     participants = db.relationship('Participant', backref='event', lazy='dynamic')
     performances = db.relationship('Performance', backref='event', lazy='dynamic')
     medialinks = db.relationship('MediaLink', backref='event', lazy='dynamic')

@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
-</style>
-
 {% block app_content %}
 <style type="text/css">
 	.event-tabs{
@@ -30,14 +28,14 @@
             {% for error in form.name.errors %}
                 <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-             <br><br>
+             <br>
             {{ form.event_date.label }} <br>
             {{ form.event_date }} <br>                
 
             {% for error in form.event_date.errors %}
                 <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-            <br><br>      
+            <br>     
                         
             {{ form.location.label }} <br>
             {{ form.location( **{"class":"dd_select2", "url":"locations", "description":_("Lugar"),  "maxelem":"1" , "selectedElements":selectedLocation } ) }}  
@@ -46,7 +44,7 @@
             {% for error in form.location.errors %}
                  <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-            <br><br> 
+            <br>
             {{ form.organization.label }} <br>
             {{ form.organization( **{"class":"dd_select2", "url":"organizations", "description":_("Organización"),  "maxelem":"1" , "selectedElements":selectedOrganization } ) }} 
                   <a href="{{ url_for('main.NewOrganization') }}" target="_blank" class="btn btn-primary" role="button"> {{ _("Nuevo") }}</a> 
@@ -54,7 +52,7 @@
             {% for error in form.organization.errors %}
                 <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-            <br><br> 
+            <br>
         
             {{ form.event_type.label }} <br>
             {{ form.event_type( **{"class":"dd_select2", "url":"eventtypes", "description":_("Tipo de Evento"),  "maxelem":"1" , "selectedElements":selectedEventType } ) }} 
@@ -63,8 +61,17 @@
             {% for error in form.event_type.errors %}
                 <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-             <br><br>         
-                        
+             <br>    
+
+            {{ form.cycle.label }} <br>
+            {{ form.cycle( **{"class":"dd_select2", "url":"cycles", "description":_("Ciclo"),  "maxelem":"1" , "selectedElements":selectedCycle } ) }} 
+                <a href="{{ url_for('main.NewCycle') }}" target="_blank" class="btn btn-primary" role="button">{{ _("Nuevo") }} </a> 
+            <br> 
+            {% for error in form.cycle.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            <br>      
+                                     
             {{ form.information.label }} <br>
             {{ form.information(cols="55", rows="10")|safe }} <br>                
             

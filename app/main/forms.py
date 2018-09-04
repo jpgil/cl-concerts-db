@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, SelectMultipleField, SelectField, IntegerField, DateField
 from wtforms.validators import ValidationError, DataRequired, Length, Optional, NumberRange
 from flask_babel import _, lazy_gettext as _l
-from app.models import User, Country, Instrument, InstrumentType, Person,\
+from app.models import  Instrument, InstrumentType, Person,\
                         Location, Organization, EventType, Event, MusicalPiece,\
                         Activity
 
@@ -141,7 +141,8 @@ class EditEventForm(FlaskForm):
     event_date=DateField(_('Fecha del Evento (YYYY-MM-DD)'),validators=[Optional()])
     information=TextAreaField(_('Información'))
     event_type= NonValidatingSelectMultipleField(label=_("Tipo de Evento"),choices=[],validators=[DataRequired()])
-    # the following fields will bo be read used when created a new event. They are placed here just for allowing to 
+    cycle= NonValidatingSelectMultipleField(label=_("Ciclo"),choices=[],validators=[DataRequired()])
+    # the following fields will no be read used when created a new event. They are placed here just for allowing to 
     # appear for adding new participants/actividades/performances/relations
     person= NonValidatingSelectMultipleField(label=_("Persona"),choices=[],validators=[Optional()])
     activity= NonValidatingSelectMultipleField(label=_("Actividad"),choices=[],validators=[Optional()])

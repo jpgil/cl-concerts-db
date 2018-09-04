@@ -64,6 +64,10 @@ def view_countries():
 def view_eventtypes():
     return view_elements(EventType,'eventtypes',_('Tipos de Eventos'))
 
+@bp.route('/view/cycles')
+@login_required
+def view_cycles():
+    return view_elements(Cycle,'cycles',_('Ciclos'))
 
 @bp.route('/view/events')
 @login_required
@@ -202,7 +206,6 @@ def getCountryList():
 def getCountryItem(id):
     return getItem(Country,id)
 
-
 @bp.route('/list/eventtypes')
 def getEventTypeList():
     page = request.args.get('page', 1, type=int)
@@ -212,6 +215,17 @@ def getEventTypeList():
 @bp.route('/list/eventtypes/<id>')
 def getEventTypeItem(id):
     return getItem(EventType,id)
+
+@bp.route('/list/cycles')
+def getCycleList():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getItemList(Cycle,q,page)
+
+@bp.route('/list/cycles/<id>')
+def getCycleItem(id):
+    return getItem(Cycle,id)
+
 
 
 @bp.route('/list/events')
@@ -465,6 +479,10 @@ def EditCountry(country):
 def EditEventType(event_type):
     return EditSimpleElement(EventType,_('Editar Tipo de Evento'),event_type)
 
+@bp.route('/edit/cycle/<cycle>',methods = ['GET','POST'])
+@login_required
+def EditCycle(cycle):
+    return EditSimpleElement(Cycle,_('Editar Ciclo'),cycle)
  
 @bp.route('/edit/city/<city>',methods = ['GET','POST'])
 @login_required
@@ -511,6 +529,11 @@ def NewCountry():
 @login_required
 def NewEventType():
     return NewSimpleElement(EventType,_('Agregar Tipo de Evento'))
+
+@bp.route('/new/cycle', methods = ['GET','POST'])
+@login_required
+def NewCycle():
+    return NewSimpleElement(Cycle,_('Agregar Ciclo'))
 
 @bp.route('/new/city', methods = ['GET','POST'])
 @login_required
@@ -830,10 +853,12 @@ def NewEvent():
             location = Location.query.filter_by(id=int(form.location.data[0])).first_or_404()
             organization = Organization.query.filter_by(id=int(form.organization.data[0])).first_or_404()
             event_type = EventType.query.filter_by(id=int(form.event_type.data[0])).first_or_404()
+            cycle = Cycle.query.filter_by(id=int(form.cycle.data[0])).first_or_404()
             newevent=Event(name=form.name.data,
                                  organization=organization,
                                  location=location,
                                  event_type=event_type,
+                                 cycle=cycle,
                                  information=form.information.data,
                                  date=form.event_date.data)
             db.session.add(newevent)
@@ -862,10 +887,12 @@ def EditEvent(event_id):
             Location.query.filter_by(id=int(form.location.data[0])).first_or_404()
             Organization.query.filter_by(id=int(form.organization.data[0])).first_or_404()
             EventType.query.filter_by(id=int(form.event_type.data[0])).first_or_404()
+            Cycle.query.filter_by(id=int(form.cycle.data[0])).first_or_404()            
             original_event.name=form.name.data
             original_event.organization_id=form.organization.data
             original_event.location_id=form.location.data
             original_event.event_type_id=form.event_type.data
+            original_event.cycle_id=form.cycle.data
             original_event.information=form.information.data
             original_event.date=form.event_date.data
             addHistoryEntry('Modificado','Evento: {}'.format(form.name.data))
@@ -878,6 +905,7 @@ def EditEvent(event_id):
         form.information.data=original_event.information
         return render_template('main/editevent.html',event_id=event_id,form=form,title=_('Editar Evento'),
                                    selectedEventType=str(original_event.event_type_id), 
+                                   selectedCycle=str(original_event.cycle_id),
                                    selectedLocation=str(original_event.location_id),
                                    selectedOrganization=str(original_event.organization_id))
 
