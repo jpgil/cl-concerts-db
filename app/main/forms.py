@@ -59,7 +59,7 @@ class EditMusicalPieceForm(FlaskForm):
 
 class EditActivityForm(FlaskForm):
     name=StringField(_l('Nombre'),validators=[DataRequired()])
-    instrument= NonValidatingSelectMultipleField(label=_("Instrumento"),choices=[],validators=[Optional()])
+    instrument= NonValidatingSelectMultipleField(label=_("Instrumento"),choices=[],validators=[DataRequired()])
     submit = SubmitField(_l('Guardar'))
     def __init__(self, original_name ,*args, **kwargs):
         super(EditActivityForm, self).__init__(*args, **kwargs)
@@ -138,7 +138,7 @@ class EditEventForm(FlaskForm):
     name=StringField(_l('Nombre del Evento'))
     organization= NonValidatingSelectMultipleField(label=_("Organizador"),choices=[],validators=[DataRequired()])
     location= NonValidatingSelectMultipleField(label=_("Lugar"),choices=[],validators=[DataRequired()])
-    event_date=DateField(_('Fecha del Evento (YYYY-MM-DD)'),validators=[Optional()])
+    event_date=DateField(_('Fecha del Evento (YYYY-MM-DD)'),validators=[DataRequired()])
     information=TextAreaField(_('Información'))
     event_type= NonValidatingSelectMultipleField(label=_("Tipo de Evento"),choices=[],validators=[DataRequired()])
     cycle= NonValidatingSelectMultipleField(label=_("Ciclo"),choices=[],validators=[DataRequired()])
@@ -157,9 +157,9 @@ class EditEventForm(FlaskForm):
         self.original_name=None
         if original_event:
             self.original_name=original_event.name
-    def validate_name(self,name):
-        if self.name.data != self.original_name:
-            db_elem_instance = Event.query.filter_by(name=self.name.data).first()
-            if db_elem_instance is not None:
-                raise ValidationError(_('Este nombre: {} ya está registrado, por favor, use uno diferente').format(self.name.data))
+#    def validate_name(self,name):
+#        if self.name.data != self.original_name:
+#            db_elem_instance = Event.query.filter_by(name=self.name.data).first()
+#            if db_elem_instance is not None:
+#                raise ValidationError(_('Este nombre: {} ya está registrado, por favor, use uno diferente').format(self.name.data))
   

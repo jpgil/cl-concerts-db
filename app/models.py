@@ -194,6 +194,8 @@ class Event(db.Model):
     participants = db.relationship('Participant', backref='event', lazy='dynamic')
     performances = db.relationship('Performance', backref='event', lazy='dynamic')
     medialinks = db.relationship('MediaLink', backref='event', lazy='dynamic')
+    def get_event_name(self):
+        return '[{}] {} - {}'.format(self.date,self.event_type.name, self.name) if self.name else  '[{}] {}'.format(self.date,self.event_type.name)
     def __repr__(self):
         return 'Event(name="{}",date="{}",location_id="{}", organization_id="{}")'.format(self.name,self.date,self.location_id,self.organization_id)
 

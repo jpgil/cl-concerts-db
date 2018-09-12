@@ -846,26 +846,26 @@ def NewEvent():
         return redirect(url_for('users.login'))
     form = EditEventForm(dbmodel=Event,original_event=None)   
     if form.validate_on_submit():
-        if  Event.query.filter_by(name=form.name.data).all().__len__() > 0:
-            flash(_('Este nombre ya ha sido registrado'),'error')
-            return render_template('main/newevent.html',form=form,title=_('Agregar Evento'))
-        else:
-            location = Location.query.filter_by(id=int(form.location.data[0])).first_or_404()
-            organization = Organization.query.filter_by(id=int(form.organization.data[0])).first_or_404()
-            event_type = EventType.query.filter_by(id=int(form.event_type.data[0])).first_or_404()
-            cycle = Cycle.query.filter_by(id=int(form.cycle.data[0])).first_or_404()
-            newevent=Event(name=form.name.data,
-                                 organization=organization,
-                                 location=location,
-                                 event_type=event_type,
-                                 cycle=cycle,
-                                 information=form.information.data,
-                                 date=form.event_date.data)
-            db.session.add(newevent)
-            addHistoryEntry('Agregado','Evento: {}'.format(form.name.data))
-            db.session.commit()
-            flash(_('Tus cambios han sido guardados.'),'info') 
-            return redirect(url_for('main.EditEvent',event_id=newevent.id))
+#        if  Event.query.filter_by(name=form.name.data).all().__len__() > 0:
+#            flash(_('Este nombre ya ha sido registrado'),'error')
+#            return render_template('main/newevent.html',form=form,title=_('Agregar Evento'))
+#        else:
+        location = Location.query.filter_by(id=int(form.location.data[0])).first_or_404()
+        organization = Organization.query.filter_by(id=int(form.organization.data[0])).first_or_404()
+        event_type = EventType.query.filter_by(id=int(form.event_type.data[0])).first_or_404()
+        cycle = Cycle.query.filter_by(id=int(form.cycle.data[0])).first_or_404()
+        newevent=Event(name=form.name.data,
+                             organization=organization,
+                             location=location,
+                             event_type=event_type,
+                             cycle=cycle,
+                             information=form.information.data,
+                             date=form.event_date.data)
+        db.session.add(newevent)
+        addHistoryEntry('Agregado','Evento: {}'.format(form.name.data))
+        db.session.commit()
+        flash(_('Tus cambios han sido guardados.'),'info') 
+        return redirect(url_for('main.EditEvent',event_id=newevent.id))
     return render_template('main/newevent.html',form=form,title=_('Agregar Evento'))
 
 
@@ -879,26 +879,26 @@ def EditEvent(event_id):
     original_event=Event.query.filter_by(id=event_id).first_or_404()
     form = EditEventForm(dbmodel=Event,original_event=original_event)       
     if form.validate_on_submit():
-        if  Event.query.filter_by(name=form.name.data).all().__len__() > 0 and (original_event.name  != form.name.data):
-            flash(_('Este nombre ya ha sido registrado'),'error')
-            return redirect('main/editevent.html',event_id=event_id,form=form,title=_('Editar Evento'))
-        else:
+#        if  Event.query.filter_by(name=form.name.data).all().__len__() > 0 and (original_event.name  != form.name.data):
+#            flash(_('Este nombre ya ha sido registrado'),'error')
+#            return redirect('main/editevent.html',event_id=event_id,form=form,title=_('Editar Evento'))
+#        else:
             # the next 3 lines is for checking the values actually exists
-            Location.query.filter_by(id=int(form.location.data[0])).first_or_404()
-            Organization.query.filter_by(id=int(form.organization.data[0])).first_or_404()
-            EventType.query.filter_by(id=int(form.event_type.data[0])).first_or_404()
-            Cycle.query.filter_by(id=int(form.cycle.data[0])).first_or_404()            
-            original_event.name=form.name.data
-            original_event.organization_id=form.organization.data
-            original_event.location_id=form.location.data
-            original_event.event_type_id=form.event_type.data
-            original_event.cycle_id=form.cycle.data
-            original_event.information=form.information.data
-            original_event.date=form.event_date.data
-            addHistoryEntry('Modificado','Evento: {}'.format(form.name.data))
-            db.session.commit()
-            flash(_('Tus cambios han sido guardados.'),'info')
-            return redirect(url_for('main.EditEvent',event_id=event_id))
+        Location.query.filter_by(id=int(form.location.data[0])).first_or_404()
+        Organization.query.filter_by(id=int(form.organization.data[0])).first_or_404()
+        EventType.query.filter_by(id=int(form.event_type.data[0])).first_or_404()
+        Cycle.query.filter_by(id=int(form.cycle.data[0])).first_or_404()            
+        original_event.name=form.name.data
+        original_event.organization_id=form.organization.data
+        original_event.location_id=form.location.data
+        original_event.event_type_id=form.event_type.data
+        original_event.cycle_id=form.cycle.data
+        original_event.information=form.information.data
+        original_event.date=form.event_date.data
+        addHistoryEntry('Modificado','Evento: {}'.format(form.name.data))
+        db.session.commit()
+        flash(_('Tus cambios han sido guardados.'),'info')
+        return redirect(url_for('main.EditEvent',event_id=event_id))
     else:
         form.name.data=original_event.name
         form.event_date.data=original_event.date

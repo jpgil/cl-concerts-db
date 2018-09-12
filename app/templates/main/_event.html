@@ -1,9 +1,9 @@
 <tr>
     <td width="70px">
     {% if ( current_user.profile.name == 'Administrador') or ( current_user.profile.name == 'Editor')   %}
-        <a href={{ url_for('main.EditEvent',event_id= event.id) }}>{{ event.name }}<a/>
+        <a href={{ url_for('main.EditEvent',event_id= event.id) }}>{{ event.get_event_name() }}<a/>
     {% else %}
-        {{ event.name }}
+        {{ event.get_event_name() }}
     {% endif %}
     </td>
 <tr>
