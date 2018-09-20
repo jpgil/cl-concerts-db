@@ -98,7 +98,16 @@ class Organization(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(65)) 
     additional_info = db.Column(db.String(4000))
-    events = db.relationship('Event', backref='organization', lazy='dynamic') 
+    events = db.relationship(
+        "Event",
+        secondary=db.Table('event_organization',
+                    db.Column("organization_id", db.Integer, db.ForeignKey('organization.id'),
+                                primary_key=True),
+                    db.Column("event_id", db.Integer, db.ForeignKey('event.id'),
+                                primary_key=True)
+                ),
+        backref="organizations"
+        )         
     def __repr__(self):
         return 'Organization(name="{}")'.format(self.name)   
 
@@ -185,19 +194,28 @@ class Location(db.Model):
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)                
     name = db.Column(db.String(120))  
-    date = db.Column(db.Date)
+#    date = db.Column(db.Date)    # removed, replaced by day, mo
+    year = db.Column(db.Integer)
+    month = db.Column(db.Integer)
+    day = db.Column(db.Integer)
     location_id = db.Column(db.Integer, db.ForeignKey('location.id'))
-    organization_id = db.Column(db.Integer, db.ForeignKey('organization.id'))
     information = db.Column(db.String(4000))  
     event_type_id = db.Column(db.Integer, db.ForeignKey('event_type.id'))
     cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
     participants = db.relationship('Participant', backref='event', lazy='dynamic')
     performances = db.relationship('Performance', backref='event', lazy='dynamic')
     medialinks = db.relationship('MediaLink', backref='event', lazy='dynamic')
+    def get_string_date(self):
+        if (self.year and self.month and self.day):
+            return "{}-{}-{}".format(self.year,self.month,self.day)
+        elif (self.year and self.month):
+            return "{}-{}".format(self.year,self.month)
+        else:
+            return "{}".format(self.year)
     def get_event_name(self):
-        return '[{}] {} - {}'.format(self.date,self.event_type.name, self.name) if self.name else  '[{}] {}'.format(self.date,self.event_type.name)
+        return '[{}] {} - {}'.format(self.get_string_date(),self.event_type.name, self.name) if self.name else  '[{}] {}'.format(self.get_string_date(),self.event_type.name)
     def __repr__(self):
-        return 'Event(name="{}",date="{}",location_id="{}", organization_id="{}")'.format(self.name,self.date,self.location_id,self.organization_id)
+        return 'Event(name="{}",date="{}",location_id="{}")'.format(self.name,self.get_string_date(),self.location_id)
 
 
 class MusicalPiece(db.Model):

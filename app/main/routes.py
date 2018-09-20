@@ -851,16 +851,19 @@ def NewEvent():
 #            return render_template('main/newevent.html',form=form,title=_('Agregar Evento'))
 #        else:
         location = Location.query.filter_by(id=int(form.location.data[0])).first_or_404()
-        organization = Organization.query.filter_by(id=int(form.organization.data[0])).first_or_404()
+#        organization = Organization.query.filter_by(id=int(form.organization.data[0])).first_or_404()
         event_type = EventType.query.filter_by(id=int(form.event_type.data[0])).first_or_404()
         cycle = Cycle.query.filter_by(id=int(form.cycle.data[0])).first_or_404()
         newevent=Event(name=form.name.data,
-                             organization=organization,
                              location=location,
                              event_type=event_type,
                              cycle=cycle,
                              information=form.information.data,
-                             date=form.event_date.data)
+                             day=form.event_day.data,
+                             month=form.event_month.data,
+                             year=form.event_year.data)
+        for organization_id in form.organizations.data:
+             newevent.organizations.append(Organization.query.filter_by(id=organization_id).first_or_404())
         db.session.add(newevent)
         addHistoryEntry('Agregado','Evento: {}'.format(form.name.data))
         db.session.commit()
@@ -877,6 +880,9 @@ def EditEvent(event_id):
         return redirect(url_for('users.login'))
 
     original_event=Event.query.filter_by(id=event_id).first_or_404()
+    selectedOrgs=[]
+    for organization in original_event.organizations:
+        selectedOrgs.append(organization.id)
     form = EditEventForm(dbmodel=Event,original_event=original_event)       
     if form.validate_on_submit():
 #        if  Event.query.filter_by(name=form.name.data).all().__len__() > 0 and (original_event.name  != form.name.data):
@@ -885,29 +891,35 @@ def EditEvent(event_id):
 #        else:
             # the next 3 lines is for checking the values actually exists
         Location.query.filter_by(id=int(form.location.data[0])).first_or_404()
-        Organization.query.filter_by(id=int(form.organization.data[0])).first_or_404()
+#        Organization.query.filter_by(id=int(form.organization.data[0])).first_or_404()
         EventType.query.filter_by(id=int(form.event_type.data[0])).first_or_404()
         Cycle.query.filter_by(id=int(form.cycle.data[0])).first_or_404()            
         original_event.name=form.name.data
-        original_event.organization_id=form.organization.data
         original_event.location_id=form.location.data
         original_event.event_type_id=form.event_type.data
         original_event.cycle_id=form.cycle.data
         original_event.information=form.information.data
-        original_event.date=form.event_date.data
+        original_event.day=form.event_day.data
+        original_event.month=form.event_month.data
+        original_event.year=form.event_year.data    
+        original_event.organizations.clear()
+        for organization_id in form.organizations.data:
+             original_event.organizations.append(Organization.query.filter_by(id=organization_id).first_or_404())
         addHistoryEntry('Modificado','Evento: {}'.format(form.name.data))
         db.session.commit()
         flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.EditEvent',event_id=event_id))
     else:
         form.name.data=original_event.name
-        form.event_date.data=original_event.date
+        form.event_day.data=original_event.day
+        form.event_month.data=original_event.month
+        form.event_year.data=original_event.year
         form.information.data=original_event.information
         return render_template('main/editevent.html',event_id=event_id,form=form,title=_('Editar Evento'),
                                    selectedEventType=str(original_event.event_type_id), 
                                    selectedCycle=str(original_event.cycle_id),
                                    selectedLocation=str(original_event.location_id),
-                                   selectedOrganization=str(original_event.organization_id))
+                                   selectedOrganizations=list2csv(selectedOrgs))
 
 
 #

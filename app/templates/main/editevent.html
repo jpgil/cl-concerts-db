@@ -29,12 +29,18 @@
                 <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
              <br>
-            {{ form.event_date.label }} <br>
-            {{ form.event_date }} <br>                
+            {{ form.event_year.label }} <br>
+            {{ form.event_year(size=4) }} / {{ form.event_month(size=2) }} / {{ form.event_day(size=2) }}              
 
-            {% for error in form.event_date.errors %}
+            {% for error in form.event_year.errors %}
                 <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
+            {% for error in form.event_month.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+            {% for error in form.event_day.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}                                   
             <br>     
                         
             {{ form.location.label }} <br>
@@ -45,11 +51,11 @@
                  <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
             <br>
-            {{ form.organization.label }} <br>
-            {{ form.organization( **{"class":"dd_select2", "url":"organizations", "description":_("Organización"),  "maxelem":"1" , "selectedElements":selectedOrganization } ) }} 
+            {{ form.organizations.label }} <br>
+            {{ form.organizations( **{"class":"dd_select2", "url":"organizations", "description":_("Organización") ,  "maxelem":"100" , "selectedElements":selectedOrganizations } ) }} 
                   <a href="{{ url_for('main.NewOrganization') }}" target="_blank" class="btn btn-primary" role="button"> {{ _("Nuevo") }}</a> 
             <br> 
-            {% for error in form.organization.errors %}
+            {% for error in form.organizations.errors %}
                 <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
             <br>
