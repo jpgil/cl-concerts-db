@@ -76,7 +76,16 @@ class Instrument(db.Model):
     name = db.Column(db.String(80))
     instrument_type_id = db.Column(db.Integer, db.ForeignKey('instrument_type.id'))
     activity = db.relationship("Activity", uselist=False, backref="instrument")
-    musical_pieces = db.relationship("MusicalPiece", backref="instrument")
+    musical_pieces = db.relationship(
+        "MusicalPiece",
+        secondary=db.Table('musicalpiece_instrument',
+                    db.Column("instrument_id", db.Integer, db.ForeignKey('instrument.id'),
+                                primary_key=True),
+                    db.Column("musical_piece_id", db.Integer, db.ForeignKey('musical_piece.id'),
+                                primary_key=True)
+                ),
+        backref="instruments"
+        )    
     def __repr__(self):
         return 'Instrument(name="{}",instrument_type={})'.format(self.name,self.instrument_type.name)
     

@@ -612,16 +612,14 @@ def NewMusicalPiece():
         return redirect(url_for('users.login'))
     form = EditMusicalPieceForm(dbmodel=MusicalPiece,original_name='')   
     if form.validate_on_submit():
-        if  MusicalPiece.query.filter_by(name=form.name.data).all().__len__() > 0:
-            flash(_('Este nombre ya ha sido registrado'),'error')
-            return render_template('main/editmusicalpiece.html',form=form,title=_('Agregar Obra Musical'),selectedElements=None)
-        else:
-            composer = Person.query.filter_by(id=int(form.composer.data[0])).first_or_404()
-            instrument = Instrument.query.filter_by(id=int(form.instrument.data[0])).first_or_404()
-            addHistoryEntry('Agregado','Obra Musical: {}'.format(form.name.data))
-            db.session.add(MusicalPiece(name=form.name.data,composer=composer,composition_year=form.composition_year.data,instrument=instrument))
-            db.session.commit()
-            flash(_('Tus cambios han sido guardados.'),'info')
+        composer = Person.query.filter_by(id=int(form.composer.data[0])).first_or_404()
+        addHistoryEntry('Agregado','Obra Musical: {}'.format(form.name.data))
+        new_musical_piece=MusicalPiece(name=form.name.data,composer=composer,composition_year=form.composition_year.data)
+        for instrument_id in form.instruments.data:
+            new_musical_piece.instruments.append(Instrument.query.filter_by(id=int(instrument_id)).first_or_404())
+        db.session.add(new_musical_piece)
+        db.session.commit()
+        flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.index',user=current_user.first_name))
     return render_template('main/editmusicalpiece.html',form=form,title=_('Agregar Obra Musical'),selectedElements=None)
 
@@ -634,12 +632,17 @@ def EditMusicalPiece(id):
     musical_piece = MusicalPiece.query.filter_by(id=id).first_or_404()
     selectedElements=[]
     selectedElements.append(musical_piece.composer.id)
-    selectedInstrument=str(musical_piece.instrument_id)
+    instruments_list=[]
+    for instrument in musical_piece.instruments:
+        instruments_list.append(instrument.id)    
+    selectedInstruments=list2csv(instruments_list)
     form = EditMusicalPieceForm(original_name=musical_piece.name)
     if form.validate_on_submit():
          musical_piece.name = form.name.data
          musical_piece.composer  = Person.query.filter_by(id=int(form.composer.data[0])).first_or_404()
-         musical_piece.instrument = Instrument.query.filter_by(id=int(form.instrument.data[0])).first_or_404()
+         musical_piece.instruments.clear()
+         for instrument_id in form.instruments.data:
+             musical_piece.instruments.append(Instrument.query.filter_by(id=int(instrument_id)).first_or_404())    
          musical_piece.composition_year = form.composition_year.data
          addHistoryEntry('Modificado','Obra Musical: {}'.format(form.name.data))
          db.session.commit()
@@ -648,7 +651,7 @@ def EditMusicalPiece(id):
     elif request.method == 'GET':
         form.name.data = musical_piece.name  
         form.composition_year.data = musical_piece.composition_year
-    return render_template('main/editmusicalpiece.html',form=form,title=_('Editar Obra Musical'),selectedElements=list2csv(selectedElements),selectedInstrument=selectedInstrument)    
+    return render_template('main/editmusicalpiece.html',form=form,title=_('Editar Obra Musical'),selectedElements=list2csv(selectedElements),selectedInstruments=selectedInstruments)    
 
 
 @bp.route('/new/activity', methods = ['GET','POST'])

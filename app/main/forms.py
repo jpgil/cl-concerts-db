@@ -46,7 +46,7 @@ class EditMusicalPieceForm(FlaskForm):
     name=StringField(_l('Título'),validators=[DataRequired()])
     composer= NonValidatingSelectMultipleField(label=_("Compositor"),choices=[],validators=[DataRequired()])
     composition_year=IntegerField(_('Año de composición'),validators=[Optional(), NumberRange(min=1, max=3000, message=_('El año ingresado no es válido'))])
-    instrument = NonValidatingSelectMultipleField(label=_("Instrumento"),choices=[],validators=[DataRequired()])
+    instruments = NonValidatingSelectMultipleField(label=_("Instrumentos"),choices=[],validators=[DataRequired()])
     submit = SubmitField(_l('Guardar'))
     def __init__(self, original_name ,*args, **kwargs):
         super(EditMusicalPieceForm, self).__init__(*args, **kwargs)

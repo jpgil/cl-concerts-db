@@ -34,10 +34,10 @@
         <br> 
                 
 
-        <div class="row"> {{ form.instrument.label }} </div>
-        <div class="row">  {{ form.instrument( **{"class":"dd_select2", "url":"instruments", "description":_("Instrumento"),  "maxelem":"1" , "selectedElements":selectedInstrument } ) }}  </div> 
+        <div class="row"> {{ form.instruments.label }} </div>
+        <div class="row">  {{ form.instruments( **{"class":"dd_select2", "url":"instruments", "description":_("Instrumentos"),  "maxelem":"100" , "selectedElements":selectedInstruments } ) }}  </div> 
         <div class="row">
-                {% for error in form.instrument.errors %}
+                {% for error in form.instruments.errors %}
                    <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
         </div> 
