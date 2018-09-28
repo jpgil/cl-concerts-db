@@ -11,7 +11,7 @@ from app.main.forms import *
 from app.models import *
 #from app.translate import translate
 from app.main import bp
-
+from sqlalchemy import or_
 from werkzeug.local import LocalProxy
 import os
 
@@ -41,109 +41,34 @@ def before_request():
 #        db.session.commit()
 #        g.search_form = SearchForm()
 #    g.locale = str(get_locale())
+ 
+def getStringForModel(model):
+    string4model={  'Instrument'      :  _('Instrumentos'),
+                    'Country'         :  _('Países'),
+                    'EventType'       :  _('Tipo de Evento'),
+                    'Cycle'           :  _('Ciclos'),
+                    'Event'           :  _('Eventos'),
+                    'City'            :  _('Ciudades'),
+                    'InstrumentType'  :  _('Tipos de Instrumento'),
+                    'PremiereType'    :  _('Tipos de Estreno'),
+                    'Activity'        :  _('Actividades'),
+                    'Location'        :  _('Lugares'),
+                    'Organization'    :  _('Organizaciones'),
+                    'Person'          :  _('Personas'),
+                    'MusicalPiece'    :  _('Obras Musicales')
+                    }    
+    return string4model[model]
+
+@bp.route('/view/element/<model>')
+@login_required
+def viewElement(model):
+    return render_template('main/showlist.html', title=getStringForModel(model),model=model)    
+
     
-def view_elements(dbmodel,elementsname,title):
-    page = request.args.get('page', 1, type=int)
-    elements = dbmodel.query.order_by(dbmodel.name.asc()).paginate(
-        page, current_app.config['ITEMS_PER_PAGE'], False)
-    next_url = url_for('main.view_'+elementsname, title=title,page=elements.next_num) \
-        if elements.has_next else None
-    prev_url = url_for('main.view_'+elementsname, title=title, page=elements.prev_num) \
-        if elements.has_prev else None
-    return render_template('main/'+elementsname+'.html', title=title,
-                           elements=elements.items, next_url=next_url,
-                           prev_url=prev_url)
-    
-@bp.route('/view/countries')
+@bp.route('/view/history')
 @login_required
-def view_countries():
-    return view_elements(Country,'countries',_('Países'))
-
-@bp.route('/view/eventtypes')
-@login_required
-def view_eventtypes():
-    return view_elements(EventType,'eventtypes',_('Tipos de Eventos'))
-
-@bp.route('/view/cycles')
-@login_required
-def view_cycles():
-    return view_elements(Cycle,'cycles',_('Ciclos'))
-
-@bp.route('/view/events')
-@login_required
-def view_events():
-    return view_elements(Event,'events',_('Eventos'))
-
-@bp.route('/view/cities')
-@login_required
-def view_cities():
-    return view_elements(City,'cities',_('Ciudades'))
-
-@bp.route('/view/instrumenttypes')
-@login_required
-def view_instrumenttypes():
-    return view_elements(InstrumentType,'instrumenttypes',_('Tipos de Instrumento'))
-
-@bp.route('/view/premieretypes')
-@login_required
-def view_premieretypes():
-    return view_elements(PremiereType,'premieretypes',_('Tipos de Estreno'))
-
-@bp.route('/view/instruments')
-@login_required
-def view_instruments():
-    return view_elements(Instrument,'instruments',_('Instrumentos'))
-
-@bp.route('/view/activities')
-@login_required
-def view_activities():
-    return view_elements(Activity,'activities',_('Actividades'))
-
-
-
-@bp.route('/view/locations')
-@login_required
-def view_locations():
-    return view_elements(Location,'locations',_('Lugares'))
-
-@bp.route('/view/organizations')
-@login_required
-def view_organizations():
-    return view_elements(Organization,'organizations',_('Organizaciones'))
-
-
-@bp.route('/view/people')
-@login_required
-def view_people():
-    elementsname='people'
-    title=_('Personas')
-    page = request.args.get('page', 1, type=int)
-    elements = Person.query.order_by(Person.last_name.asc()).paginate(
-        page, current_app.config['ITEMS_PER_PAGE'], False)
-    next_url = url_for('main.view_'+elementsname, title=title,page=elements.next_num) \
-        if elements.has_next else None
-    prev_url = url_for('main.view_'+elementsname, title=title, page=elements.prev_num) \
-        if elements.has_prev else None
-    return render_template('main/'+elementsname+'.html', title=title,
-                           elements=elements.items, next_url=next_url,
-                           prev_url=prev_url)
-
-@bp.route('/view/musicalpieces')
-@login_required
-def view_musicalpieces():
-    elementsname='musicalpieces'
-    title=_('Obras Musicales')
-    page = request.args.get('page', 1, type=int)
-    elements = MusicalPiece.query.order_by(MusicalPiece.name.asc()).paginate(
-        page, current_app.config['ITEMS_PER_PAGE'], False)
-    next_url = url_for('main.view_'+elementsname, title=title,page=elements.next_num) \
-        if elements.has_next else None
-    prev_url = url_for('main.view_'+elementsname, title=title, page=elements.prev_num) \
-        if elements.has_prev else None
-    return render_template('main/'+elementsname+'.html', title=title,
-                           elements=elements.items, next_url=next_url,
-                           prev_url=prev_url)
-
+def viewHistory():
+    return render_template('main/history.html')
 
 def getItemList(dbmodel,q,page):    
     itemslist=db.session.query(dbmodel).filter(dbmodel.name.ilike(q+'%')).order_by(dbmodel.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
@@ -393,26 +318,46 @@ def getPerformancesListTable(event_id):
 
 @bp.route('/listtable/historytable')
 def getHistoryTable():
-    data={ "rows": [], "total":  db.session.query(History.timestamp).count() }
     limit = request.args.get('limit', 10, type=int)
     offset = request.args.get('offset', 0, type=int)
     order = request.args.get('order', '', type=str)
     search = request.args.get('search', '', type=str)
+    
+    query=History.query.filter(History.description.ilike('%{}%'.format(search)))
+    data={ "rows": [], "total":  query.count() }
     if order.upper() == 'ASC':
-        entries=History.query.filter(History.description.ilike('%{}%'.format(search))).order_by(History.timestamp.asc()).limit(limit).offset(offset).all()
+        entries=query.order_by(History.timestamp.asc()).limit(limit).offset(offset).all()
     else:
-        entries=History.query.filter(History.description.ilike('%{}%'.format(search))).order_by(History.timestamp.desc()).limit(limit).offset(offset).all()
+        entries=query.order_by(History.timestamp.desc()).limit(limit).offset(offset).all()
     for entry in entries:
         data["rows"].append({ "user" : "{} {}".format(entry.user.first_name,entry.user.last_name),
                               "datetime" : entry.timestamp.isoformat(),
                               "operation" : entry.operation,
                               "description" : entry.description })
     return jsonify(data)    
-    
-@bp.route('/view/history')
-@login_required
-def view_history():
-    return render_template('main/history.html')
+
+@bp.route('/listtable/instrument')
+def getInstrumentTable():
+    return getTableData(request,Instrument,[Instrument.name])   
+
+def getTableData(requests,dbmodel,searchables):
+    button_string='<a href="{}" class="btn btn-info" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
+    limit = request.args.get('limit', 10, type=int)
+    offset = request.args.get('offset', 0, type=int)
+    order = request.args.get('order', '', type=str)
+    search = request.args.get('search', '', type=str)
+    filters=[]
+    for field in searchables:
+        filters.append(field.ilike('%{}%'.format(search)))
+    query=dbmodel.query.filter(or_(*filters))
+    data={ "rows": [], "total":  query.count() }
+    entries=query.limit(limit).offset(offset).all()
+    for entry in entries:
+        data["rows"].append({ "name" : entry.get_name(),
+                              "editlink" : button_string.format(url_for('main.Edit{}'.format(dbmodel.__name__),id=entry.id))
+                             })
+    return jsonify(data)       
+
     
    
 @bp.route('/list/performances/<event_id>')
@@ -582,13 +527,13 @@ def NewInstrument():
         return redirect(url_for('main.index',user=current_user.first_name))
     return render_template('main/editinstrument.html',form=form,title=_('Agregar Instrumento'),selectedElements=None)
 
-@bp.route('/edit/instrument/<instrument>', methods = ['GET','POST'])
+@bp.route('/edit/instrument/<id>', methods = ['GET','POST'])
 @login_required
-def EditInstrument(instrument):
+def EditInstrument(id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return redirect(url_for('users.login'))
-    instrument = Instrument.query.filter_by(name=instrument).first_or_404()
+    instrument = Instrument.query.filter_by(id=id).first_or_404()
     selectedElements=[]
     selectedElements.append(instrument.instrument_type.id)
     form = EditInstrumentForm(original_name=instrument.name)
@@ -925,7 +870,7 @@ def EditEvent(event_id):
                                    selectedOrganizations=list2csv(selectedOrgs))
 
 
-#
+# 
 #@bp.route('/search')
 #@login_required
 #def search():

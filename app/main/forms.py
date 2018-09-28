@@ -164,4 +164,4 @@ class EditEventForm(FlaskForm):
 #            db_elem_instance = Event.query.filter_by(name=self.name.data).first()
 #            if db_elem_instance is not None:
 #                raise ValidationError(_('Este nombre: {} ya está registrado, por favor, use uno diferente').format(self.name.data))
-  
+   

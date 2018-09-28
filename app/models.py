@@ -68,6 +68,8 @@ class InstrumentType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
     instruments = db.relationship('Instrument',backref='instrument_type')
+    def get_name(self):
+        return self.name
     def __repr__(self):
         return 'InstrumentType(name="{}")'.format(self.name)
 
@@ -86,6 +88,8 @@ class Instrument(db.Model):
                 ),
         backref="instruments"
         )    
+    def get_name(self):
+        return "{} ({})".format(self.name,self.instrument_type.name)
     def __repr__(self):
         return 'Instrument(name="{}",instrument_type={})'.format(self.name,self.instrument_type.name)
     
@@ -93,6 +97,8 @@ class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(45))
     locations = db.relationship('Location', backref='city', lazy='dynamic')
+    def get_name(self):
+        return self.name    
     def __repr__(self):
         return 'City(name="{}")'.format(self.name)   
 
@@ -100,6 +106,8 @@ class Gender(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30)) 
     persons= db.relationship('Person', backref='gender')
+    def get_name(self):
+        return self.name
     def __repr__(self):
         return 'Gender(name="{}")'.format(self.name)
     
@@ -116,7 +124,9 @@ class Organization(db.Model):
                                 primary_key=True)
                 ),
         backref="organizations"
-        )         
+        )   
+    def get_name(self):
+        return self.name
     def __repr__(self):
         return 'Organization(name="{}")'.format(self.name)   
 
@@ -125,6 +135,8 @@ class EventType(db.Model):
     name = db.Column(db.String(80)) 
     description = db.Column(db.String(200))
     events = db.relationship('Event', backref='event_type', lazy='dynamic') 
+    def get_name(self):
+        return self.name
     def __repr__(self):
         return 'EventType(name="{}")'.format(self.name)   
 
@@ -132,12 +144,16 @@ class Cycle(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80)) 
     events = db.relationship('Event', backref='cycle', lazy='dynamic') 
+    def get_name(self):
+        return self.name
     def __repr__(self):
         return 'Cycle(name="{}")'.format(self.name)  
         
 class Country(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(45))
+    def get_name(self):
+        return self.name
     def __repr__(self):
         return 'Country(name="{}")'.format(self.name)   
         
@@ -145,6 +161,8 @@ class PremiereType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))    
     performances = db.relationship('Performance', backref='premiere_type', lazy='dynamic')
+    def get_name(self):
+        return self.name
     def __repr__(self):
         return 'PremiereType(name="{}")'.format(self.name)   
         
@@ -168,8 +186,11 @@ class Person(db.Model):
                     backref='people')    
     def __repr__(self):
         return 'Person(first_name="{}",last_name="{}")'.format(self.first_name,self.last_name)
-    def get_full_name(self):
-        return '{}, {}'.format(self.last_name,self.first_name) if self.last_name else self.first_name
+    def get_name(self):
+        if self.last_name and self.first_name:
+            return '{}, {}'.format(self.last_name,self.first_name) 
+        else:
+            return self.last_name if self.last_name else self.first_name
 
 class MediaLink(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -178,6 +199,8 @@ class MediaLink(db.Model):
     url = db.Column(db.String(512))
     description = db.Column(db.String(150))
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))   
+    def get_name(self):
+        return self.filename
     def __repr__(self):
         return 'MediaLink(mime_type="{}",filename="{}")'.format(self.mime_type,self.filename)    
 
@@ -186,6 +209,8 @@ class Activity(db.Model):
     name = db.Column(db.String(80)) 
     instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'))
     participants = db.relationship('Participant', backref = 'activity', lazy='dynamic')
+    def get_name(self):
+        return "{} Instrumento: {}".format(self.name,self.instrument.name)
     def __repr__(self):
         return 'Activity(name="{}",instrument_id="{}")'.format(self.name,self.instrument_id)        
     
@@ -197,6 +222,8 @@ class Location(db.Model):
     additional_info = db.Column(db.String(4000))
     city_id = db.Column(db.Integer, db.ForeignKey('city.id'))
     events = db.relationship('Event', backref='location', lazy='dynamic') 
+    def get_name(self):
+        return "{}, {}".format(self.name, self.city.name)
     def __repr__(self):
         return 'Location(name="{}",address="{}",city_id="{}")'.format(self.name,self.address,self.city_id)
 
@@ -221,7 +248,7 @@ class Event(db.Model):
             return "{}-{}".format(self.year,self.month)
         else:
             return "{}".format(self.year)
-    def get_event_name(self):
+    def get_name(self):
         return '[{}] {} - {}'.format(self.get_string_date(),self.event_type.name, self.name) if self.name else  '[{}] {}'.format(self.get_string_date(),self.event_type.name)
     def __repr__(self):
         return 'Event(name="{}",date="{}",location_id="{}")'.format(self.name,self.get_string_date(),self.location_id)
@@ -234,6 +261,8 @@ class MusicalPiece(db.Model):
     composer_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     performances = db.relationship("Performance", backref="musical_piece")
     instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'))
+    def get_name(self):
+        return "«{}» ({})".format(self.name,self.composer.get_name())
     def __repr__(self):
         return 'MusicalPiece(name="{}",composition_year="{}",composer_id="{}")'.format(self.name,self.composition_year,self.composer_id) 
 
@@ -243,6 +272,8 @@ class Performance(db.Model):
     premiere_type_id = db.Column(db.Integer, db.ForeignKey('premiere_type.id'))
     musical_piece_id =  db.Column(db.Integer, db.ForeignKey('musical_piece.id'))
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))     
+    def get_name(self):
+        return "[{}] {}".format(self.premier_type.name,self.musical_piece.get_name()) if self.premiere_type_id.id !=1 else self.musical_piece.get_name()
     def __repr__(self):   
         return 'Performance(musical_piece_id="{}", premiere_type_id="{}", event_id"{}")'.format(self.musical_piece_id, self.premiere_type_id, self.event_id)
 
@@ -261,8 +292,10 @@ class Participant(db.Model):
                 ),
         backref="participants"
         )     
+    def get_name(self):
+        return "{} ({})".format(self.person.name,self.activity.name)
     def __repr__(self):
         return 'Participant(person="{}",event="{}",activity="{}")'.format(self.person,self.event,self.activity)
 
 
-    
+     

@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1>{{ _('Historial') }}</h1>
+
+    <h1>{{ title }}</h1>
+    <a href="{{ url_for('main.New{}'.format(model)) }}" class="btn btn-primary" role="button"> {{ _('Nuevo')}}</a>
                 <table 
                data-toggle="table"
                data-sort-name="datetime" 
@@ -12,15 +14,13 @@
                data-only-info-pagination="false"
                data-side-pagination="server"
                data-pagination="true"
-               data-page-size="20"
-               data-page-list="[20, 50, 100, 200]"
-               data-url={{ url_for("main.getHistoryTable") }}  >
+               data-page-size="15"
+               data-page-list="[15, 50, 100, 200]"
+               data-url="{{url_for('main.get{}Table'.format(model))}}" >
                 <thead>
                     <tr>
-                        <th data-field="datetime">{{ _("Fecha/Hora") }} </th>
-                        <th data-field="user">{{ _("Usuario") }} </th>
-                        <th data-field="operation">{{ _("Operación") }} </th>
-                        <th data-field="description">{{ _("Descripción") }} </th>
+                        <th data-field="editlink" data-width=10></th>
+                        <th data-field="name">{{ _("Nombre") }} </th>
                     </tr>
                 </thead>
             </table>
