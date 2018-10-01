@@ -1,9 +1,0 @@
-<tr>
-    <td width="70px">
-    {% if ( current_user.profile.name == 'Administrador') or ( current_user.profile.name == 'Editor')   %}
-        <a href={{ url_for('main.EditPerson',person_id= person.id) }}>{{ person.last_name }}, {{ person.first_name }} <a/>
-    {% else %}
-        {{ person.last_name }}, {{ person.first_name }} 
-    {% endif %}
-    </td>
-<tr>

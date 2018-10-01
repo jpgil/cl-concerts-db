@@ -1,9 +1,0 @@
-<tr>
-    <td width="70px">
-    {% if ( current_user.profile.name == 'Administrador') or ( current_user.profile.name == 'Editor')   %}
-        <a href={{ url_for('main.EditInstrument',instrument= instrument.name) }}>{{ instrument.name }} - {{ instrument.instrument_type.name }} <a/>
-    {% else %}
-        {{ instrument.name }} - {{ instrument.instrument_type.name  }}
-    {% endif %}
-    </td>
-<tr>

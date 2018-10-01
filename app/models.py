@@ -89,9 +89,12 @@ class Instrument(db.Model):
         backref="instruments"
         )    
     def get_name(self):
-        return "{} ({})".format(self.name,self.instrument_type.name)
+        if self.instrument_type:
+            return "{} ({})".format(self.name,self.instrument_type.name)
+        else:
+            return self.name
     def __repr__(self):
-        return 'Instrument(name="{}",instrument_type={})'.format(self.name,self.instrument_type.name)
+        return 'Instrument(name="{}",instrument_type={})'.format(self.name,'' if not self.instrument_type else  self.instrument_type.name)
     
 class City(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -191,7 +194,7 @@ class Person(db.Model):
             return '{}, {}'.format(self.last_name,self.first_name) 
         else:
             return self.last_name if self.last_name else self.first_name
-
+    
 class MediaLink(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mime_type = db.Column(db.String(80))
@@ -210,9 +213,13 @@ class Activity(db.Model):
     instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'))
     participants = db.relationship('Participant', backref = 'activity', lazy='dynamic')
     def get_name(self):
-        return "{} Instrumento: {}".format(self.name,self.instrument.name)
+        if self.instrument:
+            return "{} - {}".format(self.name,self.instrument.name)
+        else:
+            return "{}".format(self.name)
+        
     def __repr__(self):
-        return 'Activity(name="{}",instrument_id="{}")'.format(self.name,self.instrument_id)        
+        return 'Activity(name="{}",instrument_id="{}")'.format(self.name,'' if not self.instrument else self.intrument.id)        
     
 
 class Location(db.Model):
@@ -249,7 +256,8 @@ class Event(db.Model):
         else:
             return "{}".format(self.year)
     def get_name(self):
-        return '[{}] {} - {}'.format(self.get_string_date(),self.event_type.name, self.name) if self.name else  '[{}] {}'.format(self.get_string_date(),self.event_type.name)
+        return '[{}] {} - {} ({})'.format(self.get_string_date(),self.event_type.name, self.name, self.location.name) if self.name else  '[{}] {} ({})'.format(self.get_string_date(),
+                self.event_type.name, self.location.name)
     def __repr__(self):
         return 'Event(name="{}",date="{}",location_id="{}")'.format(self.name,self.get_string_date(),self.location_id)
 

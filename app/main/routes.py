@@ -78,35 +78,33 @@ def getItemList(dbmodel,q,page):
     return jsonify(data)
 
 def getItem(dbmodel,id):
-    item=dbmodel.query.filter_by(id=id).first_or_404()
-    data={ 'id' : item.id , 'text': item.name }
+    item=dbmodel.query.filter_by(id=id).first()
+    data={} if not item else { 'id' : item.id , 'text': item.name }
     return jsonify(data)
 
 def getPeople(q,page):    
     itemslist=db.session.query(Person).filter(Person.last_name.ilike(q+'%')).order_by(Person.last_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
     data={ "results": [], "pagination": { "more": itemslist.has_next} }
     for item in itemslist.items:
-        text = item.get_full_name()
+        text = item.get_name()
         data["results"].append( { 'id' : item.id , 'text': text } )
     return jsonify(data)
 
 def getPerson(id):
-    item=Person.query.filter_by(id=id).first_or_404()
-    text = item.get_full_name()
-    data={ 'id' : item.id , 'text': text }
+    item=Person.query.filter_by(id=id).first()
+    data={} if not item else { 'id' : item.id , 'text': item.get_name() }
     return jsonify(data)
 
 def getMusicalPiece(id):
-    item=MusicalPiece.query.filter_by(id=id).first_or_404()
-    text = '{} ({})'.format(item.name, item.composer.get_full_name())
-    data={ 'id' : item.id , 'text': text }
+    item=MusicalPiece.query.filter_by(id=id).first()
+    data={} if not item else { 'id' : item.id , 'text': '{} ({})'.format(item.name, item.composer.get_name()) }
     return jsonify(data)
 
 def getMusicalPieces(q,page):    
     itemslist=db.session.query(MusicalPiece).filter(MusicalPiece.name.ilike(q+'%')).order_by(MusicalPiece.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
     data={ "results": [], "pagination": { "more": itemslist.has_next} }
     for item in itemslist.items:
-        text = '{} ({})'.format(item.name, item.composer.get_full_name())
+        text = '{} ({})'.format(item.name, item.composer.get_name())
         data["results"].append( { 'id' : item.id , 'text': text } )
     return jsonify(data)
 
@@ -263,10 +261,10 @@ def getParticipantsListTable(event_id):
     if event:
         participants=event.participants.order_by(Participant.person_id).all()
         for participant in participants:
-            data["rows"].append({ 'name': participant.person.get_full_name(),
+            data["rows"].append({ 'name': participant.person.get_name(),
                 'activity': participant.activity.name,
                 'id': participant.id, 
-                'text': '{} ({})'.format(participant.person.get_full_name(),participant.activity.name) })
+                'text': '{} ({})'.format(participant.person.get_name(),participant.activity.name) })
         data["total"]=participants.__len__() 
     return jsonify(data)
 
@@ -293,10 +291,10 @@ def getParticipantsList(event_id):
     if event:
         participants=event.participants.order_by(Participant.person_id).all()
         for participant in participants:
-            data["results"].append({ 'name': participant.person.get_full_name(),
+            data["results"].append({ 'name': participant.person.get_name(),
                 'activity': participant.activity.name,
                 'id': participant.id, 
-                'text': '{} ({})'.format(participant.person.get_full_name(),participant.activity.name) })
+                'text': '{} ({})'.format(participant.person.get_name(),participant.activity.name) })
     return jsonify(data)
 
 
@@ -310,7 +308,7 @@ def getPerformancesListTable(event_id):
             premiere_type_string=' [{}] '.format(performance.premiere_type.name) if performance.premiere_type.name != 'No' else ''                
             data["rows"].append({ 'text': '{}«{}» ({})'.format(premiere_type_string, 
                                                     performance.musical_piece.name,
-                                                    performance.musical_piece.composer.get_full_name()),
+                                                    performance.musical_piece.composer.get_name()),
                                    'id':performance.id})
         data["total"]=performances.__len__() 
     return jsonify(data)
@@ -336,12 +334,9 @@ def getHistoryTable():
                               "description" : entry.description })
     return jsonify(data)    
 
-@bp.route('/listtable/instrument')
-def getInstrumentTable():
-    return getTableData(request,Instrument,[Instrument.name])   
 
 def getTableData(requests,dbmodel,searchables):
-    button_string='<a href="{}" class="btn btn-info" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
+    button_string='<a href="{}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
     limit = request.args.get('limit', 10, type=int)
     offset = request.args.get('offset', 0, type=int)
     order = request.args.get('order', '', type=str)
@@ -356,8 +351,95 @@ def getTableData(requests,dbmodel,searchables):
         data["rows"].append({ "name" : entry.get_name(),
                               "editlink" : button_string.format(url_for('main.Edit{}'.format(dbmodel.__name__),id=entry.id))
                              })
-    return jsonify(data)       
+    return jsonify(data)  
 
+def getMusicalPieceTableData(requests):
+    button_string='<a href="{}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
+    limit = request.args.get('limit', 10, type=int)
+    offset = request.args.get('offset', 0, type=int)
+    order = request.args.get('order', '', type=str)
+    search = '%{}%'.format(request.args.get('search', '', type=str))
+    query=db.session.query(MusicalPiece).join(Person,MusicalPiece.composer).filter(or_(Person.first_name.ilike(search),
+                                                                                 MusicalPiece.name.ilike(search),
+                                                                                 Person.last_name.ilike(search)))
+    data={ "rows": [], "total":  query.count() }
+    entries=query.limit(limit).offset(offset).all()
+    for entry in entries:
+        data["rows"].append({ "name" : entry.get_name(),
+                              "editlink" : button_string.format(url_for('main.EditMusicalPiece',id=entry.id))
+                             })
+    return jsonify(data)  
+
+def getEventTableData(requests):
+    button_string='<a href="{}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
+    limit = request.args.get('limit', 10, type=int)
+    offset = request.args.get('offset', 0, type=int)
+    order = request.args.get('order', '', type=str)
+    search = '%{}%'.format(request.args.get('search', '', type=str))  
+    query=db.session.query(Event).join(EventType,Event.event_type).join(Location,Event.location).filter(or_(  Event.year.contains(search),
+                                                                                EventType.name.ilike(search),
+                                                                                Event.name.ilike(search),
+                                                                                Location.name.ilike(search)))
+    data={ "rows": [], "total":  query.count() }
+    entries=query.limit(limit).offset(offset).all()
+    for entry in entries:
+        data["rows"].append({ "name" : entry.get_name(),
+                              "editlink" : button_string.format(url_for('main.EditEvent',event_id=entry.id))
+                             })
+    return jsonify(data)  
+
+
+@bp.route('/listtable/Instrument')
+def getInstrumentTable():
+    return getTableData(request,Instrument,[Instrument.name])
+
+@bp.route('/listtable/Country')
+def getCountryTable():
+    return getTableData(request,Country,[Country.name])  
+
+@bp.route('/listtable/EventType')
+def getEventTypeTable():
+    return getTableData(request,EventType,[EventType.name])  
+
+@bp.route('/listtable/Cycle')
+def getCycleTable():
+    return getTableData(request,Cycle,[Cycle.name])  
+
+@bp.route('/listtable/Event')
+def getEventTable():
+    return getEventTableData(request)  
+
+@bp.route('/listtable/City')
+def getCityTable():
+    return getTableData(request,City,[City.name])  
+
+@bp.route('/listtable/InstrumentType')
+def getInstrumentTypeTable():
+    return getTableData(request,InstrumentType,[InstrumentType.name])  
+
+@bp.route('/listtable/PremiereType')
+def getPremiereTypeTable():
+    return getTableData(request,PremiereType,[PremiereType.name])  
+
+@bp.route('/listtable/Location')
+def getLocationTable():
+    return getTableData(request,Location,[Location.name])  
+
+@bp.route('/listtable/Organization')
+def getOrganizationTable():
+    return getTableData(request,Organization,[Organization.name])  
+
+@bp.route('/listtable/Activity')
+def getActivityTable():
+    return getTableData(request,Activity,[Activity.name])  
+
+@bp.route('/listtable/Person')
+def getPersonTable():
+    return getTableData(request,Person,[Person.first_name, Person.last_name])  
+
+@bp.route('/listtable/MusicalPiece')
+def getMusicalPieceTable():
+    return getMusicalPieceTableData(request)
     
    
 @bp.route('/list/performances/<event_id>')
@@ -370,7 +452,7 @@ def getPerformancesList(event_id):
             #premiere_type_string='[{}] '.format(performance.premiere_type.name) if performance.premiere_type.name != 'No' else ''                
             data["results"].append({ 'text': '«{}» ({})'.format(
                             performance.musical_piece.name,
-                            performance.musical_piece.composer.get_full_name()),'id':performance.id})
+                            performance.musical_piece.composer.get_name()),'id':performance.id})
     return jsonify(data)
 
 
@@ -386,8 +468,8 @@ def getPerformanceDetailList(event_id):
         for performance in performances:
             for participant in performance.participants:
                 total=total+1
-                performance_name='«{}» ({}) '.format(performance.musical_piece.name,performance.musical_piece.composer.get_full_name())
-                participant_name=participant.person.get_full_name()
+                performance_name='«{}» ({}) '.format(performance.musical_piece.name,performance.musical_piece.composer.get_name())
+                participant_name=participant.person.get_name()
                 participant_activity=participant.activity.name
                 data["rows"].append({ 'performance_name': performance_name,
                                   'participant_name': participant_name, 
@@ -396,12 +478,12 @@ def getPerformanceDetailList(event_id):
     data["total"]=total
     return jsonify(data)
     
-def EditSimpleElement(dbmodel,title,original_name):
+def EditSimpleElement(dbmodel,title,id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return redirect(url_for('users.login'))
-    db_element = dbmodel.query.filter_by(name=original_name).first_or_404()
-    form = EditSimpleElementForm(dbmodel=dbmodel,original_name=original_name)
+    db_element = dbmodel.query.filter_by(id=id).first_or_404()
+    form = EditSimpleElementForm(dbmodel=dbmodel,original_name=db_element.name)
     if form.validate_on_submit():
         db_element.name = form.name.data
         addHistoryEntry('Modificado','{}: {}'.format(' '.join(title.split(' ')[1:]),form.name.data))
@@ -409,41 +491,41 @@ def EditSimpleElement(dbmodel,title,original_name):
         flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
-        form.name.data = original_name
+        form.name.data = db_element.name
     return render_template('main/edit_simple_element.html',title=title,form=form)
 
 
-@bp.route('/edit/country/<country>',methods = ['GET','POST'])
+@bp.route('/edit/country/<id>',methods = ['GET','POST'])
 @login_required
-def EditCountry(country):
-    return EditSimpleElement(Country,_('Editar País'),country)
+def EditCountry(id):
+    return EditSimpleElement(Country,_('Editar País'),id)
 
 
-@bp.route('/edit/eventtype/<event_type>',methods = ['GET','POST'])
+@bp.route('/edit/eventtype/<id>',methods = ['GET','POST'])
 @login_required
-def EditEventType(event_type):
-    return EditSimpleElement(EventType,_('Editar Tipo de Evento'),event_type)
+def EditEventType(id):
+    return EditSimpleElement(EventType,_('Editar Tipo de Evento'),id)
 
-@bp.route('/edit/cycle/<cycle>',methods = ['GET','POST'])
+@bp.route('/edit/cycle/<id>',methods = ['GET','POST'])
 @login_required
-def EditCycle(cycle):
-    return EditSimpleElement(Cycle,_('Editar Ciclo'),cycle)
+def EditCycle(id):
+    return EditSimpleElement(Cycle,_('Editar Ciclo'),id)
  
-@bp.route('/edit/city/<city>',methods = ['GET','POST'])
+@bp.route('/edit/city/<id>',methods = ['GET','POST'])
 @login_required
-def EditCity(city):
-    return EditSimpleElement(City,_('Editar Ciudad'),city)
+def EditCity(id):
+    return EditSimpleElement(City,_('Editar Ciudad'),id)
 
 
-@bp.route('/edit/instrumenttype/<instrumenttype>',methods = ['GET','POST'])
+@bp.route('/edit/instrumenttype/<id>',methods = ['GET','POST'])
 @login_required
-def EditInstrumentType(instrumenttype):
-    return EditSimpleElement(InstrumentType,_('Editar Tipo de Instrumento'),instrumenttype) 
+def EditInstrumentType(id):
+    return EditSimpleElement(InstrumentType,_('Editar Tipo de Instrumento'),id) 
 
-@bp.route('/edit/premieretype/<premieretype>',methods = ['GET','POST'])
+@bp.route('/edit/premieretype/<id>',methods = ['GET','POST'])
 @login_required
-def EditPremiereType(premieretype):
-    return EditSimpleElement(PremiereType,_('Editar Tipo de Instrumento'),premieretype) 
+def EditPremiereType(id):
+    return EditSimpleElement(PremiereType,_('Editar Tipo de Instrumento'),id) 
 
 def NewSimpleElement(dbmodel,title):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
@@ -517,15 +599,18 @@ def NewInstrument():
     if form.validate_on_submit():
         if  Instrument.query.filter_by(name=form.name.data).all().__len__() > 0:
             flash(_('Este nombre ya ha sido registrado'),'error')
-            return render_template('main/editinstrument.html',form=form,title=_('Agregar Instrumento'),selectedElements=None)
+            return render_template('main/editinstrument.html',form=form,title=_('Agregar Instrumento'),selectedElements="")
         else:
-            instrument_type = InstrumentType.query.filter_by(id=int(form.instrument_type.data[0])).first_or_404()
+            try:
+                instrument_type =InstrumentType.query.filter_by(id=int(form.instrument_type.data[0])).first()
+            except:
+                instrument_type=None
             db.session.add(Instrument(name=form.name.data,instrument_type=instrument_type))
             addHistoryEntry('Agregado','Instrumento: {}'.format(form.name.data))
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.index',user=current_user.first_name))
-    return render_template('main/editinstrument.html',form=form,title=_('Agregar Instrumento'),selectedElements=None)
+    return render_template('main/editinstrument.html',form=form,title=_('Agregar Instrumento'),selectedElements="")
 
 @bp.route('/edit/instrument/<id>', methods = ['GET','POST'])
 @login_required
@@ -533,13 +618,18 @@ def EditInstrument(id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return redirect(url_for('users.login'))
-    instrument = Instrument.query.filter_by(id=id).first_or_404()
+    instrument = Instrument.query.filter_by(id=id).first()
     selectedElements=[]
-    selectedElements.append(instrument.instrument_type.id)
+    if instrument:
+        if instrument.instrument_type:
+            selectedElements.append(instrument.instrument_type.id)
     form = EditInstrumentForm(original_name=instrument.name)
     if form.validate_on_submit():
          instrument.name = form.name.data
-         instrument_type = InstrumentType.query.filter_by(id=int(form.instrument_type.data[0])).first_or_404()
+         try:
+             instrument_type = InstrumentType.query.filter_by(id=int(form.instrument_type.data[0])).first()
+         except:
+             instrument_type = None
          instrument.instrument_type = instrument_type
          addHistoryEntry('Modificado','Instrumento: {}'.format(form.name.data))
          db.session.commit()
@@ -547,6 +637,7 @@ def EditInstrument(id):
          return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
         form.name.data = instrument.name            
+    print(list2csv(selectedElements))
     return render_template('main/editinstrument.html',form=form,title=_('Editar Instrumento'),selectedElements=list2csv(selectedElements))    
 
 @bp.route('/new/musicalpiece', methods = ['GET','POST'])
@@ -561,12 +652,17 @@ def NewMusicalPiece():
         addHistoryEntry('Agregado','Obra Musical: {}'.format(form.name.data))
         new_musical_piece=MusicalPiece(name=form.name.data,composer=composer,composition_year=form.composition_year.data)
         for instrument_id in form.instruments.data:
-            new_musical_piece.instruments.append(Instrument.query.filter_by(id=int(instrument_id)).first_or_404())
+            try:
+                instrument=Instrument.query.filter_by(id=int(instrument_id)).first()
+                if instrument:
+                    new_musical_piece.instruments.append(instrument)
+            except:
+                pass
         db.session.add(new_musical_piece)
         db.session.commit()
         flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.index',user=current_user.first_name))
-    return render_template('main/editmusicalpiece.html',form=form,title=_('Agregar Obra Musical'),selectedElements=None)
+    return render_template('main/editmusicalpiece.html',form=form,title=_('Agregar Obra Musical'),selectedElements="")
 
 @bp.route('/edit/musicalpiece/<id>', methods = ['GET','POST'])
 @login_required
@@ -586,8 +682,13 @@ def EditMusicalPiece(id):
          musical_piece.name = form.name.data
          musical_piece.composer  = Person.query.filter_by(id=int(form.composer.data[0])).first_or_404()
          musical_piece.instruments.clear()
-         for instrument_id in form.instruments.data:
-             musical_piece.instruments.append(Instrument.query.filter_by(id=int(instrument_id)).first_or_404())    
+         for instrument_id in form.instruments.data:       
+             try:
+                 intrument=Instrument.query.filter_by(id=int(instrument_id)).first()
+             except:
+                 instrument=None
+             if intrument:
+                 musical_piece.instruments.append(intrument)    
          musical_piece.composition_year = form.composition_year.data
          addHistoryEntry('Modificado','Obra Musical: {}'.format(form.name.data))
          db.session.commit()
@@ -609,15 +710,18 @@ def NewActivity():
     if form.validate_on_submit():
         if  Activity.query.filter_by(name=form.name.data).all().__len__() > 0:
             flash(_('Este nombre ya ha sido registrado'),'error')
-            return render_template('main/editactivity.html',form=form,title=_('Agregar Actividad'),selectedElements=None)
+            return render_template('main/editactivity.html',form=form,title=_('Agregar Actividad'),selectedElements="")
         else:
-            instrument = Instrument.query.filter_by(id=int(form.instrument.data[0])).first_or_404()
+            try:
+                instrument = Instrument.query.filter_by(id=int(form.instrument.data[0])).first()
+            except:
+                instrument = None
             db.session.add(Activity(name=form.name.data,instrument=instrument))
             addHistoryEntry('Agregado','Actividad: {}'.format(form.name.data))            
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.index',user=current_user.first_name))
-    return render_template('main/editactivity.html',form=form,title=_('Agregar Actividad'),selectedElements=None)
+    return render_template('main/editactivity.html',form=form,title=_('Agregar Actividad'),selectedElements="")
 
 @bp.route('/edit/activity/<id>', methods = ['GET','POST'])
 @login_required
@@ -627,11 +731,15 @@ def EditActivity(id):
         return redirect(url_for('users.login'))
     original_activity= Activity.query.filter_by(id=id).first_or_404()
     selectedElements=[]
-    selectedElements.append(original_activity.instrument.id)
+    if original_activity.instrument:
+        selectedElements.append(original_activity.instrument.id)
     form = EditActivityForm(original_name=original_activity.name)
     if form.validate_on_submit():
          original_activity.name = form.name.data
-         instrument = Instrument.query.filter_by(id=int(form.instrument.data[0])).first_or_404()
+         try:
+             instrument = Instrument.query.filter_by(id=int(form.instrument.data[0])).first()
+         except:
+             instrument = None
          original_activity.instrument = instrument
          addHistoryEntry('Modificado','Actividad: {}'.format(form.name.data))
          db.session.commit()
@@ -653,7 +761,7 @@ def NewLocation():
     if form.validate_on_submit():
         if  Location.query.filter_by(name=form.name.data).all().__len__() > 0:
             flash(_('Este nombre ya ha sido registrado'),'error')
-            return render_template('main/editlocation.html',form=form,title=_('Agregar Lugar'),selectedElements=None)
+            return render_template('main/editlocation.html',form=form,title=_('Agregar Lugar'),selectedElements="")
         else:
             city = City.query.filter_by(id=int(form.city.data[0])).first_or_404()
             db.session.add(Location(name=form.name.data,city=city,additional_info=form.additional_info.data,address=form.address.data))
@@ -661,18 +769,18 @@ def NewLocation():
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.index',user=current_user.first_name))
-    return render_template('main/editlocation.html',form=form,title=_('Agregar Lugar'),selectedElements=None)
+    return render_template('main/editlocation.html',form=form,title=_('Agregar Lugar'),selectedElements="")
 
-@bp.route('/edit/location/<location>', methods = ['GET','POST'])
+@bp.route('/edit/location/<id>', methods = ['GET','POST'])
 @login_required
-def EditLocation(location):
+def EditLocation(id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return redirect(url_for('users.login'))
-    original_location = Location.query.filter_by(name=location).first_or_404()
+    original_location = Location.query.filter_by(id=id).first_or_404()
     selectedElements=[]
     selectedElements.append(original_location.city.id)
-    form = EditLocationForm(original_name=location)
+    form = EditLocationForm(original_name=original_location.name)
     if form.validate_on_submit():
          original_location.name = form.name.data
          original_location.additional_info=form.additional_info.data
@@ -708,14 +816,14 @@ def NewOrganization():
         return redirect(url_for('main.index',user=current_user.first_name))
     return render_template('main/editorganization.html',form=form,title=_('Agregar Organización'))
 
-@bp.route('/edit/organizatioeventn/<organization>', methods = ['GET','POST'])
+@bp.route('/edit/organizatioeventn/<id>', methods = ['GET','POST'])
 @login_required
-def EditOrganization(organization):
+def EditOrganization(id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return redirect(url_for('users.login'))
-    original_organization =Organization.query.filter_by(name=organization).first_or_404()
-    form = EditOrganizationForm(original_name=organization)
+    original_organization =Organization.query.filter_by(id=id).first_or_404()
+    form = EditOrganizationForm(original_name=original_organization.name)
     if form.validate_on_submit():
          original_organization.name = form.name.data
          original_organization.additional_info=form.additional_info.data
@@ -749,15 +857,15 @@ def NewPerson():
         db.session.commit()
         flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.index',user=current_user.first_name))
-    return render_template('main/editperson.html',form=form,title=_('Agregar Persona'),selectedElements=None)
+    return render_template('main/editperson.html',form=form,title=_('Agregar Persona'),selectedElements="")
 
-@bp.route('/edit/person/<person_id>', methods = ['GET','POST'])
+@bp.route('/edit/person/<id>', methods = ['GET','POST'])
 @login_required
-def EditPerson(person_id):
+def EditPerson(id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return redirect(url_for('users.login'))
-    person = Person.query.filter_by(id=person_id).first_or_404()
+    person = Person.query.filter_by(id=id).first_or_404()
     form = EditPersonForm(person)
     selectedElements=[]
     for nationality in person.nationalities:
@@ -833,13 +941,7 @@ def EditEvent(event_id):
         selectedOrgs.append(organization.id)
     form = EditEventForm(dbmodel=Event,original_event=original_event)       
     if form.validate_on_submit():
-#        if  Event.query.filter_by(name=form.name.data).all().__len__() > 0 and (original_event.name  != form.name.data):
-#            flash(_('Este nombre ya ha sido registrado'),'error')
-#            return redirect('main/editevent.html',event_id=event_id,form=form,title=_('Editar Evento'))
-#        else:
-            # the next 3 lines is for checking the values actually exists
         Location.query.filter_by(id=int(form.location.data[0])).first_or_404()
-#        Organization.query.filter_by(id=int(form.organization.data[0])).first_or_404()
         EventType.query.filter_by(id=int(form.event_type.data[0])).first_or_404()
         Cycle.query.filter_by(id=int(form.cycle.data[0])).first_or_404()            
         original_event.name=form.name.data
@@ -870,18 +972,4 @@ def EditEvent(event_id):
                                    selectedOrganizations=list2csv(selectedOrgs))
 
 
-# 
-#@bp.route('/search')
-#@login_required
-#def search():
-#    if not g.search_form.validate():
-#        return redirect(url_for('main.explore'))
-#    page = request.args.get('page', 1, type=int)
-#    posts, total = Post.search(g.search_form.q.data, page,
-#                               current_app.config['POSTS_PER_PAGE'])
-#    next_url = url_for('main.search', q=g.search_form.q.data, page=page + 1) \
-#        if total > page * current_app.config['POSTS_PER_PAGE'] else None
-#    prev_url = url_for('main.search', q=g.search_form.q.data, page=page - 1) \
-#        if page > 1 else None
-#    return render_template('search.html', title=_('Search'), posts=posts,
-#                           next_url=next_url, prev_url=prev_url)
+

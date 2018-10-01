@@ -31,7 +31,7 @@ class EditSimpleElementForm(FlaskForm):
 
 class EditInstrumentForm(FlaskForm):
     name=StringField(_l('Nombre'),validators=[DataRequired()])
-    instrument_type= NonValidatingSelectMultipleField(label=_("Tipo de Instrumento"),choices=[],validators=[DataRequired()])
+    instrument_type= NonValidatingSelectMultipleField(label=_("Tipo de Instrumento"),choices=[],validators=[Optional()])
     submit = SubmitField(_l('Guardar'))
     def __init__(self, original_name ,*args, **kwargs):
         super(EditInstrumentForm, self).__init__(*args, **kwargs)
@@ -46,20 +46,16 @@ class EditMusicalPieceForm(FlaskForm):
     name=StringField(_l('Título'),validators=[DataRequired()])
     composer= NonValidatingSelectMultipleField(label=_("Compositor"),choices=[],validators=[DataRequired()])
     composition_year=IntegerField(_('Año de composición'),validators=[Optional(), NumberRange(min=1, max=3000, message=_('El año ingresado no es válido'))])
-    instruments = NonValidatingSelectMultipleField(label=_("Instrumentos"),choices=[],validators=[DataRequired()])
+    instruments = NonValidatingSelectMultipleField(label=_("Instrumentos"),choices=[],validators=[Optional()])
     submit = SubmitField(_l('Guardar'))
     def __init__(self, original_name ,*args, **kwargs):
         super(EditMusicalPieceForm, self).__init__(*args, **kwargs)
         self.original_name = original_name     
-    def validate_name(self,name):
-        if(name.data != self.original_name):
-            db_elem_instance = MusicalPiece.query.filter_by(name=name.data).first()
-            if db_elem_instance is not None:
-                raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
+   
 
 class EditActivityForm(FlaskForm):
     name=StringField(_l('Nombre'),validators=[DataRequired()])
-    instrument= NonValidatingSelectMultipleField(label=_("Instrumento"),choices=[],validators=[DataRequired()])
+    instrument= NonValidatingSelectMultipleField(label=_("Instrumento"),choices=[],validators=[Optional()])
     submit = SubmitField(_l('Guardar'))
     def __init__(self, original_name ,*args, **kwargs):
         super(EditActivityForm, self).__init__(*args, **kwargs)
@@ -159,9 +155,4 @@ class EditEventForm(FlaskForm):
         self.original_name=None
         if original_event:
             self.original_name=original_event.name
-#    def validate_name(self,name):
-#        if self.name.data != self.original_name:
-#            db_elem_instance = Event.query.filter_by(name=self.name.data).first()
-#            if db_elem_instance is not None:
-#                raise ValidationError(_('Este nombre: {} ya está registrado, por favor, use uno diferente').format(self.name.data))
-   
+
