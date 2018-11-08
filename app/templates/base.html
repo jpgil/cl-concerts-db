@@ -33,18 +33,20 @@
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Editar Elementos <span class="caret"></span></a>
           <ul class="dropdown-menu">
           {% set model_mapping = {  
-                    'Instrument'      :  _('Instrumentos'),
-                    'Country'         :  _('Países'),
-                    'EventType'       :  _('Tipo de Evento'),
-                    'Cycle'           :  _('Ciclos'),
-                    'City'            :  _('Ciudades'),
-                    'InstrumentType'  :  _('Tipos de Instrumento'),
-                    'PremiereType'    :  _('Tipos de Estreno'),
-                    'Activity'        :  _('Actividades'),
-                    'Location'        :  _('Lugares'),
-                    'Organization'    :  _('Organizaciones'),
-                    'Person'          :  _('Personas'),
-                    'MusicalPiece'    :  _('Obras Musicales')
+                    'Instrument'          :  _('Instrumentos'),
+                    'Country'             :  _('Países'),
+                    'EventType'           :  _('Tipo de Evento'),
+                    'Cycle'               :  _('Ciclos'),
+                    'City'                :  _('Ciudades'),
+                    'InstrumentType'      :  _('Tipos de Instrumento'),
+                    'PremiereType'        :  _('Tipos de Estreno'),
+                    'Activity'            :  _('Actividades'),
+                    'Location'            :  _('Lugares'),
+                    'Organization'        :  _('Organizaciones'),
+                    'Person'              :  _('Personas'),
+                    'MusicalPiece'        :  _('Obras Musicales'),
+                    'MusicalEnsemble'     :  _('Agrupaciones Musicales'),
+                    'MusicalEnsembleType' :  _('Tipo de Agrupaciones Musicales')
                     }  %}
           {% for element in model_mapping %}
               <li><a href="{{ url_for('main.viewElement',model=element)}}"> {{ model_mapping[element] }} </a></li>
@@ -113,5 +115,6 @@
     <script src="https://rawgit.com/kswedberg/jquery-smooth-scroll/master/jquery.smooth-scroll.js"></script>
     <script type = "text/javascript"  src = "{{ url_for('static', filename = 'js/flash_message.js') }}" ></script>
     <script type = "text/javascript"  src = "{{ url_for('static', filename = 'js/dd_select2.js') }}" ></script>
+    <script src="{{url_for('static', filename='js/events.js')}}"></script>
 {% endblock %}
  
