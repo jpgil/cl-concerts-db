@@ -36,6 +36,24 @@ function deleteParticipant(participant_id)
     });    
 }
 
+function addMusicalEnsembleToEvent(event_id)
+{
+    var musical_ensemble = document.getElementById("musical_ensemble");
+    if (musical_ensemble.selectedIndex == -1 ){
+        flash("Debe seleccionar una agrupación musical","warning")
+        return
+    }   
+    musical_ensemble_id = parseInt(musical_ensemble.options[musical_ensemble.selectedIndex].value)
+    data = {
+        'musical_ensemble_id' : musical_ensemble_id,
+        'event_id' : event_id,
+    }
+    $.post('/api/musicalensembleatevent/add',data ).done( function(msg) { 
+            $('#table-participants').bootstrapTable('refresh');
+      }).fail( function(xhr, textStatus, errorThrown) {
+        flash(xhr.responseText,"error");
+    });        
+}
 
 function addMusicalEnsembleMember(musical_ensemble_id) {
     var activity = document.getElementById("activity");
@@ -64,6 +82,8 @@ function addMusicalEnsembleMember(musical_ensemble_id) {
         flash(xhr.responseText,"error");
     });
 };
+
+
 
 function deleteMusicalEnsembleMemberCol(value, row, index){
     return '<i class="glyphicon glyphicon-trash"  onclick="deleteMusicalEnsembleMember('+value+')"></i>'           

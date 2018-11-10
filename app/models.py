@@ -305,7 +305,16 @@ class Participant(db.Model):
         backref="participants"
         )     
     def get_name(self):
-        return "{} ({})".format(self.person.name,self.activity.name) if not self.musical_ensemble_id else "[{}] {} ({})".format(self.person.name,self.activity.name,self.musical_ensemble.name)
+        musical_ensemble_string="[{}] ".format(self.musical_ensemble.name) if self.musical_ensemble else ""
+        person_string="{} ".format(self.person.get_name()) if self.person else ""
+        activity_string="({})".format(self.activity.name) if self.activity else ""
+        return musical_ensemble_string+person_string+activity_string
+    
+    def get_short_name(self):
+        musical_ensemble_string="[{}] ".format(self.musical_ensemble.name) if self.musical_ensemble else ""
+        person_string="{} ".format(self.person.get_name()) if self.person else ""
+        return musical_ensemble_string+person_string
+        
     def __repr__(self):
         return 'Participant(person="{}",event="{}",activity="{}")'.format(self.person,self.event,self.activity)
 

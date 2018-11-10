@@ -285,10 +285,10 @@ def getParticipantsListTable(event_id):
         data["total"]=event.participants.count()
         participants=event.participants.order_by(Participant.person_id).limit(limit).offset(offset).all()
         for participant in participants:
-            data["rows"].append({ 'name': participant.person.get_name(),
+            data["rows"].append({ 'name': participant.get_short_name(),
                 'activity': participant.activity.name if participant.activity else '',
                 'id': participant.id, 
-                'text': '{} ({})'.format(participant.person.get_name(),participant.activity.name if  participant.activity else '') })
+                'text': '{} '.format(participant.get_name()) })
     return jsonify(data)
 
 @bp.route('/listtable/musicalensemblemembers/<musical_ensemble_id>')
@@ -333,10 +333,10 @@ def getParticipantsList(event_id):
     if event:
         participants=event.participants.order_by(Participant.person_id).all()
         for participant in participants:
-            data["results"].append({ 'name': participant.person.get_name(),
+            data["results"].append({ 'name': participant.get_short_name(),
                 'activity': participant.activity.name if participant.activity else '',
                 'id': participant.id, 
-                'text': '{} ({})'.format(participant.person.get_name(),participant.activity.name if participant.activity else '') })
+                'text': '{} '.format(participant.get_name()) })
     return jsonify(data)
 
 @bp.route('/list/musicalensemblemembers/<musical_ensemble_id>')
@@ -534,7 +534,7 @@ def getPerformanceDetailList(event_id):
         for performance in performances:
             for participant in performance.participants:
                 performance_name='«{}» ({}) '.format(performance.musical_piece.name,performance.musical_piece.composer.get_name())
-                participant_name=participant.person.get_name()
+                participant_name=participant.get_short_name()
                 participant_activity=participant.activity.name  if participant.activity else ''
                 data["rows"].append({ 'performance_name': performance_name,
                                   'participant_name': participant_name, 

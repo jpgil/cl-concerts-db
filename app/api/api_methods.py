@@ -53,8 +53,7 @@ def remove_participant():
     if checkForKeys(['participant_id'],request.form):
         return bad_request(_('debe incluir participante'))    
     participant=Participant.query.filter_by(id=request.form['participant_id']).first()
-    addHistoryEntry('Eliminado','Participante: {}({}) a {}...'.format(participant.person.get_name(),
-                                                            participant.activity.name if  participant.activity else None,
+    addHistoryEntry('Eliminado','Participante: {} de {}...'.format(participant.get_name(),
                                                             participant.event.name[0:40]))
     db.session.delete(participant)
     db.session.commit()
@@ -63,7 +62,28 @@ def remove_participant():
 #    response.headers['Location'] = url_for('api.get_user', id=user.id)
     return response    
 
-
+@bp.route('/musicalensembleatevent/add',methods=['POST'])
+def add_musical_ensemble_to_event():
+    if checkForKeys(['event_id','musical_ensemble_id'],request.form):
+        return bad_request(_('debe incluir evento y agrupación musical'))
+    musical_ensemble=MusicalEnsemble.query.filter_by(id=request.form['musical_ensemble_id']).first()
+    if not musical_ensemble:
+        return bad_request(_('agrupación musical no encontrada'))       
+    event=Event.query.filter_by(id=request.form['event_id']).first()
+    if not event:
+        return bad_request(_('evento no encontrado'))   
+    new_participant=Participant(musical_ensemble=musical_ensemble)
+    event.participants.append(new_participant)
+    for member in musical_ensemble.members:
+        event.participants.append(Participant(musical_ensemble=musical_ensemble,person=member.person,activity=member.activity))
+    addHistoryEntry('Agregado','Participante: {} a {}...'.format(new_participant.get_name(),event.name[0:40])) 
+    addHistoryEntry('Agregado','Participante: Agregados {} miembros de {} al evento {}.'.format(musical_ensemble.members.count(),musical_ensemble.get_name(),event.name[0:40]))    
+    db.session.commit()
+    response = jsonify({})
+    response.status_code = 201
+#    response.headers['Location'] = url_for('api.get_user', id=user.id)
+    return response
+    
 @bp.route('/performance/add',methods=['POST'])
 def add_performance():
     if checkForKeys(['event_id','musical_piece_id','premiere_type_id'],request.form):
@@ -115,8 +135,7 @@ def add_performance_detail():
     participant=Participant.query.filter_by(id=request.form['participant_id']).first()
     if participant in performance.participants:
         return bad_request(_('participante ya agregado'))
-    addHistoryEntry('Agregado','Detalle de Interpretación: {}({}) agregado a {} en {}'.format(participant.person.get_name(),
-                                                                                              participant.activity.name if participant.activity else None,
+    addHistoryEntry('Agregado','Detalle de Interpretación: {} agregado a {} en {}'.format(participant.get_name(),
                                                                                               performance.musical_piece.name,
                                                                                               performance.event.name[0:40]))
     performance.participants.append(participant)
@@ -139,8 +158,7 @@ def delete_performance_detail():
     participant=Participant.query.filter_by(id=request.form['participant_id']).first()
     if participant not in performance.participants:
         return bad_request(_('participante no está agregado a esta presentación'))
-    addHistoryEntry('Eliminado','Detalle de Interpretación: {}({}) agregado a {} en {}'.format(participant.person.get_name(),
-                                                                                              participant.activity.name if participant.activity else None,
+    addHistoryEntry('Eliminado','Detalle de Interpretación: {} agregado a {} en {}'.format(participant.get_name(),
                                                                                               performance.musical_piece.name,
                                                                                               performance.event.name[0:40]))
     performance.participants.remove(participant)
