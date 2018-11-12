@@ -6,6 +6,7 @@ from app.models import Activity, Event, Person, Participant, MusicalPiece, Premi
 from flask_babel import _
 from app import files_collection
 from app.main.routes import addHistoryEntry
+from sqlalchemy import and_
 import os
 
 def checkForKeys(keys,form):
@@ -249,11 +250,20 @@ def add_musical_ensemble_member():
 def delete_musical_ensemble_member():
     if checkForKeys(['musical_ensemble_member_id'],request.form):
         return bad_request(_('debe incluir miembro de la agrupación musical'))    
-    member=MusicalEnsembleMember.query.filter_by(id=request.form['musical_ensemble_member_id']).first()
-    addHistoryEntry('Eliminado','Miembro: {} de {}...'.format(member.get_name(),member.musical_ensemble.name[0:40]))
-    db.session.delete(member)
-    db.session.commit()
-    response = jsonify({})
-    response.status_code = 200
-#    response.headers['Location'] = url_for('api.get_user', id=user.id)
-    return response    
+    musical_ensemble_member=MusicalEnsembleMember.query.filter_by(id=request.form['musical_ensemble_member_id']).first()
+    if musical_ensemble_member:
+        participants=Participant.query.filter(and_(Participant.musical_ensemble_id==musical_ensemble_member.musical_ensemble_id,
+                                                    Participant.person_id==musical_ensemble_member.person_id,
+                                                    Participant.activity_id==musical_ensemble_member.activity_id))
+        for participant in participants:
+            addHistoryEntry('Eliminado','Participante: {} de {}...'.format(participant.get_name(),participant.event.get_name()))
+            db.session.delete(participant)
+        addHistoryEntry('Eliminado','Miembro: {} de {}...'.format(musical_ensemble_member.get_name(),musical_ensemble_member.musical_ensemble.name[0:40]))
+        db.session.delete(musical_ensemble_member)
+        db.session.commit()
+        response = jsonify({})
+        response.status_code = 200
+#       response.headers['Location'] = url_for('api.get_user', id=user.id)
+        return response
+    else:
+        return bad_request(_('miembro no encontrado'))    

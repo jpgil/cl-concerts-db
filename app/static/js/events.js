@@ -88,11 +88,43 @@ function addMusicalEnsembleMember(musical_ensemble_id) {
 function deleteMusicalEnsembleMemberCol(value, row, index){
     return '<i class="glyphicon glyphicon-trash"  onclick="deleteMusicalEnsembleMember('+value+')"></i>'           
 }
+
+function deleteMusicalEnsembleMemberCol(value, row, index){
+    return '<i class="glyphicon glyphicon-trash"  onclick="checkDeleteMusicalEnsembleMember('+value+')"></i>'           
+}
+
+function checkDeleteMusicalEnsembleMember(musical_ensemble_member_id)
+{
+
+        $.ajax({
+            type: 'GET',
+            url: '/list/eventsofmember/'+musical_ensemble_member_id,
+            async: false
+        }).then(function (data) {
+        // create the option and append to Select2
+            if(data.events.length == 0){
+                deleteMusicalEnsembleMember(musical_ensemble_member_id)    
+            }
+            else {
+                console.log(data.events.length)
+                $('#confirmDelete').find('.modal-body').html("");
+                for (ev_id in data.events){
+                    $('#confirmDelete').find('.modal-body').append('<p>'+data.events[ev_id]+'</p>');
+                 }
+                 $('#confirmDelete').find('.modal-footer').html("");
+                 $('#confirmDelete').find('.modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal" onclick="javascript:deleteMusicalEnsembleMember('+musical_ensemble_member_id+')">Sí</button>')
+                 $('#confirmDelete').find('.modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">No</button>')
+                 $('#confirmDelete').modal()
+            }
+
+        });
+
+}
+
 function deleteMusicalEnsembleMember(musical_ensemble_member_id)
 {
     $.post('/api/musicalensemblemember/delete', { 'musical_ensemble_member_id': musical_ensemble_member_id } ).done( function(msg) { 
-            $('#table-musical-ensemble-members').bootstrapTable('refresh'); } )
-           // $('#table-performance-participant').bootstrapTable('refresh'); } )
+            $('#table-musical-ensemble-members').bootstrapTable('refresh'); } )            
     .fail( function(xhr, textStatus, errorThrown) {
         flash(xhr.responseText,'error');
     });    

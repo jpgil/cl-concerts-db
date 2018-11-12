@@ -11,7 +11,7 @@ from app.main.forms import *
 from app.models import *
 #from app.translate import translate
 from app.main import bp
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from werkzeug.local import LocalProxy
 import os
 
@@ -338,6 +338,19 @@ def getParticipantsList(event_id):
                 'id': participant.id, 
                 'text': '{} '.format(participant.get_name()) })
     return jsonify(data)
+
+@bp.route('/list/eventsofmember/<musical_ensemble_member_id>')
+def getListOfEventsForEnsembleMemberId(musical_ensemble_member_id):
+    data={ 'events': [] }
+    musical_ensemble_member=MusicalEnsembleMember.query.filter_by(id=musical_ensemble_member_id).first()
+    if musical_ensemble_member:
+        participants=Participant.query.filter(and_(Participant.musical_ensemble_id == musical_ensemble_member.musical_ensemble_id,
+                                                    Participant.person_id == musical_ensemble_member.person_id,
+                                                    Participant.activity_id == musical_ensemble_member.activity_id))
+        for participant in participants:
+            data['events'].append(participant.event.get_name())
+    return jsonify(data)
+      
 
 @bp.route('/list/musicalensemblemembers/<musical_ensemble_id>')
 def getMusicalEnsembleMemberList(musical_ensemble_id):
