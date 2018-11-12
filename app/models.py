@@ -1,5 +1,3 @@
-from datetime import datetime
-from hashlib import md5
 from time import time
 from flask import current_app
 from flask_login import UserMixin
@@ -187,6 +185,7 @@ class Person(db.Model):
     nationalities  = db.relationship('Country',
                     secondary=nationality,
                     backref='people')    
+    memberships = db.relationship('MusicalEnsembleMember', backref = 'person', lazy='dynamic')
     def __repr__(self):
         return 'Person(first_name="{}",last_name="{}")'.format(self.first_name,self.last_name)
     def get_name(self):
@@ -212,6 +211,7 @@ class Activity(db.Model):
     name = db.Column(db.String(80)) 
     instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'))
     participants = db.relationship('Participant', backref = 'activity', lazy='dynamic')
+    musical_ensemble_members = db.relationship('MusicalEnsembleMember', backref = 'activity', lazy='dynamic')    
     def get_name(self):
         if self.instrument:
             return "{} - {}".format(self.name,self.instrument.name)
@@ -219,7 +219,7 @@ class Activity(db.Model):
             return "{}".format(self.name)
         
     def __repr__(self):
-        return 'Activity(name="{}",instrument_id="{}")'.format(self.name,'' if not self.instrument else self.intrument.id)        
+        return 'Activity(name="{}",instrument_id="{}")'.format(self.name,self.instrument_id)        
     
 
 class Location(db.Model):
@@ -234,6 +234,9 @@ class Location(db.Model):
     def __repr__(self):
         return 'Location(name="{}",address="{}",city_id="{}")'.format(self.name,self.address,self.city_id)
 
+
+
+
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)                
     name = db.Column(db.String(120))  
@@ -247,7 +250,7 @@ class Event(db.Model):
     cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
     participants = db.relationship('Participant', backref='event', lazy='dynamic')
     performances = db.relationship('Performance', backref='event', lazy='dynamic')
-    medialinks = db.relationship('MediaLink', backref='event', lazy='dynamic')
+    medialinks = db.relationship('MediaLink', backref='event', lazy='dynamic')     
     def get_string_date(self):
         if (self.year and self.month and self.day):
             return "{}-{}-{}".format(self.year,self.month,self.day)
@@ -289,7 +292,8 @@ class Participant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     person_id = db.Column(db.Integer, db.ForeignKey('person.id'))  
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))      
-    activity_id = db.Column(db.Integer, db.ForeignKey('activity.id'))     
+    activity_id = db.Column(db.Integer, db.ForeignKey('activity.id'))    
+    musical_ensemble_id =  db.Column(db.Integer, db.ForeignKey('musical_ensemble.id'))    
     performances = db.relationship(
         "Performance",
         secondary=db.Table('participant_performance',
@@ -301,9 +305,51 @@ class Participant(db.Model):
         backref="participants"
         )     
     def get_name(self):
-        return "{} ({})".format(self.person.name,self.activity.name)
+        musical_ensemble_string="[{}] ".format(self.musical_ensemble.name) if self.musical_ensemble else ""
+        person_string="{} ".format(self.person.get_name()) if self.person else ""
+        activity_string="({})".format(self.activity.name) if self.activity else ""
+        return musical_ensemble_string+person_string+activity_string
+    
+    def get_short_name(self):
+        musical_ensemble_string="[{}] ".format(self.musical_ensemble.name) if self.musical_ensemble else ""
+        person_string="{} ".format(self.person.get_name()) if self.person else ""
+        return musical_ensemble_string+person_string
+        
     def __repr__(self):
         return 'Participant(person="{}",event="{}",activity="{}")'.format(self.person,self.event,self.activity)
 
+class MusicalEnsembleType(db.Model):
+    id = db.Column(db.Integer, primary_key=True)   
+    name = db.Column(db.String(100))     
+    musical_ensembles = db.relationship('MusicalEnsemble', backref='musical_ensemble_type', lazy='dynamic') 
+    def get_name(self):
+        return "{}".format(self.name)
+    def __repr__(self):
+        return 'MusicalPiece(name="{}")'.format(self.name) 
 
-     
+class MusicalEnsemble(db.Model):
+    id = db.Column(db.Integer, primary_key=True)   
+    name = db.Column(db.String(200))    
+    additional_info = db.Column(db.String(4000))
+    members = db.relationship('MusicalEnsembleMember', backref='musical_ensemble', lazy='dynamic') 
+    musical_ensemble_type_id = db.Column(db.Integer, db.ForeignKey('musical_ensemble_type.id'))    
+    participants = db.relationship('Participant', backref='musical_ensemble', lazy='dynamic') 
+    def get_name(self):
+        return "{}".format(self.name)
+    def __repr__(self):
+        return 'MusicalPiece(name="{}")'.format(self.name) 
+      
+
+class MusicalEnsembleMember(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    person_id = db.Column(db.Integer, db.ForeignKey('person.id'))  
+    activity_id = db.Column(db.Integer, db.ForeignKey('activity.id'))     
+    musical_ensemble_id =  db.Column(db.Integer, db.ForeignKey('musical_ensemble.id'))
+    def get_name(self):
+        if self.activity and self.person:
+            return "{} ({})".format(self.person.get_name(),self.activity.name)
+        else:
+            return "{}".format(self.person.get_name()) if self.person else "({})".format(self.activity.name)
+
+    def __repr__(self):
+        return "MusicalEnsembleMember(person='{}',musical_ensemble='{}')".format(self.person.get_name(), self.musical_ensemble.name) if not self.activity_id else "MusicalEnsembleMember(person='{}'.activity='{}', musical_ensemble='{}')".format(self.person.get_name(),self.activity.name, self.musical_ensemble.name)

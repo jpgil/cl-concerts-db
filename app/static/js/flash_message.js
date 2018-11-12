@@ -1,4 +1,19 @@
+function IsJsonString(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
 function flash(message,category){
+   if (IsJsonString(message)){
+       message_json=JSON.parse(message)
+       if (("message" in message_json)==true){
+           message=message_json["message"]
+       }
+   }
    if (category == 'error'){
       var icon='icon-exclamation-sign';
       category='danger';

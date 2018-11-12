@@ -3,9 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, SelectMultipleField, SelectField, IntegerField, DateField
 from wtforms.validators import ValidationError, DataRequired, Length, Optional, NumberRange
 from flask_babel import _, lazy_gettext as _l
-from app.models import  Instrument, InstrumentType, Person,\
-                        Location, Organization, EventType, Event, MusicalPiece,\
-                        Activity
+from app.models import  *
 
 class NonValidatingSelectField(SelectField):
     def pre_validate(self, form):
@@ -42,6 +40,23 @@ class EditInstrumentForm(FlaskForm):
             if db_elem_instance is not None:
                 raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
 
+class EditMusicalEnsembleForm(FlaskForm):
+    name=StringField(_l('Nombre'),validators=[DataRequired()])
+    musical_ensemble_type= NonValidatingSelectMultipleField(label=_("Tipo de Agrupación Musical"),choices=[],validators=[Optional()])
+    person= NonValidatingSelectMultipleField(label=_("Persona"),choices=[],validators=[Optional()])
+    activity= NonValidatingSelectMultipleField(label=_("Actividad"),choices=[],validators=[Optional()])
+
+    additional_info=TextAreaField(_('Información Adicional'))
+    submit = SubmitField(_l('Guardar'))
+    def __init__(self, original_name ,*args, **kwargs):
+        super(EditMusicalEnsembleForm, self).__init__(*args, **kwargs)
+        self.original_name = original_name     
+    def validate_name(self,name):
+        if(name.data != self.original_name):
+            db_elem_instance = MusicalEnsemble.query.filter_by(name=name.data).first()
+            if db_elem_instance is not None:
+                raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
+                
 class EditMusicalPieceForm(FlaskForm):
     name=StringField(_l('Título'),validators=[DataRequired()])
     composer= NonValidatingSelectMultipleField(label=_("Compositor"),choices=[],validators=[DataRequired()])
@@ -144,10 +159,12 @@ class EditEventForm(FlaskForm):
     # appear for adding new participants/actividades/performances/relations
     person= NonValidatingSelectMultipleField(label=_("Persona"),choices=[],validators=[Optional()])
     activity= NonValidatingSelectMultipleField(label=_("Actividad"),choices=[],validators=[Optional()])
+    musical_ensemble= NonValidatingSelectMultipleField(label=_("Agrupación Musical"),choices=[],validators=[Optional()])
     musical_piece= NonValidatingSelectMultipleField(label=_("Obra"),choices=[],validators=[Optional()])
     premiere_type= NonValidatingSelectMultipleField(label=_("Estreno"),choices=[],validators=[Optional()])
     performance= NonValidatingSelectMultipleField(label=_("Interpretación"),choices=[],validators=[Optional()])
     participant= NonValidatingSelectMultipleField(label=_("Participante"),choices=[],validators=[Optional()])
+
     
     submit = SubmitField(_l('Guardar'))
     def __init__(self,original_event,*args, **kwargs):

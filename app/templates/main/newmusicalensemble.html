@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+    <h1>{{ title }}</h1>
+    <form action="" method="post">
+    {{ form.hidden_tag() }}
+    <div class="container">
+        <div class="row"> {{ form.name.label }} </div>
+        <div class="row">  {{ form.name(size=40) }} </div>                
+        <div class="row">
+                {% for error in form.name.errors %}
+                   <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+        </div>
+        <br>
+        <div class="row"> {{ form.musical_ensemble_type.label }} </div>
+        <div class="row">  {{ form.musical_ensemble_type( **{"class":"dd_select2", "url":"musicalensembletypes", "description":_("Tipo de Agrupación Musical"),  "maxelem":"1" , "selectedElements":selectedElements } ) }}  </div> 
+        <div class="row">
+                {% for error in form.musical_ensemble_type.errors %}
+                   <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+        </div> 
+        <div class="row"> 
+            {{ form.additional_info.label }} <br>
+            {{ form.additional_info(cols="55", rows="10")|safe }} <br>                
+            
+            {% for error in form.additional_info.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        <br> 
+        <div class="row"></div>
+        <div class="row">
+             {{ form.submit() }} 
+        </div>
+    </div>       
+
+    </form>
+    
+{% endblock %}
+{% block script %}
+{% endblock %}

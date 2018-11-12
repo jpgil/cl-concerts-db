@@ -5,14 +5,15 @@ function addParticipant(event_id) {
         flash("Debe seleccionar una persona","warning")
         return
     }
-    if (activity.selectedIndex == -1){
-        flash("Debe seleccionar una actividad","warning")
-        return
+    activity_id = -1 
+    if (activity.selectedIndex != -1){
+        activity_id = parseInt(activity.options[activity.selectedIndex].value)
     }
+
     data = {
         'event_id' : event_id,
         'person_id' : parseInt(person.options[person.selectedIndex].value),
-        'activity_id' : parseInt(activity.options[activity.selectedIndex].value)
+        'activity_id' : activity_id
     }
      
     $.post('/api/participant/add',data ).done( function(msg) { 
@@ -34,6 +35,101 @@ function deleteParticipant(participant_id)
         flash(xhr.responseText,'error');
     });    
 }
+
+function addMusicalEnsembleToEvent(event_id)
+{
+    var musical_ensemble = document.getElementById("musical_ensemble");
+    if (musical_ensemble.selectedIndex == -1 ){
+        flash("Debe seleccionar una agrupación musical","warning")
+        return
+    }   
+    musical_ensemble_id = parseInt(musical_ensemble.options[musical_ensemble.selectedIndex].value)
+    data = {
+        'musical_ensemble_id' : musical_ensemble_id,
+        'event_id' : event_id,
+    }
+    $.post('/api/musicalensembleatevent/add',data ).done( function(msg) { 
+            $('#table-participants').bootstrapTable('refresh');
+      }).fail( function(xhr, textStatus, errorThrown) {
+        flash(xhr.responseText,"error");
+    });        
+}
+
+function addMusicalEnsembleMember(musical_ensemble_id) {
+    var activity = document.getElementById("activity");
+    var person = document.getElementById("person");
+
+    activity_id = -1 
+    if (activity.selectedIndex != -1){
+        activity_id = parseInt(activity.options[activity.selectedIndex].value)
+    }
+    person_id = -1
+    if (person.selectedIndex != -1){
+        person_id = parseInt(person.options[person.selectedIndex].value)
+    }
+    if (person.selectedIndex == -1 && activity.selectedIndex == -1){
+        flash("Debe seleccionar una persona o actividad","warning")
+        return
+    }
+    data = {
+        'musical_ensemble_id' : musical_ensemble_id,
+        'person_id' : person_id,
+        'activity_id' : activity_id
+    }
+    $.post('/api/musicalensemblemember/add',data ).done( function(msg) { 
+            $('#table-musical-ensemble-members').bootstrapTable('refresh');
+      }).fail( function(xhr, textStatus, errorThrown) {
+        flash(xhr.responseText,"error");
+    });
+};
+
+
+
+function deleteMusicalEnsembleMemberCol(value, row, index){
+    return '<i class="glyphicon glyphicon-trash"  onclick="deleteMusicalEnsembleMember('+value+')"></i>'           
+}
+
+function deleteMusicalEnsembleMemberCol(value, row, index){
+    return '<i class="glyphicon glyphicon-trash"  onclick="checkDeleteMusicalEnsembleMember('+value+')"></i>'           
+}
+
+function checkDeleteMusicalEnsembleMember(musical_ensemble_member_id)
+{
+
+        $.ajax({
+            type: 'GET',
+            url: '/list/eventsofmember/'+musical_ensemble_member_id,
+            async: false
+        }).then(function (data) {
+        // create the option and append to Select2
+            if(data.events.length == 0){
+                deleteMusicalEnsembleMember(musical_ensemble_member_id)    
+            }
+            else {
+                console.log(data.events.length)
+                $('#confirmDelete').find('.modal-body').html("");
+                for (ev_id in data.events){
+                    $('#confirmDelete').find('.modal-body').append('<p>'+data.events[ev_id]+'</p>');
+                 }
+                 $('#confirmDelete').find('.modal-footer').html("");
+                 $('#confirmDelete').find('.modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal" onclick="javascript:deleteMusicalEnsembleMember('+musical_ensemble_member_id+')">Sí</button>')
+                 $('#confirmDelete').find('.modal-footer').append('<button type="button" class="btn btn-default" data-dismiss="modal">No</button>')
+                 $('#confirmDelete').modal()
+            }
+
+        });
+
+}
+
+function deleteMusicalEnsembleMember(musical_ensemble_member_id)
+{
+    $.post('/api/musicalensemblemember/delete', { 'musical_ensemble_member_id': musical_ensemble_member_id } ).done( function(msg) { 
+            $('#table-musical-ensemble-members').bootstrapTable('refresh'); } )            
+    .fail( function(xhr, textStatus, errorThrown) {
+        flash(xhr.responseText,'error');
+    });    
+}
+
 
 
 function addPerformance(event_id) {

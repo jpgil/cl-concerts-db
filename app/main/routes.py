@@ -11,7 +11,7 @@ from app.main.forms import *
 from app.models import *
 #from app.translate import translate
 from app.main import bp
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 from werkzeug.local import LocalProxy
 import os
 
@@ -55,7 +55,9 @@ def getStringForModel(model):
                     'Location'        :  _('Lugares'),
                     'Organization'    :  _('Organizaciones'),
                     'Person'          :  _('Personas'),
-                    'MusicalPiece'    :  _('Obras Musicales')
+                    'MusicalPiece'    :  _('Obras Musicales'),
+                    'MusicalEnsemble'     :  _('Agrupaciones Musicales'),
+                    'MusicalEnsembleType' :  _('Tipo de Agrupaciones Musicales')                    
                     }    
     return string4model[model]
 
@@ -191,6 +193,16 @@ def getInstrumentTypeList():
 def getInstrumentTypeItem(id):
     return getItem(InstrumentType,id)
 
+@bp.route('/list/musicalensembletypes')
+def getMusicalEnsembleTypeList():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getItemList(MusicalEnsembleType,q,page)
+
+@bp.route('/list/musicalensembletypes/<id>')
+def getMusicalEnsembleTypeItem(id):
+    return getItem(MusicalEnsembleType,id)
+
 @bp.route('/list/instruments')
 def getInstrumentList():
     page = request.args.get('page', 1, type=int)
@@ -201,6 +213,16 @@ def getInstrumentList():
 def getInstrumentItem(id):
     return getItem(Instrument,id)
 
+@bp.route('/list/musicalensembles')
+def getMusicalEnsembleList():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getItemList(MusicalEnsemble,q,page)
+
+@bp.route('/list/musicalensembles/<id>')
+def getMusicalEnsembleItem(id):
+    return getItem(MusicalEnsemble,id)
+
 @bp.route('/list/musicalpieces')
 def getMusicalPieceList():
     page = request.args.get('page', 1, type=int)
@@ -210,7 +232,6 @@ def getMusicalPieceList():
 @bp.route('/list/mmusicalpieces/<id>')
 def getMusicalPieceItem(id):
     return getMusicalPiece(id)
-
 
 @bp.route('/list/genders')
 def getGenderList():
@@ -256,24 +277,46 @@ def getPremiereTypeItem(id):
 
 @bp.route('/listtable/participants/<event_id>')
 def getParticipantsListTable(event_id):
+    limit = request.args.get('limit', 10, type=int)
+    offset = request.args.get('offset', 0, type=int)
     data={ "rows": [], "total": 0 }
     event=Event.query.filter_by(id=event_id).first()
     if event:
-        participants=event.participants.order_by(Participant.person_id).all()
+        data["total"]=event.participants.count()
+        participants=event.participants.order_by(Participant.person_id).limit(limit).offset(offset).all()
         for participant in participants:
-            data["rows"].append({ 'name': participant.person.get_name(),
-                'activity': participant.activity.name,
+            data["rows"].append({ 'name': participant.get_short_name(),
+                'activity': participant.activity.name if participant.activity else '',
                 'id': participant.id, 
-                'text': '{} ({})'.format(participant.person.get_name(),participant.activity.name) })
-        data["total"]=participants.__len__() 
+                'text': '{} '.format(participant.get_name()) })
     return jsonify(data)
+
+@bp.route('/listtable/musicalensemblemembers/<musical_ensemble_id>')
+def getMusicalEnsembleMemberListTable(musical_ensemble_id):
+    data={ "rows": [], "total": 0 }
+    limit = request.args.get('limit', 10, type=int)
+    offset = request.args.get('offset', 0, type=int)
+    musical_ensemble=MusicalEnsemble.query.filter_by(id=musical_ensemble_id).first()
+    if musical_ensemble:
+        data["total"]=musical_ensemble.members.count() 
+        members=musical_ensemble.members.order_by(MusicalEnsembleMember.id).limit(limit).offset(offset).all()
+        for member in members:
+            data["rows"].append({ 'name': member.person.get_name() if member.person else '',
+                'activity': member.activity.name if member.activity else '',
+                'id': member.id, 
+                'text': '{}'.format(member.get_name()) })      
+    return jsonify(data)
+
 
 @bp.route('/listtable/medialink/<event_id>')
 def getMediaLinkListTable(event_id):
+    limit = request.args.get('limit', 10, type=int)
+    offset = request.args.get('offset', 0, type=int)
     data={ "rows": [], "total": 0 }
     event=Event.query.filter_by(id=event_id).first()
     if event:
-        medialinks=event.medialinks.order_by(MediaLink.filename).all()
+        data["total"]=event.medialinks.count()
+        medialinks=event.medialinks.order_by(MediaLink.filename).limit(limit).offset(offset).all()
         for file in medialinks:
             (path,filename)=os.path.split(file.filename)
             data["rows"].append({ 'filename': filename ,
@@ -281,7 +324,6 @@ def getMediaLinkListTable(event_id):
                 'id': file.id, 
                 'type': file.mime_type,
                 'url': file.url })
-        data["total"]=medialinks.__len__() 
     return jsonify(data)
 
 @bp.route('/list/participants/<event_id>')
@@ -291,26 +333,54 @@ def getParticipantsList(event_id):
     if event:
         participants=event.participants.order_by(Participant.person_id).all()
         for participant in participants:
-            data["results"].append({ 'name': participant.person.get_name(),
-                'activity': participant.activity.name,
+            data["results"].append({ 'name': participant.get_short_name(),
+                'activity': participant.activity.name if participant.activity else '',
                 'id': participant.id, 
-                'text': '{} ({})'.format(participant.person.get_name(),participant.activity.name) })
+                'text': '{} '.format(participant.get_name()) })
     return jsonify(data)
 
+@bp.route('/list/eventsofmember/<musical_ensemble_member_id>')
+def getListOfEventsForEnsembleMemberId(musical_ensemble_member_id):
+    data={ 'events': [] }
+    musical_ensemble_member=MusicalEnsembleMember.query.filter_by(id=musical_ensemble_member_id).first()
+    if musical_ensemble_member:
+        participants=Participant.query.filter(and_(Participant.musical_ensemble_id == musical_ensemble_member.musical_ensemble_id,
+                                                    Participant.person_id == musical_ensemble_member.person_id,
+                                                    Participant.activity_id == musical_ensemble_member.activity_id))
+        for participant in participants:
+            data['events'].append(participant.event.get_name())
+    return jsonify(data)
+      
+
+@bp.route('/list/musicalensemblemembers/<musical_ensemble_id>')
+def getMusicalEnsembleMemberList(musical_ensemble_id):
+    data={ "results": [], "pagination": { "more": False} }
+    musical_ensemble=MusicalEnsemble.query.filter_by(id=musical_ensemble_id).first()
+    if musical_ensemble:
+        members=musical_ensemble.memebers.order_by(MusicalEnsembleMember.person_id).all()
+        for member in members:
+            data["results"].append({ 
+                'name': member.person.get_name(),
+                'activity': member.activity.name if participant.activity else '',
+                'id': member.id, 
+                'text': '{} ({})'.format(member.person.get_name(),member.activity.name if member.activity else '') })
+    return jsonify(data)
 
 @bp.route('/listtable/performances/<event_id>')
 def getPerformancesListTable(event_id):
+    limit = request.args.get('limit', 10, type=int)
+    offset = request.args.get('offset', 0, type=int)
     data={ "rows": [], "total": 0 }
     event=Event.query.filter_by(id=event_id).first()
     if event:
-        performances=event.performances.order_by(Performance.musical_piece_id).all()
+        data["total"] = event.performances.count()
+        performances=event.performances.order_by(Performance.musical_piece_id).limit(limit).offset(offset).all()
         for performance in performances:
             premiere_type_string=' [{}] '.format(performance.premiere_type.name) if performance.premiere_type.name != 'No' else ''                
             data["rows"].append({ 'text': '{}«{}» ({})'.format(premiere_type_string, 
                                                     performance.musical_piece.name,
                                                     performance.musical_piece.composer.get_name()),
                                    'id':performance.id})
-        data["total"]=performances.__len__() 
     return jsonify(data)
 
 
@@ -417,6 +487,14 @@ def getCityTable():
 def getInstrumentTypeTable():
     return getTableData(request,InstrumentType,[InstrumentType.name])  
 
+@bp.route('/listtable/MusicalEnsemble')
+def getMusicalEnsembleTable():
+    return getTableData(request,MusicalEnsemble,[MusicalEnsemble.name])  
+
+@bp.route('/listtable/MusicalEnsembleType')
+def getMusicalEnsembleTypeTable():
+    return getTableData(request,MusicalEnsembleType,[MusicalEnsembleType.name])  
+
 @bp.route('/listtable/PremiereType')
 def getPremiereTypeTable():
     return getTableData(request,PremiereType,[PremiereType.name])  
@@ -459,23 +537,22 @@ def getPerformancesList(event_id):
 
 @bp.route('/listtable/performancesdetails/<event_id>') 
 def getPerformanceDetailList(event_id):
+    limit = request.args.get('limit', 10, type=int)
+    offset = request.args.get('offset', 0, type=int)
     data={ "rows": [], "total": 0 }
     event=Event.query.filter_by(id=event_id).first()
-    total=0
     if event:
-       
-        performances=event.performances.order_by(Performance.musical_piece_id).all()
+        data["total"] = event.performances.count()
+        performances=event.performances.order_by(Performance.musical_piece_id).limit(limit).offset(offset).all()
         for performance in performances:
             for participant in performance.participants:
-                total=total+1
                 performance_name='«{}» ({}) '.format(performance.musical_piece.name,performance.musical_piece.composer.get_name())
-                participant_name=participant.person.get_name()
-                participant_activity=participant.activity.name
+                participant_name=participant.get_short_name()
+                participant_activity=participant.activity.name  if participant.activity else ''
                 data["rows"].append({ 'performance_name': performance_name,
                                   'participant_name': participant_name, 
                                   'participant_activity': participant_activity,
                                   'performance_participant_id': '{},{}'.format(performance.id,participant.id) })
-    data["total"]=total
     return jsonify(data)
     
 def EditSimpleElement(dbmodel,title,id):
@@ -521,6 +598,11 @@ def EditCity(id):
 @login_required
 def EditInstrumentType(id):
     return EditSimpleElement(InstrumentType,_('Editar Tipo de Instrumento'),id) 
+
+@bp.route('/edit/musicalensembletype/<id>',methods = ['GET','POST'])
+@login_required
+def EditMusicalEnsembleType(id):
+    return EditSimpleElement(MusicalEnsembleType,_('Editar Tipo de Agrupación Musical'),id) 
 
 @bp.route('/edit/premieretype/<id>',methods = ['GET','POST'])
 @login_required
@@ -571,6 +653,11 @@ def NewCity():
 @login_required
 def NewInstrumentType():
     return NewSimpleElement(InstrumentType,_('Agregar Tipo de Instrumento'))
+
+@bp.route('/new/musicalensembletype', methods = ['GET','POST'])
+@login_required
+def NewMusicalEnsembleType():
+    return NewSimpleElement(MusicalEnsembleType,_('Agregar Tipo de Agrupación Musical'))
     
 @bp.route('/new/premieretype', methods = ['GET','POST'])
 @login_required
@@ -663,6 +750,60 @@ def NewMusicalPiece():
         flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.index',user=current_user.first_name))
     return render_template('main/editmusicalpiece.html',form=form,title=_('Agregar Obra Musical'),selectedElements="")
+
+@bp.route('/new/musicalensemble', methods = ['GET','POST'])
+@login_required
+def NewMusicalEnsemble():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
+        return redirect(url_for('users.login'))
+    form = EditMusicalEnsembleForm(dbmodel=MusicalEnsemble,original_name='')   
+    if form.validate_on_submit():
+        if  MusicalEnsemble.query.filter_by(name=form.name.data).all().__len__() > 0:
+            flash(_('Este nombre ya ha sido registrado'),'error')
+            return render_template('main/newmusicalensemble.html',form=form,title=_('Agregar Agrupación Musical'),selectedElements="")
+        else:
+            try:
+                musical_ensemble_type =MusicalEnsembleType.query.filter_by(id=int(form.musical_ensemble_type.data[0])).first()
+            except:
+                musical_ensemble_type=None
+            new_musical_ensemble=MusicalEnsemble(name=form.name.data,musical_ensemble_type=musical_ensemble_type,additional_info=form.additional_info.data)
+            db.session.add(new_musical_ensemble)
+            addHistoryEntry('Agregado','Agrupación Musical: {}'.format(form.name.data))
+            db.session.commit()
+            flash(_('Tus cambios han sido guardados.'),'info')
+            return redirect(url_for('main.EditMusicalEnsemble',id=new_musical_ensemble.id))
+        return redirect(url_for('main.index',user=current_user.first_name))
+    return render_template('main/newmusicalensemble.html',form=form,title=_('Agregar Agrupación Musical'),selectedElements="")
+
+@bp.route('/edit/musicalensemble/<id>', methods = ['GET','POST'])
+@login_required
+def EditMusicalEnsemble(id):
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
+        return redirect(url_for('users.login'))
+    musical_ensemble = MusicalEnsemble.query.filter_by(id=id).first()
+    selectedElements=[]
+    if musical_ensemble:
+        if musical_ensemble.musical_ensemble_type:
+            selectedElements.append(musical_ensemble.musical_ensemble_type.id)
+    form = EditMusicalEnsembleForm(original_name=musical_ensemble.name)
+    if form.validate_on_submit():
+         musical_ensemble.name = form.name.data
+         try:
+             musical_ensemble_type = MusicalEnsembleType.query.filter_by(id=int(form.musical_ensemble_type.data[0])).first()
+         except:
+             musical_ensemble_type = None
+         musical_ensemble.musical_ensemble_type = musical_ensemble_type
+         musical_ensemble.additional_info=form.additional_info.data
+         addHistoryEntry('Modificado','Agrupación Musical: {}'.format(form.name.data))
+         db.session.commit()
+         flash(_('Tus cambios han sido guardados.'),'info')
+         return redirect(url_for('main.index',user=current_user.first_name))
+    elif request.method == 'GET':
+        form.name.data = musical_ensemble.name
+        form.additional_info.data= musical_ensemble.additional_info
+    return render_template('main/editmusicalensemble.html',form=form,title=_('Editar Agrupación Musical'),musical_ensemble_id=id,selectedElements=list2csv(selectedElements))    
 
 @bp.route('/edit/musicalpiece/<id>', methods = ['GET','POST'])
 @login_required
