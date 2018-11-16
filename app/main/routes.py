@@ -85,7 +85,7 @@ def getItem(dbmodel,id):
     return jsonify(data)
 
 def getPeople(q,page):    
-    itemslist=db.session.query(Person).filter(or_(Person.last_name.ilike('%q'+q+'%'),Person.first_name.ilike('%'+q+'%'))).order_by(Person.last_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
+    itemslist=db.session.query(Person).filter(or_(Person.last_name.ilike('%'+q+'%'),Person.first_name.ilike('%'+q+'%'))).order_by(Person.last_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
     data={ "results": [], "pagination": { "more": itemslist.has_next} }
     for item in itemslist.items:
         text = item.get_name()
