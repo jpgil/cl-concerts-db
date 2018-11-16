@@ -73,7 +73,7 @@ def viewHistory():
     return render_template('main/history.html')
 
 def getItemList(dbmodel,q,page):    
-    itemslist=db.session.query(dbmodel).filter(dbmodel.name.ilike(q+'%')).order_by(dbmodel.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
+    itemslist=db.session.query(dbmodel).filter(dbmodel.name.ilike('%'+q+'%')).order_by(dbmodel.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
     data={ "results": [], "pagination": { "more": itemslist.has_next} }
     for item in itemslist.items:
         data["results"].append( { 'id' : item.id , 'text': item.name} )
@@ -85,7 +85,7 @@ def getItem(dbmodel,id):
     return jsonify(data)
 
 def getPeople(q,page):    
-    itemslist=db.session.query(Person).filter(Person.last_name.ilike(q+'%')).order_by(Person.last_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
+    itemslist=db.session.query(Person).filter(or_(Person.last_name.ilike('%q'+q+'%'),Person.first_name.ilike('%'+q+'%'))).order_by(Person.last_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
     data={ "results": [], "pagination": { "more": itemslist.has_next} }
     for item in itemslist.items:
         text = item.get_name()
@@ -99,14 +99,14 @@ def getPerson(id):
 
 def getMusicalPiece(id):
     item=MusicalPiece.query.filter_by(id=id).first()
-    data={} if not item else { 'id' : item.id , 'text': '{} ({})'.format(item.name, item.composer.get_name()) }
+    data={} if not item else { 'id' : item.id , 'text': '{}'.format(item.get_name()) }
     return jsonify(data)
 
 def getMusicalPieces(q,page):    
-    itemslist=db.session.query(MusicalPiece).filter(MusicalPiece.name.ilike(q+'%')).order_by(MusicalPiece.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
+    itemslist=db.session.query(MusicalPiece).filter(MusicalPiece.name.ilike('%'+q+'%')).order_by(MusicalPiece.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
     data={ "results": [], "pagination": { "more": itemslist.has_next} }
     for item in itemslist.items:
-        text = '{} ({})'.format(item.name, item.composer.get_name())
+        text = '{}'.format(item.get_name())
         data["results"].append( { 'id' : item.id , 'text': text } )
     return jsonify(data)
 
@@ -377,9 +377,8 @@ def getPerformancesListTable(event_id):
         performances=event.performances.order_by(Performance.musical_piece_id).limit(limit).offset(offset).all()
         for performance in performances:
             premiere_type_string=' [{}] '.format(performance.premiere_type.name) if performance.premiere_type.name != 'No' else ''                
-            data["rows"].append({ 'text': '{}«{}» ({})'.format(premiere_type_string, 
-                                                    performance.musical_piece.name,
-                                                    performance.musical_piece.composer.get_name()),
+            data["rows"].append({ 'text': '{} {} '.format(premiere_type_string, 
+                                                    performance.musical_piece.get_name()),
                                    'id':performance.id})
     return jsonify(data)
 
@@ -429,9 +428,8 @@ def getMusicalPieceTableData(requests):
     offset = request.args.get('offset', 0, type=int)
     order = request.args.get('order', '', type=str)
     search = '%{}%'.format(request.args.get('search', '', type=str))
-    query=db.session.query(MusicalPiece).join(Person,MusicalPiece.composer).filter(or_(Person.first_name.ilike(search),
-                                                                                 MusicalPiece.name.ilike(search),
-                                                                                 Person.last_name.ilike(search)))
+    query=MusicalPiece.query.outerjoin(Person,MusicalPiece.composers).filter(or_(MusicalPiece.composers.any(or_(Person.first_name.ilike(search),
+                                                                       Person.last_name.ilike(search))),MusicalPiece.name.ilike(search)))
     data={ "rows": [], "total":  query.count() }
     entries=query.limit(limit).offset(offset).all()
     for entry in entries:
@@ -528,9 +526,9 @@ def getPerformancesList(event_id):
         performances=event.performances.order_by(Performance.musical_piece_id).all()
         for performance in performances:
             #premiere_type_string='[{}] '.format(performance.premiere_type.name) if performance.premiere_type.name != 'No' else ''                
-            data["results"].append({ 'text': '«{}» ({})'.format(
-                            performance.musical_piece.name,
-                            performance.musical_piece.composer.get_name()),'id':performance.id})
+            data["results"].append({ 'text': '{}'.format(
+                            performance.musical_piece.get_name()),
+                           'id':performance.id})
     return jsonify(data)
 
 
@@ -546,7 +544,7 @@ def getPerformanceDetailList(event_id):
         performances=event.performances.order_by(Performance.musical_piece_id).limit(limit).offset(offset).all()
         for performance in performances:
             for participant in performance.participants:
-                performance_name='«{}» ({}) '.format(performance.musical_piece.name,performance.musical_piece.composer.get_name())
+                performance_name='{}'.format(performance.musical_piece.get_name())
                 participant_name=participant.get_short_name()
                 participant_activity=participant.activity.name  if participant.activity else ''
                 data["rows"].append({ 'performance_name': performance_name,
@@ -735,14 +733,22 @@ def NewMusicalPiece():
         return redirect(url_for('users.login'))
     form = EditMusicalPieceForm(dbmodel=MusicalPiece,original_name='')   
     if form.validate_on_submit():
-        composer = Person.query.filter_by(id=int(form.composer.data[0])).first_or_404()
+#        composer = Person.query.filter_by(id=int(form.composer.data[0])).first_or_404()
         addHistoryEntry('Agregado','Obra Musical: {}'.format(form.name.data))
-        new_musical_piece=MusicalPiece(name=form.name.data,composer=composer,composition_year=form.composition_year.data)
+        new_musical_piece=MusicalPiece(name=form.name.data,composition_year=form.composition_year.data,
+                                       instrumental_lineup=form.instrumental_lineup.data,text=form.text.data)
         for instrument_id in form.instruments.data:
             try:
                 instrument=Instrument.query.filter_by(id=int(instrument_id)).first()
                 if instrument:
                     new_musical_piece.instruments.append(instrument)
+            except:
+                pass
+        for composer_id in form.composer.data:
+            try:
+                composer=Person.query.filter_by(id=int(composer_id)).first()
+                if composer:
+                    new_musical_piece.composers.append(composer)
             except:
                 pass
         db.session.add(new_musical_piece)
@@ -812,8 +818,10 @@ def EditMusicalPiece(id):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return redirect(url_for('users.login'))
     musical_piece = MusicalPiece.query.filter_by(id=id).first_or_404()
-    selectedElements=[]
-    selectedElements.append(musical_piece.composer.id)
+    composers_list=[]
+    for composer in musical_piece.composers:
+        composers_list.append(composer.id)
+    selectedComposers=list2csv(composers_list)    
     instruments_list=[]
     for instrument in musical_piece.instruments:
         instruments_list.append(instrument.id)    
@@ -821,7 +829,9 @@ def EditMusicalPiece(id):
     form = EditMusicalPieceForm(original_name=musical_piece.name)
     if form.validate_on_submit():
          musical_piece.name = form.name.data
-         musical_piece.composer  = Person.query.filter_by(id=int(form.composer.data[0])).first_or_404()
+         musical_piece.text=form.text.data
+         musical_piece.instrumental_lineup=form.instrumental_lineup.data
+         musical_piece.composers.clear()
          musical_piece.instruments.clear()
          for instrument_id in form.instruments.data:       
              try:
@@ -830,6 +840,13 @@ def EditMusicalPiece(id):
                  instrument=None
              if intrument:
                  musical_piece.instruments.append(intrument)    
+         for composer_id in form.composers.data:       
+             try:
+                 composer=Person.query.filter_by(id=int(composer_id)).first()
+             except:
+                 composer=None
+             if composer:
+                 musical_piece.composers.append(composer)    
          musical_piece.composition_year = form.composition_year.data
          addHistoryEntry('Modificado','Obra Musical: {}'.format(form.name.data))
          db.session.commit()
@@ -838,7 +855,9 @@ def EditMusicalPiece(id):
     elif request.method == 'GET':
         form.name.data = musical_piece.name  
         form.composition_year.data = musical_piece.composition_year
-    return render_template('main/editmusicalpiece.html',form=form,title=_('Editar Obra Musical'),selectedElements=list2csv(selectedElements),selectedInstruments=selectedInstruments)    
+        form.text.data=musical_piece.text
+        form.instrumental_lineup.data=musical_piece.instrumental_lineup      
+    return render_template('main/editmusicalpiece.html',form=form,title=_('Editar Obra Musical'),selectedComposers=selectedComposers,selectedInstruments=selectedInstruments)    
 
 
 @bp.route('/new/activity', methods = ['GET','POST'])

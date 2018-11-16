@@ -24,15 +24,32 @@
         </div>
         <br>
         
-        <div class="row"> {{ form.composer.label }} </div>
-        <div class="row">  {{ form.composer( **{"class":"dd_select2", "url":"people", "description":_("Compositor"),  "maxelem":"1" , "selectedElements":selectedElements } ) }}  </div> 
+        <div class="row"> {{ form.text.label }} </div>
+        <div class="row">  {{ form.text(size=100) }} </div>                
         <div class="row">
-                {% for error in form.composer.errors %}
+                {% for error in form.text.errors %}
+                   <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+        </div>
+        <br> 
+        
+        <div class="row"> {{ form.composers.label }} </div>
+        <div class="row">  {{ form.composers( **{"class":"dd_select2", "url":"people", "description":_("Compositor"),  "maxelem":"100" , "selectedElements":selectedComposers } ) }}  </div> 
+        <div class="row">
+                {% for error in form.composers.errors %}
                    <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
         </div> 
         <br> 
-                
+ 
+          <div class="row"> {{ form.instrumental_lineup.label }} </div>
+        <div class="row">  {{ form.instrumental_lineup(size=100) }} </div>                
+        <div class="row">
+                {% for error in form.instrumental_lineup.errors %}
+                   <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+        </div>
+        <br>               
 
         <div class="row"> {{ form.instruments.label }} </div>
         <div class="row">  {{ form.instruments( **{"class":"dd_select2", "url":"instruments", "description":_("Instrumentos"),  "maxelem":"100" , "selectedElements":selectedInstruments } ) }}  </div> 

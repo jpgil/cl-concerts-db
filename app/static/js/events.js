@@ -107,7 +107,7 @@ function checkDeleteMusicalEnsembleMember(musical_ensemble_member_id)
             }
             else {
                 console.log(data.events.length)
-                $('#confirmDelete').find('.modal-body').html("");
+                $('#confirmDelete').find('.modal-body').html("<h3>Se borrará su participación de:</h3>");     
                 for (ev_id in data.events){
                     $('#confirmDelete').find('.modal-body').append('<p>'+data.events[ev_id]+'</p>');
                  }

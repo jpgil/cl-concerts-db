@@ -104,7 +104,7 @@ def add_performance():
         if performance.musical_piece_id == int(request.form['musical_piece_id']):
             return bad_request(_('obra ya agregada'))
     event.performances.append(Performance(musical_piece=musical_piece,premiere_type=premiere_type))
-    addHistoryEntry('Agregado','Interpretación: {}({}) a {}...'.format(musical_piece.name,musical_piece.composer.get_name(),event.name[0:40]))
+    addHistoryEntry('Agregado','Interpretación: {} a {}...'.format(musical_piece.get_name(),event.name[0:40]))
     db.session.commit()
     response = jsonify({})
     response.status_code = 201

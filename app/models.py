@@ -171,6 +171,8 @@ nationality = db.Table('nationality',
     db.Column('person_id', db.Integer, db.ForeignKey('person.id')),
     db.Column('country_id', db.Integer, db.ForeignKey('country.id'))
 ) 
+
+
         
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -180,7 +182,6 @@ class Person(db.Model):
     death_year = db.Column(db.Integer)    
     biography = db.Column(db.String(8000))    
     gender_id = db.Column(db.Integer, db.ForeignKey('gender.id'))
-    musical_pieces = db.relationship('MusicalPiece', backref='composer', lazy='dynamic') 
     participants = db.relationship('Participant', backref='person', lazy='dynamic')
     nationalities  = db.relationship('Country',
                     secondary=nationality,
@@ -240,7 +241,6 @@ class Location(db.Model):
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)                
     name = db.Column(db.String(120))  
-#    date = db.Column(db.Date)    # removed, replaced by day, mo
     year = db.Column(db.Integer)
     month = db.Column(db.Integer)
     day = db.Column(db.Integer)
@@ -264,18 +264,36 @@ class Event(db.Model):
     def __repr__(self):
         return 'Event(name="{}",date="{}",location_id="{}")'.format(self.name,self.get_string_date(),self.location_id)
 
+composer = db.Table('composer',
+    db.Column('musical_piece_id', db.Integer, db.ForeignKey('musical_piece.id')),
+    db.Column('person_id', db.Integer, db.ForeignKey('person.id'))
+)
 
 class MusicalPiece(db.Model):
     id = db.Column(db.Integer, primary_key=True)                
     name = db.Column(db.String(200))
     composition_year = db.Column(db.Integer)
-    composer_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     performances = db.relationship("Performance", backref="musical_piece")
+    composers  = db.relationship('Person',
+                    secondary=composer,
+                    backref='musical_pieces')   
+    instrumental_lineup =  db.Column(db.String(200))
+    text  = db.Column(db.String(200))
     instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'))
     def get_name(self):
-        return "«{}» ({})".format(self.name,self.composer.get_name())
+        composers_names=""
+        for composer in self.composers:
+            composers_names+=composer.get_name()+","
+        if composers_names != "":
+            composers_names=composers_names[:-1] # removes the last ,
+        return "«{}» ({})".format(self.name,composers_names)
     def __repr__(self):
-        return 'MusicalPiece(name="{}",composition_year="{}",composer_id="{}")'.format(self.name,self.composition_year,self.composer_id) 
+        composers_names=""
+        for composer in self.composers:
+            composers_names+=composer.get_name()+","
+        if composers_names != "":
+            composers_names=composers_names[:-1] # removes the last ,
+        return 'MusicalPiece(name="{}",composition_year="{}",composers="({})")'.format(self.name,self.composition_year,composers_names) 
 
 
 class Performance(db.Model):
