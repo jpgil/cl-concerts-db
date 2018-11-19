@@ -744,7 +744,7 @@ def NewMusicalPiece():
                     new_musical_piece.instruments.append(instrument)
             except:
                 pass
-        for composer_id in form.composer.data:
+        for composer_id in form.composers.data:
             try:
                 composer=Person.query.filter_by(id=int(composer_id)).first()
                 if composer:
