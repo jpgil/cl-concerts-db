@@ -284,11 +284,10 @@ $(function() {
     $('#uploadButton').click(function() {
         //event.preventDefault();
         var form_data = new FormData($('#uploadform')[0]);
-        form_data.append("description",$('#description')[0].value)
-        for (var [key, value] of form_data.entries()) { 
-          console.log(key, value);
-        }
-        console.log($('#description'))
+        form_data.append("description",$('#description')[0].value) 
+//        for (var [key, value] of form_data.entries()) { 
+//         console.log(key, value);
+        
         $.ajax({
             type: 'POST',
             url: '/api/uploadajax',
@@ -297,17 +296,11 @@ $(function() {
             processData: false,
             dataType: 'json'
         }).done(function(data, textStatus, jqXHR){
-            console.log(data);
-            console.log(textStatus);
-            console.log(jqXHR);
-            console.log('Success!');
+
             $('#table-medialink').bootstrapTable('refresh');
             $('#description')[0].value=''
-//             $("#resultFilename").text(data['name']);
-//            $("#resultFilesize").text(data['size']);
-//  here we should update the table
         }).fail(function(xhr, textStatus, errorThrown){
-            alert(xhr.responseText);
+            flash(xhr.responseText,"error");
         });
     });
 });

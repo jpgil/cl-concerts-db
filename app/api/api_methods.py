@@ -154,7 +154,6 @@ def delete_performance_detail():
         return bad_request(_('debe incluir interpretación'))    
     if not request.form['participant_id']:
         return bad_request(_('debe incluir participante'))    
-    print('performance_id:  {}, participant_id:  {}'.format(request.form['performance_id'],request.form['participant_id']))
     performance=Performance.query.filter_by(id=request.form['performance_id']).first()
     participant=Participant.query.filter_by(id=request.form['participant_id']).first()
     if participant not in performance.participants:
@@ -171,8 +170,7 @@ def delete_performance_detail():
 
 @bp.route('/uploadajax', methods=['POST'])
 def upldfile():
-
-    if checkForKeys(['file'],request.form):
+    if checkForKeys(['file'],request.files):
         return bad_request(_('debe incluir al menos un archivo'))    
     if checkForKeys(['event_id'],request.form):
         return bad_request(_('debe incluir el id del evento'))
