@@ -154,10 +154,12 @@ function addPerformance(event_id) {
     .fail( function(xhr, textStatus, errorThrown) {
         flash(xhr.responseText,"error");
     });
-};
+}
+
 function deletePerformanceCol(value, row, index){
     return '<i class="glyphicon glyphicon-trash"  onclick="deletePerformance('+value+')"></i>'           
 }
+
 function deletePerformance(performance_id)
 {
     $.post('/api/performance/delete', { 'performance_id':performance_id } ).done( function(msg) { 
@@ -279,15 +281,13 @@ function linkCol(value, row, index){
     return '<a class="glyphicon glyphicon-download" href="'+value+'"></a>'            
 }
 
-
 $(function() {
     $('#uploadButton').click(function() {
-        //event.preventDefault();
+        event.preventDefault();
         var form_data = new FormData($('#uploadform')[0]);
-        form_data.append("description",$('#description')[0].value) 
-//        for (var [key, value] of form_data.entries()) { 
-//         console.log(key, value);
-        
+        form_data.append("description",$('#description')[0].value)
+
+        console.log($('#description'))
         $.ajax({
             type: 'POST',
             url: '/api/uploadajax',
@@ -299,8 +299,9 @@ $(function() {
 
             $('#table-medialink').bootstrapTable('refresh');
             $('#description')[0].value=''
+
         }).fail(function(xhr, textStatus, errorThrown){
-            flash(xhr.responseText,"error");
+            flash(xhr.responseText,'error');
         });
     });
 });

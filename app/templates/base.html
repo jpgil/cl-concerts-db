@@ -103,9 +103,8 @@
     {{ super() }}
     {{ moment.include_moment() }}
     {{ moment.lang(g.locale) }}
-    <link href="{{ url_for('static', filename = 'css/lib/select2.min.css') }}" rel="stylesheet" />
-    <script src="{{ url_for('static', filename = 'js/lib/select2.min.js') }}"></script>  
 
+    
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.min.css">
     <!-- Latest compiled and minified JavaScript -->
@@ -113,8 +112,6 @@
     <!-- Latest compiled and minified Locales -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/locale/bootstrap-table-es-CL.min.js"></script>    
     <script src="https://rawgit.com/kswedberg/jquery-smooth-scroll/master/jquery.smooth-scroll.js"></script>
-    <script type = "text/javascript"  src = "{{ url_for('static', filename = 'js/flash_message.js') }}" ></script>
-    <script type = "text/javascript"  src = "{{ url_for('static', filename = 'js/dd_select2.js') }}" ></script>
-    <script src="{{url_for('static', filename='js/events.js')}}"></script>
+
 {% endblock %}
  

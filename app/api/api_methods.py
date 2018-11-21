@@ -176,6 +176,8 @@ def upldfile():
         return bad_request(_('debe incluir el id del evento'))
     if checkForKeys(['description'],request.form):
         return bad_request(_('debe incluir una descripcion'))   
+    elif request.form['description'].strip() == '':
+        return bad_request(_('debe incluir una descripcion'))   
     files = request.files['file']
     if files:
         filename = files_collection.save(request.files['file'],folder=request.form['event_id'])
