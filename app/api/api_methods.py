@@ -117,7 +117,7 @@ def remove_performance():
     if checkForKeys(['performance_id'],request.form):
         return bad_request(_('debe incluir interpretación'))    
     performance=Performance.query.filter_by(id=request.form['performance_id']).first()
-    addHistoryEntry('Eliminado','Interpretación: {}({}) a {}...'.format(performance.musical_piece.name,performance.musical_piece.composer.get_name(),performance.event.name[0:40]))
+    addHistoryEntry('Eliminado','Interpretación: {} de {}...'.format(performance.musical_piece.get_name(),performance.event.name[0:40]))
     db.session.delete(performance)
     db.session.commit()
     response = jsonify({})
