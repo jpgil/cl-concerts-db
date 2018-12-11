@@ -256,8 +256,10 @@ class Event(db.Model):
             return "{}-{}-{}".format(self.year,self.month,self.day)
         elif (self.year and self.month):
             return "{}-{}".format(self.year,self.month)
+        elif (self.year):
+            return "{}".format(self.year)            
         else:
-            return "{}".format(self.year)
+            return "Sin fecha"
     def get_name(self):
         return '[{}] {} - {} ({})'.format(self.get_string_date(),self.event_type.name, self.name, self.location.name) if self.name else  '[{}] {} ({})'.format(self.get_string_date(),
                 self.event_type.name, self.location.name)

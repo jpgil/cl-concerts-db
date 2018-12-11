@@ -1081,7 +1081,7 @@ def NewEvent():
         for organization_id in form.organizations.data:
              newevent.organizations.append(Organization.query.filter_by(id=organization_id).first_or_404())
         db.session.add(newevent)
-        addHistoryEntry('Agregado','Evento: {}'.format(form.name.data))
+        addHistoryEntry('Agregado','Evento: {}'.format(newevent.get_name()))
         db.session.commit()
         flash(_('Tus cambios han sido guardados.'),'info') 
         return redirect(url_for('main.EditEvent',event_id=newevent.id))
@@ -1115,7 +1115,7 @@ def EditEvent(event_id):
         original_event.organizations.clear()
         for organization_id in form.organizations.data:
              original_event.organizations.append(Organization.query.filter_by(id=organization_id).first_or_404())
-        addHistoryEntry('Modificado','Evento: {}'.format(form.name.data))
+        addHistoryEntry('Modificado','Evento: {}'.format(original_event.get_name()))
         db.session.commit()
         flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.EditEvent',event_id=event_id))
