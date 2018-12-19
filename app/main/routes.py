@@ -1105,9 +1105,9 @@ def EditEvent(event_id):
         EventType.query.filter_by(id=int(form.event_type.data[0])).first_or_404()
         Cycle.query.filter_by(id=int(form.cycle.data[0])).first_or_404()            
         original_event.name=form.name.data
-        original_event.location_id=form.location.data
-        original_event.event_type_id=form.event_type.data
-        original_event.cycle_id=form.cycle.data
+        original_event.location_id=form.location.data[0]
+        original_event.event_type_id=form.event_type.data[0]
+        original_event.cycle_id=form.cycle.data[0]
         original_event.information=form.information.data
         original_event.day=form.event_day.data
         original_event.month=form.event_month.data
