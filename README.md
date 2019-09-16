@@ -29,9 +29,9 @@ That would create an empty database called *cl_concerts_db* with a user called *
 
 ### Setting up the environment
 There is some environmental variables which are needed to configure the application. This can be set as environmental variable or you can create a *.env* file under *cl-concertd-db/* with the entries that you need to set. The list of variables and their defaults and descriptions can be found in the *config.py file*, but the bare minimum you'll need to configure are:
-`~#cat .env 
-SECRET_KEY=set-any-phrase-here-it-wll-be-used-as-your-secret
-DATABASE_URL=mysql+pymysql://clcuser:test123@localhost/cl_concerts_db`
+`~#cat .env `
+`SECRET_KEY=set-any-phrase-here-it-wll-be-used-as-your-secret`
+`DATABASE_URL=mysql+pymysql://clcuser:test123@localhost/cl_concerts_db`
 Additionally, as for any flask application, you have to set your FLASK_APP for the flask commands are able to run:
 `export FLASK_APP=<where your code is located>/cl-concerts-db/cl-concerts-db.py`
 
@@ -43,15 +43,15 @@ This will create in the DB an structure with the empy table. Now, you'll have to
 Entel to the flask shell:
 `flask shell`
 and there run:
-`from app.models import *
-db.session.add(Profile(name='Editor',description='Este perfil permite ver y editar entradas'))                                                                                                           
-db.session.add(Profile(name='Administrador',description='Este perfil permite agregar/quitar usuarios, ver y editar entradas'))                                                                           
-db.session.add(Profile(name='Visita',description='Este perfil sólo permite ver entradas'))`
+`from app.models import *`
+`db.session.add(Profile(name='Editor',description='Este perfil permite ver y editar entradas'))`                                                                                                  
+`db.session.add(Profile(name='Administrador',description='Este perfil permite agregar/quitar usuarios, ver y editar entradas'))                   `                                                        
+`db.session.add(Profile(name='Visita',description='Este perfil sólo permite ver entradas'))`
 This will create the basic profiles. Now we need a user which will be able to create new users with the proper profiles. Let's call it *admin*:
-`u=User(first_name='admin',last_name='istrador',profile=Profile.query.filter_by(name='Administrador').first(),email='admin@server.com') 
-u.set_password('test123') 
-db.session.add(u)
-db.session.commit();`
+`u=User(first_name='admin',last_name='istrador',profile=Profile.query.filter_by(name='Administrador').first(),email='admin@server.com') `
+`u.set_password('test123') `
+`db.session.add(u)`
+`db.session.commit();`
 Now, exit from the flask shell and run:
 `flask run`
 You should be able to see the webpage dispayed on [http://127.0.0.1:5000/](http://127.0.0.1:5000/)
@@ -60,10 +60,10 @@ You should be able to see the webpage dispayed on [http://127.0.0.1:5000/](http:
 For testing, it's better to have access to the real data. 
 - First, from the dropbox with the backups get the uploaded files (you can download the complete 'uploads' directory as a zip and then uncompress it under cl-concerts-db directory.
 - The, download from the backup dropbox the last *backup_clconcertsdb_<date>.sql.bz2* file. Uncompress it and from the shell run:
-`mysql -u clcuser -p
-MariaDB [(none)]> use cl_concerts_db;
-MariaDB [cl_concerts_db]> source <path to the sql file>
-MariaDB [cl_concerts_db]> commit;`
+`mysql -u clcuser -p`
+`MariaDB [(none)]> use cl_concerts_db;`
+`MariaDB [cl_concerts_db]> source <path to the sql file>`
+`MariaDB [cl_concerts_db]> commit;`
 This should populate the DB. Now you're ready to start the app. Run:
 `flask run`
 You should be able to see the webpage dispayed on [http://127.0.0.1:5000/](http://127.0.0.1:5000/)
