@@ -28,10 +28,10 @@ Enter to mysql (usually just typing mysql as root) and create the DB
 That would create an empty database called *cl_concerts_db* with a user called *clcuser* with password *test123*. You can change any of this names, but you should adapt the *DATABASE_URL* to match with them 
 
 ### Setting up the environment
-There is some environmental variables which are needed to configure the application. This can be set as environmental variable or you can create a *.env* file under *cl-concertd-db/* with the entries that you need to set. The list of variables and their defaults and descriptions can be found in the *config.py file*, but the bare minimum you'll need to configure are:
-`~#cat .env `
-`SECRET_KEY=set-any-phrase-here-it-wll-be-used-as-your-secret`  
-`DATABASE_URL=mysql+pymysql://clcuser:test123@localhost/cl_concerts_db`  
+There is some environmental variables which are needed to configure the application. This can be set as environmental variable or you can create a *.env* file under *cl-concertd-db/* with the entries that you need to set. The list of variables and their defaults and descriptions can be found in the *config.py file*, but the bare minimum you'll need to configure are:\
+`~#cat .env `\
+`SECRET_KEY=set-any-phrase-here-it-wll-be-used-as-your-secret`  \
+`DATABASE_URL=mysql+pymysql://clcuser:test123@localhost/cl_concerts_db` \
 
 
 ### Installation with real data (recommended for testing)
@@ -67,3 +67,14 @@ This will create the basic profiles. Now we need a user which will be able to cr
 `u.set_password('test123') `  
 `db.session.add(u)`  
 `db.session.commit();`  
+
+### Example of how to create a new Administrator user:
+In `flask shell` run:
+`from app.models import User,Profile  
+newuser=User()  
+newuser.first_name='MyName'  
+newuser.last_name='MyLastName'  
+newuser.email='myemail@email.com'  
+newuser.profile=Profile.query.filter_by(name='Administrador').first()  
+newuser.set_password('my password') 
+db.session.commit()  `
