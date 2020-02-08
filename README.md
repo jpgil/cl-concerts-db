@@ -19,11 +19,11 @@ There are 2 methods for installing the database:
 Install mariadb (mysql) and start the service
 Enter to mysql (usually just typing mysql as root) and create the DB
 
-`CREATE DATABASE cl_concerts_db;`  
-`USE cl_concerts_db;`  
-`CREATE USER 'clcuser'@'localhost' IDENTIFIED BY 'test123';`  
-`GRANT ALL ON cl_concerts_db.* TO 'clcuser'@'localhost';`  
-`FLUSH PRIVILEGES;`  
+`CREATE DATABASE cl_concerts_db;  
+USE cl_concerts_db;  
+CREATE USER 'clcuser'@'localhost' IDENTIFIED BY 'test123';  
+GRANT ALL ON cl_concerts_db.* TO 'clcuser'@'localhost';  
+FLUSH PRIVILEGES;`  
 
 That would create an empty database called *cl_concerts_db* with a user called *clcuser* with password *test123*. You can change any of this names, but you should adapt the *DATABASE_URL* to match with them 
 
