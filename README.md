@@ -32,8 +32,7 @@ There is some environmental variables which are needed to configure the applicat
 `~#cat .env `
 `SECRET_KEY=set-any-phrase-here-it-wll-be-used-as-your-secret`  
 `DATABASE_URL=mysql+pymysql://clcuser:test123@localhost/cl_concerts_db`  
-Additionally, as for any flask application, you have to set your FLASK_APP for the flask commands are able to run:
-`export FLASK_APP=<where your code is located>/cl-concerts-db/cl-concerts-db.py`  
+
 
 ### Installation with real data (recommended for testing)
 For testing, it's better to have access to the real data. 
@@ -68,7 +67,3 @@ This will create the basic profiles. Now we need a user which will be able to cr
 `u.set_password('test123') `  
 `db.session.add(u)`  
 `db.session.commit();`  
-Now, exit from the flask shell and run:
-`flask run`
-You should be able to see the webpage dispayed on [http://127.0.0.1:5000/](http://127.0.0.1:5000/)
-
