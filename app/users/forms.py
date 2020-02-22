@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField
-from wtforms_sqlalchemy.fields import QuerySelectField
+from wtforms_alchemy.fields import QuerySelectField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from flask_babel import _, lazy_gettext as _l
 from app.models import User, Profile
