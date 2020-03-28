@@ -405,7 +405,9 @@ def getHistoryTable():
 
 
 def getTableData(requests,dbmodel,searchables):
-    button_string='<a href="{}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
+    edit_button_string='<a href="{}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
+    delete_button_string='<a href="{}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>'
+
     limit = request.args.get('limit', 10, type=int)
     offset = request.args.get('offset', 0, type=int)
     order = request.args.get('order', '', type=str)
@@ -418,12 +420,15 @@ def getTableData(requests,dbmodel,searchables):
     entries=query.limit(limit).offset(offset).all()
     for entry in entries:
         data["rows"].append({ "name" : entry.get_name(),
-                              "editlink" : button_string.format(url_for('main.Edit{}'.format(dbmodel.__name__),id=entry.id))
+                              "editlink" : edit_button_string.format(url_for('main.Edit{}'.format(dbmodel.__name__),id=entry.id)),
+                              "deletelink" : delete_button_string.format(url_for('main.Delete',model=dbmodel.__name__),id=entry.id))
                              })
     return jsonify(data)  
 
 def getMusicalPieceTableData(requests):
     button_string='<a href="{}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
+    delete_button_string='<a href="{}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>'
+
     limit = request.args.get('limit', 10, type=int)
     offset = request.args.get('offset', 0, type=int)
     order = request.args.get('order', '', type=str)
@@ -434,12 +439,15 @@ def getMusicalPieceTableData(requests):
     entries=query.limit(limit).offset(offset).all()
     for entry in entries:
         data["rows"].append({ "name" : entry.get_name(),
-                              "editlink" : button_string.format(url_for('main.EditMusicalPiece',id=entry.id))
+                              "editlink" : button_string.format(url_for('main.EditMusicalPiece',id=entry.id)),
+                               "deletelink" : delete_button_string.format(url_for('main.Delete',model='MusicalPiece',id=entry.id))
                              })
     return jsonify(data)  
 
 def getEventTableData(requests):
     button_string='<a href="{}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
+    delete_button_string='<a href="{}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>'
+
     limit = request.args.get('limit', 10, type=int)
     offset = request.args.get('offset', 0, type=int)
     order = request.args.get('order', '', type=str)
@@ -452,7 +460,8 @@ def getEventTableData(requests):
     entries=query.limit(limit).offset(offset).all()
     for entry in entries:
         data["rows"].append({ "name" : entry.get_name(),
-                              "editlink" : button_string.format(url_for('main.EditEvent',event_id=entry.id))
+                              "editlink" : button_string.format(url_for('main.EditEvent',event_id=entry.id)),
+                               "deletelink" : delete_button_string.format(url_for('main.Delete',model='Event',id=entry.id))
                              })
     return jsonify(data)  
 
@@ -1133,3 +1142,7 @@ def EditEvent(event_id):
 
 
 
+@bp.route('/delete/<strin:model>/<int:id>', methods = ['POST'])
+@login_required
+def Delete(model,id):
+    print("Deleted {}:{}".format(mode,id))
