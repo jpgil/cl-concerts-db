@@ -2,11 +2,13 @@ from app.api import bp
 from flask import request, current_app, jsonify
 from app import db
 from app.api.errors import bad_request, server_error
-from app.models import Activity, Event, Person, Participant, MusicalPiece, PremiereType, Performance, MediaLink, MusicalEnsemble, MusicalEnsembleMember
+from app.models import *
 from flask_babel import _
 from app import files_collection
-from app.main.routes import addHistoryEntry
-from sqlalchemy import and_
+from app.main.routes import addHistoryEntry,getStringForModel
+from sqlalchemy import and_, inspect
+import sqlalchemy
+from flask_login import current_user, login_required
 import os
 
 def checkForKeys(keys,form):
@@ -17,7 +19,10 @@ def checkForKeys(keys,form):
     return False
         
 @bp.route('/participant/add',methods=['POST'])
+@login_required
 def add_participant():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))
     if checkForKeys(['event_id', 'person_id','activity_id'],request.form):
         return bad_request(_('debe incluir evento, persona y actividad'))
     event_id = int(request.form['event_id'])
@@ -50,7 +55,10 @@ def add_participant():
 
 
 @bp.route('/participant/delete', methods=['POST'])
+@login_required
 def remove_participant():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))    
     if checkForKeys(['participant_id'],request.form):
         return bad_request(_('debe incluir participante'))    
     participant=Participant.query.filter_by(id=request.form['participant_id']).first()
@@ -64,7 +72,10 @@ def remove_participant():
     return response    
 
 @bp.route('/musicalensembleatevent/add',methods=['POST'])
+@login_required
 def add_musical_ensemble_to_event():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))
     if checkForKeys(['event_id','musical_ensemble_id'],request.form):
         return bad_request(_('debe incluir evento y agrupación musical'))
     musical_ensemble=MusicalEnsemble.query.filter_by(id=request.form['musical_ensemble_id']).first()
@@ -86,7 +97,10 @@ def add_musical_ensemble_to_event():
     return response
     
 @bp.route('/performance/add',methods=['POST'])
+@login_required
 def add_performance():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))
     if checkForKeys(['event_id','musical_piece_id','premiere_type_id'],request.form):
         return bad_request(_('debe incluir evento, obra musical y tipo de estreno'))
     musical_piece=MusicalPiece.query.filter_by(id=request.form['musical_piece_id']).first()
@@ -113,7 +127,10 @@ def add_performance():
 
 
 @bp.route('/performance/delete', methods=['POST'])
+@login_required
 def remove_performance():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))
     if checkForKeys(['performance_id'],request.form):
         return bad_request(_('debe incluir interpretación'))    
     performance=Performance.query.filter_by(id=request.form['performance_id']).first()
@@ -126,8 +143,10 @@ def remove_performance():
     return response    
 
 @bp.route('/performancedetail/add', methods=['POST'])
+@login_required
 def add_performance_detail():
-    
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))    
     if checkForKeys(['performance_id'],request.form):
         return bad_request(_('debe incluir interpretación'))    
     if checkForKeys(['participant_id'],request.form):
@@ -149,7 +168,10 @@ def add_performance_detail():
     
 
 @bp.route('/performancedetail/delete', methods=['POST'])
+@login_required
 def delete_performance_detail():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))
     if checkForKeys(['performance_id'],request.form):
         return bad_request(_('debe incluir interpretación'))    
     if not request.form['participant_id']:
@@ -169,7 +191,10 @@ def delete_performance_detail():
     return response
 
 @bp.route('/uploadajax', methods=['POST'])
+@login_required
 def upldfile():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))    
     if checkForKeys(['file'],request.files):
         return bad_request(_('debe incluir al menos un archivo'))    
     if checkForKeys(['event_id'],request.form):
@@ -193,7 +218,10 @@ def upldfile():
     return response
         
 @bp.route('/medialink/delete', methods=['POST'])
+@login_required
 def deleteFile():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))    
     if checkForKeys(['medialink_id'],request.form):
         return bad_request(_('id de archivo no incluído'))
     file=MediaLink.query.filter_by(id=request.form['medialink_id']).first()        
@@ -209,7 +237,10 @@ def deleteFile():
         return server_error("Error removing {}".format(files_collection.path(file.filename)))
   
 @bp.route('/musicalensemblemember/add',methods=['POST'])
+@login_required
 def add_musical_ensemble_member():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))
     if checkForKeys(['musical_ensemble_id','person_id','activity_id'],request.form):
             return bad_request(_('debe incluir agrupación, persona y actividad'))
     musicalensemble_id = int(request.form['musical_ensemble_id'])
@@ -247,7 +278,10 @@ def add_musical_ensemble_member():
 
 
 @bp.route('/musicalensemblemember/delete', methods=['POST'])
+@login_required
 def delete_musical_ensemble_member():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))
     if checkForKeys(['musical_ensemble_member_id'],request.form):
         return bad_request(_('debe incluir miembro de la agrupación musical'))    
     musical_ensemble_member=MusicalEnsembleMember.query.filter_by(id=request.form['musical_ensemble_member_id']).first()
@@ -267,3 +301,51 @@ def delete_musical_ensemble_member():
         return response
     else:
         return bad_request(_('miembro no encontrado'))    
+
+
+def get_table_and_relationships(model): 
+    # this conver the model name in the model class 
+    table=eval(model) 
+    # get the list of all the attributes of the table  
+    keys=inspect(table).attrs.keys() 
+    # we'll store the name of the attributs who correspond to relationship
+    # with other tables in relation_keys
+    relation_keys=[] 
+    for key in keys: 
+        attr=getattr(table,key) 
+        if type(attr.property) == sqlalchemy.orm.relationships.RelationshipProperty: 
+            relation_keys.append(key) 
+    return (table,relation_keys)
+
+    
+@bp.route('/delete/<string:model>/<int:id>', methods = ['GET','POST'])
+@login_required
+def delete_element(model,id):
+    (table,relationship_keys)=get_table_and_relationships(model)
+    element=table.query.filter(table.id==id).first_or_404()
+    linked_objects_dict={}
+    for relation in relationship_keys:
+        # now we iterate for each relation, looking for linked objects
+        for linked_object in getattr(element,relation):
+            ln_obj_table_name=linked_object.__repr__().split('(')[0]
+            ln_obj_info=linked_object.get_name()
+            if ln_obj_table_name not in linked_objects_dict:
+                linked_objects_dict[ln_obj_table_name]=[ln_obj_info]
+            else:
+                linked_objects_dict[ln_obj_table_name].append(ln_obj_info)
+    for linked_objects in linked_objects_dict:
+        print('No se puede borrar, este item está relacionado')
+        print('con los siguientes elementos de la tabla {}'.format(getStringForModel(linked_objects)))
+        for obj in linked_objects_dict[linked_objects]:
+            print('\t{}'.format(obj))
+            
+
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))
+    
+    print("Deleted {}:{}".format(model,id))
+    response = jsonify({})
+    response.status_code = 200
+#   response.headers['Location'] = url_for('api.get_user', id=user.id)
+    return response
+    

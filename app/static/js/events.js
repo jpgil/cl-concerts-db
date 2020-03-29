@@ -34,6 +34,15 @@ function deleteParticipant(participant_id)
     .fail( function(xhr, textStatus, errorThrown) {
         flash(xhr.responseText,'error');
     });    
+};
+
+function deleteElement(model,id)
+{
+    $.post('/api/delete/'+model+'/'+id  ).done( function(msg) { 
+            $("#show-list-table").bootstrapTable('refresh'); } )
+    .fail( function(xhr, textStatus, errorThrown) {
+        flash(xhr.responseText,'error');
+    });    
 }
 
 function addMusicalEnsembleToEvent(event_id)
