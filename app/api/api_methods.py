@@ -6,11 +6,12 @@ from app.models import *
 from flask_babel import _
 from app import files_collection
 from app.main.routes import addHistoryEntry,getStringForModel
-from sqlalchemy import and_, inspect
+from sqlalchemy import and_
 import sqlalchemy
+from sqlalchemy_utils import dependent_objects, get_referencing_foreign_keys
 from flask_login import current_user, login_required
 import os
-
+DEPS_LIMIT=8
 def checkForKeys(keys,form):
     """Returns true if there is a missing key in form"""
     for k in keys:
@@ -273,7 +274,7 @@ def add_musical_ensemble_member():
     db.session.commit()
     response = jsonify({})
     response.status_code = 201
-#    response.headers['Location'] = url_for('api.get_user', id=user.id)
+#    response.headers['Location'] = url_for('api.getimport traceback_user', id=user.id)
     return response
 
 
@@ -292,8 +293,8 @@ def delete_musical_ensemble_member():
         for participant in participants:
             addHistoryEntry('Eliminado','Participante: {} de {}...'.format(participant.get_name(),participant.event.get_name()))
             db.session.delete(participant)
-        addHistoryEntry('Eliminado','Miembro: {} de {}...'.format(musical_ensemble_member.get_name(),musical_ensemble_member.musical_ensemble.name[0:40]))
         db.session.delete(musical_ensemble_member)
+        addHistoryEntry('Eliminado','Miembro: {} de {}...'.format(musical_ensemble_member.get_name(),musical_ensemble_member.musical_ensemble.name[0:40]))
         db.session.commit()
         response = jsonify({})
         response.status_code = 200
@@ -302,50 +303,69 @@ def delete_musical_ensemble_member():
     else:
         return bad_request(_('miembro no encontrado'))    
 
+def get_hard_dependencies(element,model,limit):
+    return list(dependent_objects(element).limit(DEPS_LIMIT) ) 
 
-def get_table_and_relationships(model): 
-    # this conver the model name in the model class 
-    table=eval(model) 
-    # get the list of all the attributes of the table  
-    keys=inspect(table).attrs.keys() 
-    # we'll store the name of the attributs who correspond to relationship
-    # with other tables in relation_keys
-    relation_keys=[] 
-    for key in keys: 
-        attr=getattr(table,key) 
-        if type(attr.property) == sqlalchemy.orm.relationships.RelationshipProperty: 
-            relation_keys.append(key) 
-    return (table,relation_keys)
+def get_soft_dependencies(element,model,limit): 
+    # the hard dependencies above manages all the 1 - 1 relations, but the 1 - many or many - many
+    # needs to be manually managed
+    deps=[]
+    if model == 'Instrument':
+        deps=deps+element.musical_pieces if element.musical_pieces else deps
+    elif model in ['Organization']:
+        deps=deps+element.events if element.events else deps
+    elif model == 'Country':
+        deps=deps+element.people if element.people else deps
+    return deps[0:DEPS_LIMIT]
 
-    
+@bp.route('/deletecheck/<string:model>/<int:id>', methods = ['GET','POST'])
+@login_required
+def delete_check_element(model,id):
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))
+    table=eval(model)
+    try:
+        element=table.query.filter(table.id==id).first_or_404()
+        soft_deps=get_soft_dependencies(element,model,DEPS_LIMIT)
+        hard_deps=get_hard_dependencies(element,model,DEPS_LIMIT)
+        message_soft_deps=None
+        if soft_deps:
+            message_soft_deps=_('Este elemento está siendo usando en los siguientes objetos\n')
+            message_soft_deps+=_('(mostrando los primeros ')+str(DEPS_LIMIT)+')<hr>'
+            for soft_dep in soft_deps:
+                table_name=getStringForModel(soft_dep.__repr__().split('(')[0])
+                element_name=soft_dep.get_name()
+                message_soft_deps+='{}: {}<hr>'.format(table_name,element_name)
+            message_soft_deps+='\n'+_('<h4>¿Está seguro que desea continuar?</h4>')+'\n'
+        message_hard_deps=None
+        if hard_deps:
+            message_hard_deps=_('Este elemento está siendo usando en los siguientes objetos\n')
+            message_hard_deps+=_('(mostrando los primeros ')+str(DEPS_LIMIT)+')\n<hr>'
+            for hard_dep in hard_deps:
+                table_name=getStringForModel(hard_dep.__repr__().split('(')[0])
+                element_name=hard_dep.get_name()
+                message_hard_deps+='{}: {}<hr>'.format(table_name,element_name)
+            message_hard_deps+='\n'+_('<h4>Por favor, elimine esas dependencias para poder continuar</h4>')+'\n'            
+        response = jsonify({ 'soft_depts': message_soft_deps, 'hard_deps': message_hard_deps} )
+        response.status_code = 200
+        return response
+    except Exception as ex:
+        message=_('"Ocurrió un error tratando de borrar el elemento:')+str(ex)
+        raise ex
+        return bad_request(message)
+        
+
 @bp.route('/delete/<string:model>/<int:id>', methods = ['GET','POST'])
 @login_required
 def delete_element(model,id):
-    (table,relationship_keys)=get_table_and_relationships(model)
-    element=table.query.filter(table.id==id).first_or_404()
-    linked_objects_dict={}
-    for relation in relationship_keys:
-        # now we iterate for each relation, looking for linked objects
-        for linked_object in getattr(element,relation):
-            ln_obj_table_name=linked_object.__repr__().split('(')[0]
-            ln_obj_info=linked_object.get_name()
-            if ln_obj_table_name not in linked_objects_dict:
-                linked_objects_dict[ln_obj_table_name]=[ln_obj_info]
-            else:
-                linked_objects_dict[ln_obj_table_name].append(ln_obj_info)
-    for linked_objects in linked_objects_dict:
-        print('No se puede borrar, este item está relacionado')
-        print('con los siguientes elementos de la tabla {}'.format(getStringForModel(linked_objects)))
-        for obj in linked_objects_dict[linked_objects]:
-            print('\t{}'.format(obj))
-            
-
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))
-    
-    print("Deleted {}:{}".format(model,id))
+    table=eval(model)
+    element=table.query.filter(table.id==id).first_or_404()
+    table_name=getStringForModel(element.__repr__().split('(')[0])
+    addHistoryEntry('Eliminado','{}: {}'.format(table_name,element.get_name()[0:50]))
+    db.session.delete(element)
+    db.session.commit()
     response = jsonify({})
     response.status_code = 200
-#   response.headers['Location'] = url_for('api.get_user', id=user.id)
     return response
-    

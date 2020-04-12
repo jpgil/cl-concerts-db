@@ -36,14 +36,126 @@ function deleteParticipant(participant_id)
     });    
 };
 
+function deleteElementModal()
+{
+
+        
+BootstrapDialog.show({
+            message: 'Hi Apple!',
+            buttons: [{
+                label: 'Button 1',
+                title: 'Mouse over Button 1'
+            }, {
+                label: 'Button 2',
+                // no title as it is optional
+                cssClass: 'btn-primary',
+                data: {
+                    js: 'btn-confirm',
+                    'user-id': '3'
+                },
+                action: function(){
+                    alert('Hi Orange!');
+                }
+            }, {
+                icon: 'glyphicon glyphicon-ban-circle',
+                label: 'Button 3',
+                title: 'Mouse over Button 3',
+                cssClass: 'btn-warning'
+            }, {
+                label: 'Close',
+                action: function(dialogItself){
+                    dialogItself.close();
+                }
+            }]
+        });
+}
+
 function deleteElement(model,id)
 {
-    $.post('/api/delete/'+model+'/'+id  ).done( function(msg) { 
-            $("#show-list-table").bootstrapTable('refresh'); } )
-    .fail( function(xhr, textStatus, errorThrown) {
+    $.post('/api/delete/'+model+'/'+id ).done( 
+        function() {
+            flash("Elemento eliminado exitosamente","info")
+            $("#show-list-table").bootstrapTable('refresh');
+            })
+        .fail( 
+           function(xhr, textStatus, errorThrown) {
+             flash(xhr.responseText,'error');
+          }  );
+               
+}
+
+
+function checkDeleteElement(model,id)
+{
+    //deleteElementModal()
+    $.post('/api/deletecheck/'+model+'/'+id  ).done( 
+        function(data) { 
+          if (data.hard_deps){
+            BootstrapDialog.show(
+            {
+              message: data.hard_deps,
+              buttons: [
+                {
+                  label: 'Cerrar',
+                  action: function(dialogItself){
+                            dialogItself.close();
+                            }
+                }
+               ]
+              });
+             }  
+            else if (data.soft_deps) {
+            BootstrapDialog.show(
+            {
+              message: data.soft_deps,
+              buttons: [
+                {
+                  label: 'Sí, eliminar',
+                  cssClass: 'btn-primary',
+                  action: function(dialogItself){
+                           deleteElement(model,id)
+                           dialogItself.close();
+                          }
+                },
+                {
+                  label: 'Cancelar',
+                  action: function(dialogItself){
+                          dialogItself.close();
+                          }
+                }
+               ]
+              });
+             } else {
+             BootstrapDialog.show(
+            {
+              message: '<h4>¿Está seguro que quiere eliminar este objeto?</h4>',
+              buttons: [
+                {
+                  label: 'Sí, eliminar',
+                  cssClass: 'btn-primary',
+                  action: function(dialogItself){
+                           deleteElement(model,id)
+                           dialogItself.close();
+                          }
+                },
+                {
+                  label: 'Cancelar',
+                  action: function(dialogItself){
+                          dialogItself.close();
+                          }
+                }
+               ]
+              });            
+              
+          
+          }
+       }
+    ).fail( function(xhr, textStatus, errorThrown) {
         flash(xhr.responseText,'error');
     });    
 }
+
+
 
 function addMusicalEnsembleToEvent(event_id)
 {

@@ -30,4 +30,5 @@ function flash(message,category){
      scrollElement: $('body'),
      scrollTarget: '#main_header'
    });
+   window.scrollTo(0, 0);
 }

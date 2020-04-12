@@ -304,7 +304,7 @@ class Performance(db.Model):
     musical_piece_id =  db.Column(db.Integer, db.ForeignKey('musical_piece.id'))
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))     
     def get_name(self):
-        return "[{}] {}".format(self.premier_type.name,self.musical_piece.get_name()) if self.premiere_type_id.id !=1 else self.musical_piece.get_name()
+        return "Evento: {} - Participación: {}".format(self.event.get_name(),self.musical_piece.get_name())
     def __repr__(self):   
         return 'Performance(musical_piece_id="{}", premiere_type_id="{}", event_id"{}")'.format(self.musical_piece_id, self.premiere_type_id, self.event_id)
 

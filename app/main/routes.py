@@ -57,7 +57,8 @@ def getStringForModel(model):
                     'Person'          :  _('Personas'),
                     'MusicalPiece'    :  _('Obras Musicales'),
                     'MusicalEnsemble'     :  _('Agrupaciones Musicales'),
-                    'MusicalEnsembleType' :  _('Tipo de Agrupaciones Musicales')                    
+                    'MusicalEnsembleType' :  _('Tipo de Agrupaciones Musicales'),
+                    'Performance'     : _('Participación')                    
                     }    
     return string4model[model]
 
@@ -405,7 +406,7 @@ def getHistoryTable():
 
 def getTableData(requests,dbmodel,searchables):
     edit_button_string='<a href="{}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
-    delete_button_string='<a onclick="deleteElement(\'{}\',\'{}\')" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>'
+    delete_button_string='<a onclick="checkDeleteElement(\'{}\',\'{}\')" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>'
 
     limit = request.args.get('limit', 10, type=int)
     offset = request.args.get('offset', 0, type=int)
@@ -426,7 +427,7 @@ def getTableData(requests,dbmodel,searchables):
 
 def getMusicalPieceTableData(requests):
     button_string='<a href="{}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
-    delete_button_string='<a onclick="deleteElement(\'{}\',\'{}\')" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>'
+    delete_button_string='<a onclick="checkDeleteElement(\'{}\',\'{}\')" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>'
 
     limit = request.args.get('limit', 10, type=int)
     offset = request.args.get('offset', 0, type=int)
@@ -445,7 +446,7 @@ def getMusicalPieceTableData(requests):
 
 def getEventTableData(requests):
     button_string='<a href="{}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
-    delete_button_string='<a onclick="deleteElement(\'{}\',\'{}\')" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>'
+    delete_button_string='<a onclick="checkDeleteElement(\'{}\',\'{}\')" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>'
 
     limit = request.args.get('limit', 10, type=int)
     offset = request.args.get('offset', 0, type=int)
