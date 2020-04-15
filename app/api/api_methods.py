@@ -131,9 +131,13 @@ def add_performance_detail():
     if checkForKeys(['performance_id'],request.form):
         return bad_request(_('debe incluir interpretación'))    
     if checkForKeys(['participant_id'],request.form):
-        return bad_request(_('debe participante'))
+        return bad_request(_('debe incluir participante'))
     performance=Performance.query.filter_by(id=request.form['performance_id']).first()
     participant=Participant.query.filter_by(id=request.form['participant_id']).first()
+    if not participant:
+        return bad_request(_('El participante no existe. ¿Fue borrado recientenmente? id:'))+str(equest.form['performance_id'])
+    if not performance:
+        return bad_request(_('La participación no existe. ¿Fue borrada recientenmente? id:'))+str(equest.form['participant_id'])
     if participant in performance.participants:
         return bad_request(_('participante ya agregado'))
     addHistoryEntry('Agregado','Detalle de Interpretación: {} agregado a {} en {}'.format(participant.get_name(),
