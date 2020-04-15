@@ -14,7 +14,7 @@ class NonValidatingSelectMultipleField(SelectMultipleField):
         pass
     
 class EditSimpleElementForm(FlaskForm):
-    name=StringField(_l('Nombre'),validators=[DataRequired()])
+    name=StringField(_l('Nombre'))
     submit = SubmitField(_l('Guardar'))
     def __init__(self,dbmodel,original_name,*args, **kwargs):
         super(EditSimpleElementForm, self).__init__(*args, **kwargs)
