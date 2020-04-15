@@ -1,7 +1,7 @@
 from flask import request
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, SelectMultipleField, SelectField, IntegerField, DateField
-from wtforms.validators import ValidationError, DataRequired, Length, Optional, NumberRange
+from wtforms.validators import ValidationError, DataRequired, Length, Optional, NumberRange, InputRequired
 from flask_babel import _, lazy_gettext as _l
 from app.models import  *
 
@@ -148,7 +148,7 @@ class EditOrganizationForm(FlaskForm):
                 raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
                 
 class EditEventForm(FlaskForm):
-    name=StringField(_l('Nombre del Evento'))
+    name=StringField(_l('Nombre del Evento'),validators=[InputRequired(message=_("Debe ingresar el nombre del evento"))])
     organizations= NonValidatingSelectMultipleField(label=_("Organizadores"),choices=[],validators=[DataRequired()])
     location= NonValidatingSelectMultipleField(label=_("Lugar"),choices=[],validators=[DataRequired()])
     event_year = IntegerField(label='Año/Mes/Día',validators=[DataRequired(), NumberRange(min=1, max=3000, message=_('El año ingresado no es válido'))])
