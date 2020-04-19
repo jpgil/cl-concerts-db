@@ -30,7 +30,11 @@ function deleteParticipant(participant_id)
 {
     $.post('/api/participant/delete', { 'participant_id':participant_id } ).done( function(msg) { 
             $('#table-participants').bootstrapTable('refresh');
-            $('#table-performance-participant').bootstrapTable('refresh'); } )
+            $('#table-performance-participant').bootstrapTable('refresh');
+            $("#participant").val('').trigger('change');
+            $("#performance").val('').trigger('change');
+            
+             } )
     .fail( function(xhr, textStatus, errorThrown) {
         flash(xhr.responseText,'error');
     });    
@@ -286,6 +290,8 @@ function deletePerformance(performance_id)
     $.post('/api/performance/delete', { 'performance_id':performance_id } ).done( function(msg) { 
             $('#table-musical-pieces').bootstrapTable('refresh');
             $('#table-performance-participant').bootstrapTable('refresh');
+            $("#participant").val('').trigger('change');
+            $("#performance").val('').trigger('change');
              } )
     .fail( function(xhr, textStatus, errorThrown) {
         flash(xhr.responseText,"error");
@@ -381,7 +387,10 @@ function deleteFileCol(value, row, index){
 function deletePerformanceDetail(performance_id,participant_id)
 {
     $.post('/api/performancedetail/delete', { 'performance_id':performance_id , 'participant_id': participant_id } ).done( function(msg) { 
-            $('#table-performance-participant').bootstrapTable('refresh'); } )
+            $('#table-performance-participant').bootstrapTable('refresh'); 
+            $("#participant").val('').trigger('change');
+            $("#performance").val('').trigger('change');
+            } )
     .fail( function(xhr, textStatus, errorThrown) {
         flash(xhr.responseText,"error");
     });    
