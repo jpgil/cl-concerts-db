@@ -321,6 +321,7 @@ def get_soft_dependencies(element,model,limit):
     elif model == 'Country':
         deps=deps+element.people if element.people else deps
     return deps[0:DEPS_LIMIT]
+    
 
 @bp.route('/deletecheck/<string:model>/<int:id>', methods = ['GET','POST'])
 @login_required
@@ -334,23 +335,23 @@ def delete_check_element(model,id):
         hard_deps=get_hard_dependencies(element,model,DEPS_LIMIT)
         message_soft_deps=None
         if soft_deps:
-            message_soft_deps=_('Este elemento está siendo usando en los siguientes objetos\n')
+            message_soft_deps=_('Este elemento será eliminado de los siguientes objetos:\n')
             message_soft_deps+=_('(mostrando los primeros ')+str(DEPS_LIMIT)+')<hr>'
             for soft_dep in soft_deps:
                 table_name=getStringForModel(soft_dep.__repr__().split('(')[0])
                 element_name=soft_dep.get_name()
-                message_soft_deps+='{}: {}<hr>'.format(table_name,element_name)
+                message_soft_deps+='{}: {}<br>'.format(table_name,element_name)
             message_soft_deps+='\n'+_('<h4>¿Está seguro que desea continuar?</h4>')+'\n'
         message_hard_deps=None
         if hard_deps:
-            message_hard_deps=_('Este elemento está siendo usando en los siguientes objetos\n')
-            message_hard_deps+=_('(mostrando los primeros ')+str(DEPS_LIMIT)+')\n<hr>'
+            message_hard_deps=_('Este elemento está siendo usando en los siguientes objetos:\n')
+            message_hard_deps+=_('(mostrando los primeros ')+str(DEPS_LIMIT)+')<hr>'
             for hard_dep in hard_deps:
                 table_name=getStringForModel(hard_dep.__repr__().split('(')[0])
                 element_name=hard_dep.get_name()
-                message_hard_deps+='{}: {}<hr>'.format(table_name,element_name)
-            message_hard_deps+='\n'+_('<h4>Por favor, elimine esas dependencias para poder continuar</h4>')+'\n'            
-        response = jsonify({ 'soft_depts': message_soft_deps, 'hard_deps': message_hard_deps} )
+                message_hard_deps+='{}: {}<br>'.format(table_name,element_name)
+            message_hard_deps+='<hr>'+_('<h4>Por favor, elimine esas dependencias antes de continuar</h4>')+'\n'            
+        response = jsonify({ 'soft_deps': message_soft_deps, 'hard_deps': message_hard_deps} )
         response.status_code = 200
         return response
     except Exception as ex:
