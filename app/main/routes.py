@@ -55,6 +55,8 @@ def getStringForModel(model):
                     'Location'        :  _('Lugares'),
                     'Organization'    :  _('Organizaciones'),
                     'Person'          :  _('Personas'),
+                    'Participant'     :  _('Participante'),
+                    'MediaLink'       :  _('Archivo'),
                     'MusicalPiece'    :  _('Obras Musicales'),
                     'MusicalEnsemble'     :  _('Agrupaciones Musicales'),
                     'MusicalEnsembleType' :  _('Tipo de Agrupaciones Musicales'),
@@ -461,7 +463,7 @@ def getEventTableData(requests):
     for entry in entries:
         data["rows"].append({ "name" : entry.get_name(),
                               "editlink" : button_string.format(url_for('main.EditEvent',event_id=entry.id)),
-                               "deletelink" : delete_button_string.format('Event',id)
+                               "deletelink" : delete_button_string.format('Event',entry.id)
                              })
     return jsonify(data)  
 

@@ -328,9 +328,14 @@ def get_soft_dependencies(element,model,limit):
 def delete_check_element(model,id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))
+        
     table=eval(model)
     try:
         element=table.query.filter(table.id==id).first_or_404()
+        if model == 'Event':
+            response = jsonify({ 'soft_deps': None, 'hard_deps': None} )
+            response.status_code = 200
+            return response
         soft_deps=get_soft_dependencies(element,model,DEPS_LIMIT)
         hard_deps=get_hard_dependencies(element,model,DEPS_LIMIT)
         message_soft_deps=None
@@ -367,6 +372,24 @@ def delete_element(model,id):
         return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))
     table=eval(model)
     element=table.query.filter(table.id==id).first_or_404()
+    if model == 'Event':
+        for file in element.medialinks.all():   
+            found = True
+            try:
+                os.remove(files_collection.path(file.filename))
+            except:
+                found = False
+                # file no found in the sever, but since we want to delete it...
+            addHistoryEntry('Eliminado','Archivo: {} {} de {}'.format(file.filename,"" if found else "(No encontrado)",file.event.name))
+            db.session.delete(file)
+        for performance in element.performances.all():
+            db.session.delete(performance)
+            addHistoryEntry('Eliminado','Interpretación: {} de {}...'.format(performance.musical_piece.get_name(),performance.event.name[0:40]))
+        for participant in element.participants.all():
+            db.session.delete(participant)
+            addHistoryEntry('Eliminado','Participante: {} de {}...'.format(participant.get_name(),
+                                                            participant.event.name[0:40]))
+     
     table_name=getStringForModel(element.__repr__().split('(')[0])
     addHistoryEntry('Eliminado','{}: {}'.format(table_name,element.get_name()[0:50]))
     db.session.delete(element)

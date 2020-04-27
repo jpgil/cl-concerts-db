@@ -40,39 +40,7 @@ function deleteParticipant(participant_id)
     });    
 };
 
-function deleteElementModal()
-{
 
-        
-BootstrapDialog.show({
-            message: 'Hi Apple!',
-            buttons: [{
-                label: 'Button 1',
-                title: 'Mouse over Button 1'
-            }, {
-                label: 'Button 2',
-                // no title as it is optional
-                cssClass: 'btn-primary',
-                data: {
-                    js: 'btn-confirm',
-                    'user-id': '3'
-                },
-                action: function(){
-                    alert('Hi Orange!');
-                }
-            }, {
-                icon: 'glyphicon glyphicon-ban-circle',
-                label: 'Button 3',
-                title: 'Mouse over Button 3',
-                cssClass: 'btn-warning'
-            }, {
-                label: 'Close',
-                action: function(dialogItself){
-                    dialogItself.close();
-                }
-            }]
-        });
-}
 
 function deleteElement(model,id)
 {
@@ -130,9 +98,15 @@ function checkDeleteElement(model,id)
                ]
               });
              } else {
+             no_deps_message='<h4>¿Está seguro que quiere eliminar este objeto?</h4>'
+             if (model == 'Event')
+             {
+                 no_deps_message=no_deps_message+'<br>Todos los archivos asociados serán eliminados'
+             }
              BootstrapDialog.show(
+             
             {
-              message: '<h4>¿Está seguro que quiere eliminar este objeto?</h4>',
+              message: no_deps_message,
               buttons: [
                 {
                   label: 'Sí, eliminar',
