@@ -60,7 +60,8 @@ def getStringForModel(model):
                     'MusicalPiece'    :  _('Obras Musicales'),
                     'MusicalEnsemble'     :  _('Agrupaciones Musicales'),
                     'MusicalEnsembleType' :  _('Tipo de Agrupaciones Musicales'),
-                    'Performance'     : _('Participación')                    
+                    'Performance'     : _('Participación'),
+                    'MusicalEnsembleMember' : _('Miembro de Agrupación Musical')                    
                     }    
     return string4model[model]
 
@@ -453,11 +454,22 @@ def getEventTableData(requests):
     limit = request.args.get('limit', 10, type=int)
     offset = request.args.get('offset', 0, type=int)
     order = request.args.get('order', '', type=str)
-    search = '%{}%'.format(request.args.get('search', '', type=str))  
-    query=db.session.query(Event).join(EventType,Event.event_type).join(Location,Event.location).filter(or_(  Event.year.contains(search),
-                                                                                EventType.name.ilike(search),
-                                                                                Event.name.ilike(search),
-                                                                                Location.name.ilike(search)))
+    search = '{}'.format(request.args.get('search', '', type=str))    
+    
+    or_search_term=[]
+    for search_term in search.split(' '):
+        filters = []
+        if search_term.isnumeric():
+            filters.append(Event.year.contains(str(int(search_term))))
+            filters.append(Event.month.contains(str(int(search_term))))
+            filters.append(Event.day.contains(str(int(search_term))))
+        filters.append(EventType.name.contains(search_term))
+        filters.append(Event.name.contains(search_term))
+        filters.append(Location.name.contains(search_term))
+        or_search_term.append(or_(*filters))
+    
+        
+    query=db.session.query(Event).join(EventType,Event.event_type).join(Location,Event.location).filter(and_(*or_search_term))    
     data={ "rows": [], "total":  query.count() }
     entries=query.limit(limit).offset(offset).all()
     for entry in entries:

@@ -336,8 +336,12 @@ def delete_check_element(model,id):
             response = jsonify({ 'soft_deps': None, 'hard_deps': None} )
             response.status_code = 200
             return response
+
         soft_deps=get_soft_dependencies(element,model,DEPS_LIMIT)
         hard_deps=get_hard_dependencies(element,model,DEPS_LIMIT)
+        if model == 'MusicalEnsemble':
+            hard_deps=element.participants[0:DEPS_LIMIT]
+            soft_deps=[]
         message_soft_deps=None
         if soft_deps:
             message_soft_deps=_('Este elemento será eliminado de los siguientes objetos:\n')
@@ -387,9 +391,14 @@ def delete_element(model,id):
             addHistoryEntry('Eliminado','Interpretación: {} de {}...'.format(performance.musical_piece.get_name(),performance.event.name[0:40]))
         for participant in element.participants.all():
             db.session.delete(participant)
-            addHistoryEntry('Eliminado','Participante: {} de {}...'.format(participant.get_name(),
-                                                            participant.event.name[0:40]))
-     
+            addHistoryEntry('Eliminado','Participante: {}'.format(participant.get_name()))
+    if model == 'MusicalEnsemble':
+        for member in element.members.all():
+            db.session.delete(member)
+            addHistoryEntry('Eliminado','Miembro de agrupción musical: {}'.format(member.get_name()))
+        for participant in element.participants.all():
+            db.session.delete(participant)
+            addHistoryEntry('Eliminado','Participante: {}'.format(participant.get_name()))
     table_name=getStringForModel(element.__repr__().split('(')[0])
     addHistoryEntry('Eliminado','{}: {}'.format(table_name,element.get_name()[0:50]))
     db.session.delete(element)

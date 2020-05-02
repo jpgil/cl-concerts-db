@@ -253,7 +253,7 @@ class Event(db.Model):
     medialinks = db.relationship('MediaLink', backref='event', lazy='dynamic')     
     def get_string_date(self):
         if (self.year and self.month and self.day):
-            return "{}-{}-{}".format(self.year,self.month,self.day)
+            return "{:04d}-{:02d}-{:02d}".format(self.year,self.month,self.day)
         elif (self.year and self.month):
             return "{}-{}".format(self.year,self.month)
         elif (self.year):
@@ -328,7 +328,7 @@ class Participant(db.Model):
         musical_ensemble_string="[{}] ".format(self.musical_ensemble.name) if self.musical_ensemble else ""
         person_string="{} ".format(self.person.get_name()) if self.person else ""
         activity_string="({})".format(self.activity.name) if self.activity else ""
-        return musical_ensemble_string+person_string+activity_string
+        return musical_ensemble_string+person_string+activity_string+" "+self.event.get_name()[0:50]
     
     def get_short_name(self):
         musical_ensemble_string="[{}] ".format(self.musical_ensemble.name) if self.musical_ensemble else ""
@@ -357,7 +357,7 @@ class MusicalEnsemble(db.Model):
     def get_name(self):
         return "{}".format(self.name)
     def __repr__(self):
-        return 'MusicalPiece(name="{}")'.format(self.name) 
+        return 'MusicalEnsemble(name="{}")'.format(self.name) 
       
 
 class MusicalEnsembleMember(db.Model):
@@ -367,9 +367,15 @@ class MusicalEnsembleMember(db.Model):
     musical_ensemble_id =  db.Column(db.Integer, db.ForeignKey('musical_ensemble.id'))
     def get_name(self):
         if self.activity and self.person:
-            return "{} ({})".format(self.person.get_name(),self.activity.name)
+            return "{} ({}) - {}".format(self.person.get_name(),self.activity.name,self.musical_ensemble.name)
         else:
-            return "{}".format(self.person.get_name()) if self.person else "({})".format(self.activity.name)
+            return "{} - {}".format(self.person.get_name(),self.musical_ensemble.name) if self.person else "({}) -".format(self.activity.name,self.musical_ensemble.name)
 
     def __repr__(self):
-        return "MusicalEnsembleMember(person='{}',musical_ensemble='{}')".format(self.person.get_name(), self.musical_ensemble.name) if not self.activity_id else "MusicalEnsembleMember(person='{}'.activity='{}', musical_ensemble='{}')".format(self.person.get_name(),self.activity.name, self.musical_ensemble.name)
+        str_repr="MusicalEnsembleMember("
+        if self.person:
+            str_repr+="person='{}' ".format(self.person.get_name())
+        if self.activity:
+            str_repr+="(activity={}) ".format(self.activity.name)
+        str_repr+="musical_ensemble='{}'".format(self.musical_ensemble.name)
+        return str_repr
