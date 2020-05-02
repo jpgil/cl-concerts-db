@@ -148,8 +148,8 @@ class EditOrganizationForm(FlaskForm):
                 raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
                 
 class EditEventForm(FlaskForm):
-    name=StringField(_l('Nombre del Evento'),validators=[InputRequired(message=_("Debe ingresar el nombre del evento"))])
-    organizations= NonValidatingSelectMultipleField(label=_("Organizadores"),choices=[],validators=[DataRequired()])
+    name=StringField(_l('Nombre del Evento'),validators=[])
+    organizations= NonValidatingSelectMultipleField(label=_("Organizadores"),choices=[],validators=[])
     location= NonValidatingSelectMultipleField(label=_("Lugar"),choices=[],validators=[DataRequired()])
     event_year = IntegerField(label='Año/Mes/Día',validators=[DataRequired(), NumberRange(min=1, max=3000, message=_('El año ingresado no es válido'))])
     event_month = IntegerField(validators=[Optional(),NumberRange(min=1, max=12,message=_("El mes debe corresponder a un número entre 1 y 12"))])
