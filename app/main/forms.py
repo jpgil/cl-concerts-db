@@ -154,6 +154,7 @@ class EditEventForm(FlaskForm):
     event_year = IntegerField(label='Año/Mes/Día',validators=[DataRequired(), NumberRange(min=1, max=3000, message=_('El año ingresado no es válido'))])
     event_month = IntegerField(validators=[Optional(),NumberRange(min=1, max=12,message=_("El mes debe corresponder a un número entre 1 y 12"))])
     event_day = IntegerField(validators=[Optional(),NumberRange(min=1, max=31,message=_("El díá debe corresponder a un número entre 1 y 31"))])
+    sources=TextAreaField(_('Fuentes'))
     information=TextAreaField(_('Información'))
     event_type= NonValidatingSelectMultipleField(label=_("Tipo de Evento"),choices=[],validators=[DataRequired()])
     cycle= NonValidatingSelectMultipleField(label=_("Ciclo/Festival"),choices=[],validators=[DataRequired()])

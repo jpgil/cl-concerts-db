@@ -77,9 +77,14 @@
                 <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
             <br>      
-                                     
+
+            {{ form.sources.label }} <br>
+            {{ form.sources(cols="55", rows="3")|safe }} <br>   
+                                                 
             {{ form.information.label }} <br>
             {{ form.information(cols="55", rows="10")|safe }} <br>                
+
+
             
             {% for error in form.information.errors %}
                 <span style="color: red;">[{{ error }}]</span>

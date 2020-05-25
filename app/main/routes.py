@@ -1098,6 +1098,7 @@ def NewEvent():
                              event_type=event_type,
                              cycle=cycle,
                              information=form.information.data,
+                             sources=form.sources.data,
                              day=form.event_day.data,
                              month=form.event_month.data,
                              year=form.event_year.data)
@@ -1132,6 +1133,7 @@ def EditEvent(event_id):
         original_event.event_type_id=form.event_type.data[0]
         original_event.cycle_id=form.cycle.data[0]
         original_event.information=form.information.data
+        original_event.sources=form.sources.data
         original_event.day=form.event_day.data
         original_event.month=form.event_month.data
         original_event.year=form.event_year.data    
@@ -1148,6 +1150,7 @@ def EditEvent(event_id):
         form.event_month.data=original_event.month
         form.event_year.data=original_event.year
         form.information.data=original_event.information
+        form.sources.data=original_event.sources        
         return render_template('main/editevent.html',event_id=event_id,form=form,title=_('Editar Evento'),
                                    selectedEventType=str(original_event.event_type_id), 
                                    selectedCycle=str(original_event.cycle_id),

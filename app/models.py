@@ -246,6 +246,7 @@ class Event(db.Model):
     day = db.Column(db.Integer)
     location_id = db.Column(db.Integer, db.ForeignKey('location.id'))
     information = db.Column(db.String(4000))  
+    sources = db.Column(db.String(2000))  
     event_type_id = db.Column(db.Integer, db.ForeignKey('event_type.id'))
     cycle_id = db.Column(db.Integer, db.ForeignKey('cycle.id'))
     participants = db.relationship('Participant', backref='event', lazy='dynamic')
