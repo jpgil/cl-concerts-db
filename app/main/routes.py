@@ -108,8 +108,14 @@ def getMusicalPiece(id):
 
 def getMusicalPieces(q,page):    
     itemslist=db.session.query(MusicalPiece).filter(MusicalPiece.name.ilike('%'+q+'%')).order_by(MusicalPiece.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
-    data={ "results": [], "pagination": { "more": itemslist.has_next} }
+    itemlist_ids_sorted=sorted([(m.id,m.composers[0].last_name if m.composers else "") for m in itemslist.items], key=lambda x: x[1].strip().upper() ) 
+    item_dictionary={}
     for item in itemslist.items:
+        item_dictionary[item.id]=item    
+    data={ "results": [], "pagination": { "more": itemslist.has_next }  }
+    itemlist_ids_sorted=[x[0] for x in itemlist_ids_sorted] 
+    for item_id in itemlist_ids_sorted:
+        item=item_dictionary[item_id]
         text = '{}'.format(item.get_name())
         data["results"].append( { 'id' : item.id , 'text': text } )
     return jsonify(data)
@@ -469,7 +475,7 @@ def getEventTableData(requests):
         or_search_term.append(or_(*filters))
     
         
-    query=db.session.query(Event).join(EventType,Event.event_type).join(Location,Event.location).filter(and_(*or_search_term))    
+    query=db.session.query(Event).join(EventType,Event.event_type).join(Location,Event.location).filter(and_(*or_search_term)).order_by(Event.year.asc(),Event.month.asc(),Event.day.asc(),Event.name.asc())    
     data={ "rows": [], "total":  query.count() }
     entries=query.limit(limit).offset(offset).all()
     for entry in entries:
