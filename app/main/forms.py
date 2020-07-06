@@ -87,7 +87,7 @@ class EditActivityForm(FlaskForm):
 class EditPersonForm(FlaskForm):
     first_name=StringField(_l('Nombre'))
     last_name=StringField(_l('Apellido'))    
-    nationalities= NonValidatingSelectMultipleField(label=_("Nacionalidades"),choices=[])
+    nationalities= NonValidatingSelectMultipleField(label=_("Países"),choices=[])
     birth_year=IntegerField(_('Año de Nacimiento'),validators=[Optional()])
     death_year=IntegerField(_('Año de Muerte'),validators=[Optional()])
     gender= NonValidatingSelectMultipleField(label=_("Sexo"),choices=[],validators=[DataRequired()])
