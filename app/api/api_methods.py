@@ -11,7 +11,7 @@ import sqlalchemy
 from sqlalchemy_utils import dependent_objects, get_referencing_foreign_keys
 from flask_login import current_user, login_required
 import os
-DEPS_LIMIT=8
+DEPS_LIMIT=10
 def checkForKeys(keys,form):
     """Returns true if there is a missing key in form"""
     for k in keys:
@@ -342,6 +342,8 @@ def delete_check_element(model,id):
         if model == 'MusicalEnsemble':
             hard_deps=element.participants[0:DEPS_LIMIT]
             soft_deps=[]
+        if model == 'Person':
+            hard_deps.extend(element.musical_pieces[0:DEPS_LIMIT])
         message_soft_deps=None
         if soft_deps:
             message_soft_deps=_('Este elemento será eliminado de los siguientes objetos:\n')
