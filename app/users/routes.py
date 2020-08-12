@@ -27,7 +27,7 @@ def view_users():
     return render_template('users/'+elementsname+'.html', title=title,
                            elements=elements.items, next_url=next_url,
                            prev_url=prev_url)
-    
+
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -85,8 +85,13 @@ def reset_password_request():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             send_password_reset_email(user)
+        # flash(
+        # _('Revise su correo por instrucciones sobre como recuperar su contraseña'), 'info')
+
         flash(
-            _('Revise su correo por instrucciones sobre como recuperar su contraseña'),'info')
+            url_for('users.reset_password',
+                    token=user.get_reset_password_token(),
+                    _external=True), 'info')
         return redirect(url_for('users.login'))
     return render_template('users/reset_password_request.html',
                            title=_('Reset Password'), form=form)
@@ -115,7 +120,7 @@ def edit_profile():
         current_user.first_name = form.first_name.data
         current_user.last_name = form.last_name.data
         if form.password.data:
-            current_user.set_password(form.password.data)    
+            current_user.set_password(form.password.data)
         db.session.commit()
         flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('users.edit_profile'))
@@ -140,7 +145,7 @@ def edit_user(user_id):
         user.profile = form.perfil.data
         user.email = form.email.data
         if form.password.data:
-            user.set_password(form.password.data)    
+            user.set_password(form.password.data)
         db.session.commit()
         flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('users.view_users'))
@@ -148,6 +153,6 @@ def edit_user(user_id):
         form.perfil.data =  user.profile
         form.first_name.data = user.first_name
         form.last_name.data = user.last_name
-        form.email.data =  user.email       
+        form.email.data =  user.email
     return render_template('users/editprofile.html', title=_('Editar Usuario'),
                            form=form)

@@ -37,9 +37,11 @@ def create_app(config_class=Config):
     moment.init_app(app)
     babel.init_app(app)
     configure_uploads(app, files_collection)
-#    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
-#        if app.config['ELASTICSEARCH_URL'] else None
-
+    #    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
+    #        if app.config['ELASTICSEARCH_URL'] else None
+    from app.public import bp as public_bp
+    app.register_blueprint(public_bp, url_prefix='/public')
+    
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
 
