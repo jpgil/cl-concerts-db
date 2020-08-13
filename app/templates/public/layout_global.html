@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:300,400,600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css"
+        integrity="sha256-BJ/G+e+y7bQdrYkS2RBTyNfBHpA9IuGaPmf9htub5MQ=" crossorigin="anonymous" />
+
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gijgo/1.9.13/combined/css/gijgo.min.css" integrity="sha256-bH0WSMuCFoG/dxeox/5aOWmaZl729yDg4ylckwSRTfU=" crossorigin="anonymous" /> -->
+
+    <link href="{{ url_for('static', filename='public/style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='public/theme_1590956485083.css') }}" rel="stylesheet">
+
+    <title>{% block title %}
+    {% if title %}{{ title }} - CL-CONCERTS-WEB {% else %}Cl-concerts-web{% endif %}
+    {% endblock %}</title>
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- Two Columns -->
+        <section id="main-layout">
+            <div class="row">
+                <div class="col">
+                    <section id="menu">
+                        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                            <a class="navbar-brand" href="{{ url_for('public.inicio') }}">Base de Datos de Conciertos en Chile </a>
+                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <!-- span class="navbar-toggler-icon"></span -->
+                                <ion-icon name="menu-outline"></ion-icon>
+                            </button>                        
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                {% include 'public/menu.html' %}
+                            </div>
+                        </nav>
+                    </section>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-3">
+                    <section id="side-bar" class="py-4">
+                        {% include 'public/sidebar.html' %}
+                    </section>
+                </div>
+
+                <div class="col-xl-9">
+
+                    <!-- Main Content -->
+                    <section id="main-content" class="py-4">
+
+                        {% block content %}
+                        CONTENT here
+                        {% endblock %}
+
+                    </section>
+                </div>
+            </div>
+
+            <footer class="footer bg-dark text-light">
+                <div class="container">
+                    <div class="row py-4">
+                        <div class="col-xl-3">
+                            {% block footer1 %}
+                            FOOTER 1
+                            {% endblock %}
+                        </div>
+                        <div class="col-sm">
+                            {% block footer2 %}
+                            FOOTER 2
+                            {% endblock %}
+                        </div>
+                        <div class="col-sm">
+                            <a class="text-light" href="../users/login">Ingreso Administración</a>
+                        </div>
+                    </div>
+            
+                </div>
+            </footer>
+        </section>
+
+
+    </div>
+
+    <!-- Footer here -->
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gijgo/1.9.13/combined/js/gijgo.min.js" integrity="sha256-YZhUu69bCn9uTqQyKwwQ3GyRypS7eaxp/wmVS282sDI=" crossorigin="anonymous"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gijgo/1.9.13/combined/js/messages/messages.es-es.min.js" integrity="sha256-aYHjwzEPrf61GO3O1gmS3VQd/X5a5bAFvhn/9YB3IYo=" crossorigin="anonymous"></script> -->
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.standalone.min.css"
+        integrity="sha256-BqW0zYSKgIYEpELUf5irBCGGR7wQd5VZ/N6OaBEsz5U=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"
+        integrity="sha256-bqVeqGdJ7h/lYPq6xrPv/YGzMEb6dNxlfiTUHSgRCp8=" crossorigin="anonymous"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.es.min.js"
+        integrity="sha256-K5G+7qV0tjuHL0LlhCU0TqQKR+7QwT8MfEUe2UgpmRY=" crossorigin="anonymous"></script>
+
+    <script>
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        });
+
+
+        $.fn.datepicker.dates['en'] = {
+            days: ["Domingo", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+            daysShort: ["Dom", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+            daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+            months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Deciembre"],
+            monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            today: "Today",
+            clear: "Clear",
+            format: "dd/mm/yyyy",
+            titleFormat: "MM yyyy", /* Leverages same syntax as 'format' */
+            weekStart: 0
+        };
+        $('.datepicker').datepicker({
+            // language: 'es'
+        });
+
+
+
+
+    </script>
+</body>
+
+</html>

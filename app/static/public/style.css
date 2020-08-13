@@ -1,0 +1,113 @@
+body {
+}
+
+span.oi {
+  font-size: 14px;
+  margin: 0 1em;
+
+}
+
+.pregunta {
+	display: block;
+	/*position: fixed;*/
+	float: right ;
+	margin-right: -270px;
+	background: yellow;
+	padding: 0.4em;
+	border: 2px solid #FAB;
+	font-size: 0.9em;
+	width: 250px;
+	text-align: left;
+}
+
+nav.bg-primary {
+	background-color: #ffaaaa;
+}
+
+#side-bar .card {
+	margin-bottom: 1em;
+}
+#side-bar .card a {
+	display: block;
+}
+#side-bar .container {
+	margin-bottom: 2em;
+}
+
+#hero {
+}
+#hero .container {
+	margin: 2em 0 1em 0;
+	padding: 0 0 2em 0;
+}
+#hero h1 {
+	margin: 1em 0;
+	font-size: 2.5em;
+	font-weight: bold;
+	color: #888;
+	color: #fff;
+	text-align: center;
+}
+#hero a { color: #ffffff; }
+#hero p {
+	/*margin-top: 0 .5em;*/
+	font-size: 1.7em;
+	/*font-weight: bold;*/
+	text-align: center;
+}
+#carouselHome img {
+	height: 400px;
+	width: auto;
+}
+#carouselHome .carousel-inner {
+/*	border:  2px solid #AAA;
+	border-top-color: #EEE;
+	border-left-color: #EEE;*/
+	border: none;
+	/*background-color: #333;*/
+}
+
+
+#results {
+	margin-bottom: 3em;
+}
+#results a:hover {
+	text-decoration: underline;
+}
+#results table {
+	font-size: .9em;
+}
+#results h2 {
+	margin-bottom: 1em;
+}
+#results .card {
+	margin-bottom: 1em;
+}
+#results .card p {
+	margin: 0.5em auto;
+}
+#results table a {
+	display: block;
+	color: unset;
+	text-decoration: none;
+}
+
+
+
+#main-content {
+	text-align: justify;
+}
+
+
+
+h3 {
+	margin-bottom: 1em;
+}
+p.link-interes {
+	font-weight: bold;
+}
+p.link-interes a {
+	display: block;
+	font-weight: normal;
+}
+

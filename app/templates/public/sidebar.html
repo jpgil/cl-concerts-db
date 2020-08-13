@@ -1,0 +1,425 @@
+<div class="container">
+    <form class="form" action="{{ url_for('public.search') }}" method="GET">
+        <div class="form-group">
+            <label class="text-success" for="keyword">
+                <strong>Búsqueda Rápida</strong>
+            </label>
+
+            <a href="#" role="button" data-toggle="popover" title="Acerca de la Búsqueda Rápida"
+                data-content='En este cuadro Ud. puede ingresar una o más palabras clave. La búsqueda contendrá resultados con cualquiera de estas palabras clave (equivalente a OR lógico).'><span
+                    class="oi oi-question-mark"></span></a>
+
+
+            <input class="form-control" type="search" name="keywords" id="keywords" value="{{ userquery }}" placeholder="[palabras clave]" />
+        </div>
+        <button class="btn btn-outline-success" type="submit">Buscar</button>
+    </form>
+
+</div>
+
+<div class="container">
+    <form class="form" action="{{ url_for('public.search') }}" method="GET">
+        <p class="text-success">
+            <strong>Filtros de Búsqueda</strong>
+            <a href="#" role="button" data-toggle="popover" title="Cómo usar los filtros de búsqueda"
+                data-content='Los campos del filtro de búsqueda sirven para restingir resultados, por ejemplo si Ud. selecciona Lugar = Santiago y Compositor/a = Alfonso Leng, los resultados contendrán sólo aquellos eventos con Alfonso Leng y Santiago simultáneamente.'><span
+                    class="oi oi-question-mark"></span></a>
+        </p>
+
+
+        <!--
+
+                  Filtros de Búsqueda
+                  Generar en columna-search.ipynb
+
+                -->
+
+
+
+        <div class="card">
+            <div class="card-header">
+                <a class="" data-toggle="collapse" href="#g-fechas" role="button" aria-expanded="false"
+                    aria-controls="collapseExample">
+                    Fechas
+                </a>
+            </div>
+            <div class="card-body collapse" id="g-fechas">
+
+
+                <div class="form-group">
+                    <label for="f-desde">Desde</label>
+                    <div class="input-group date" data-provide="datepicker">
+                        <input name="f-desde" type="text" class="form-control" value="01/01/1945">
+                        <div class="input-group-addon">
+                            <span class="oi oi-calendar"></span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="f-hasta">Hasta</label>
+                    <div class="input-group date" data-provide="datepicker">
+                        <input name="f-hasta" type="text" class="form-control" value="31/12/1995">
+                        <div class="input-group-addon">
+                            <span class="oi oi-calendar"></span>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-header">
+                <a class="" data-toggle="collapse" href="#g-info-de-evento" role="button" aria-expanded="false"
+                    aria-controls="collapseExample">
+                    Info. de evento
+                </a>
+            </div>
+            <div class="card-body collapse" id="g-info-de-evento">
+
+
+                <div class="form-group">
+                    <label for="f-nombre-o-información">Nombre o Información</label>
+                    <input class="form-control form-control-sm" type="search" id="f-nombre-o-información"
+                        placeholder="[todos]" />
+                </div>
+
+
+                <div class="form-group">
+                    <label for="f-ciclo">Ciclo</label>
+                    <input class="form-control form-control-sm" type="search" id="f-ciclo" placeholder="[todos]" />
+                </div>
+
+
+                <div class="form-group">
+                    <label for="f-tipo">Tipo</label>
+
+                    <select class="form-control form-control-sm" id="f-tipo">
+                        <option>[todos]</option>
+
+                        <option>Concierto</option>
+                        <option>Conferencia</option>
+                        <option>Película / documental</option>
+                        <option>Transmisión radiofónica</option>
+                        <option>Foro / debate / mesa redonda</option>
+                        <option>Concurso de Interpretación</option>
+                        <option>Constitución de sociedades u organizaciones</option>
+                        <option>Registro fonográfico</option>
+                    </select>
+
+                </div>
+
+
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-header">
+                <a class="" data-toggle="collapse" href="#g-lugar" role="button" aria-expanded="false"
+                    aria-controls="collapseExample">
+                    Lugar
+                </a>
+            </div>
+            <div class="card-body collapse" id="g-lugar">
+
+
+                <div class="form-group">
+                    <label for="f-organizador">Organizador</label>
+                    <input class="form-control form-control-sm" type="search" id="f-organizador"
+                        placeholder="[todos]" />
+                </div>
+
+
+                <div class="form-group">
+                    <label for="f-ciudad">Ciudad</label>
+
+                    <select class="form-control form-control-sm" id="f-ciudad">
+                        <option>[todos]</option>
+
+                        <option>Santiago </option>
+                        <option>Valparaíso </option>
+                        <option>Concepción </option>
+                        <option>Valdivia </option>
+                        <option>Desconocido </option>
+                        <option>Montevideo </option>
+                        <option>Antofagasta </option>
+                        <option>Temuco </option>
+                        <option>La Serena </option>
+                        <option>Viña del Mar </option>
+                        <option>Barcelona </option>
+                        <option>Oslo </option>
+                        <option>Frutillar </option>
+                        <option>Bourg-en-Bress </option>
+                        <option>Mérida</option>
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+                    <label for="f-locación">Locación</label>
+                    <input class="form-control form-control-sm" type="search" id="f-locación" placeholder="[todos]" />
+                </div>
+
+
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-header">
+                <a class="" data-toggle="collapse" href="#g-participantes-individuales" role="button"
+                    aria-expanded="false" aria-controls="collapseExample">
+                    Participantes
+                </a>
+            </div>
+            <div class="card-body collapse" id="g-participantes-individuales">
+
+
+                <div class="form-group">
+                    <label for="f-nombre">Nombre</label>
+                    <input class="form-control form-control-sm" type="search" id="f-nombre" placeholder="[todos]" />
+                </div>
+
+
+                <div class="form-group">
+                    <label for="f-género">Género</label>
+
+                    <select class="form-control form-control-sm" id="f-género">
+                        <option>[todos]</option>
+
+                        <option>Hombre</option>
+                        <option>Mujer</option>
+                        <option>Otro</option>
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+                    <label for="f-país">País</label>
+
+                    <select class="form-control form-control-sm" id="f-país">
+                        <option>[todos]</option>
+
+                        <option>Chile </option>
+                        <option>China </option>
+                        <option>Chipre </option>
+                        <option>Ciudad del Vaticano </option>
+                        <option>Colombia </option>
+                        <option>Comoras </option>
+                        <option>Corea del Norte </option>
+                        <option>Corea del Sur </option>
+                        <option>Costa de Marfil </option>
+                        <option>Costa Rica </option>
+                        <option>Croacia </option>
+                        <option>Cuba </option>
+                        <option>Dinamarca</option>
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+                    <label for="f-actividad">Actividad</label>
+                    <input class="form-control form-control-sm" type="search" id="f-actividad" placeholder="[todos]" />
+                </div>
+
+
+                <div class="form-group">
+                    <label for="f-instrumentos">Instrumentos</label>
+                    <input class="form-control form-control-sm" type="search" id="f-instrumentos"
+                        placeholder="[todos]" />
+                </div>
+
+
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-header">
+                <a class="" data-toggle="collapse" href="#g-compositora" role="button" aria-expanded="false"
+                    aria-controls="collapseExample">
+                    Compositor/a
+                </a>
+            </div>
+            <div class="card-body collapse" id="g-compositora">
+
+
+                <div class="form-group">
+                    <label for="f-nombre">Nombre</label>
+                    <input class="form-control form-control-sm" type="search" id="f-nombre" placeholder="[todos]" />
+                </div>
+
+
+                <div class="form-group">
+                    <label for="f-género">Género</label>
+
+                    <select class="form-control form-control-sm" id="f-género">
+                        <option>[todos]</option>
+
+                        <option>Hombre</option>
+                        <option>Mujer</option>
+                        <option>Otro</option>
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+                    <label for="f-país">País</label>
+
+                    <select class="form-control form-control-sm" id="f-país">
+                        <option>[todos]</option>
+
+                        <option>Chile </option>
+                        <option>China </option>
+                        <option>Chipre </option>
+                        <option>Ciudad del Vaticano </option>
+                        <option>Colombia </option>
+                        <option>Comoras </option>
+                        <option>Corea del Norte </option>
+                        <option>Corea del Sur </option>
+                        <option>Costa de Marfil </option>
+                        <option>Costa Rica </option>
+                        <option>Croacia </option>
+                        <option>Cuba </option>
+                        <option>Dinamarca</option>
+                    </select>
+
+                </div>
+
+
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-header">
+                <a class="" data-toggle="collapse" href="#g-repertorio" role="button" aria-expanded="false"
+                    aria-controls="collapseExample">
+                    Repertorio
+                </a>
+            </div>
+            <div class="card-body collapse" id="g-repertorio">
+
+
+                <div class="form-group">
+                    <label for="f-premiere">Premiere</label>
+
+                    <select class="form-control form-control-sm" id="f-premiere">
+                        <option>[todos]</option>
+
+                        <option>No es estreno </option>
+                        <option>Estreno en Chile </option>
+                        <option>Estreno Mundial</option>
+                        <option>Sin Informacion</option>
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+                    <label for="f-obra">Obra</label>
+                    <input class="form-control form-control-sm" type="search" id="f-obra" placeholder="[todos]" />
+                </div>
+
+
+                <div class="form-group">
+                    <label for="f-tipo-de-instrumento">Tipo de Instrumento</label>
+
+                    <select class="form-control form-control-sm" id="f-tipo-de-instrumento">
+                        <option>[todos]</option>
+
+                        <option>Ninguno </option>
+                        <option>Cuerda frotadas </option>
+                        <option>Vientos madera </option>
+                        <option>Instrumentos de percusión sin afinación </option>
+                        <option>Orquesta (Borrar) </option>
+                        <option>Teclados </option>
+                        <option>Vientos metal </option>
+                        <option>Vientos metal (borrar) </option>
+                        <option>Cuerdas punteadas </option>
+                        <option>Electrónica - Electroacústica </option>
+                        <option>Voces (Cantantes) </option>
+                        <option>Varios </option>
+                        <option>Instrumentos de percusión con afinación</option>
+                    </select>
+
+                </div>
+
+
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-header">
+                <a class="" data-toggle="collapse" href="#g-agrupaciones" role="button" aria-expanded="false"
+                    aria-controls="collapseExample">
+                    Agrupaciones
+                </a>
+            </div>
+            <div class="card-body collapse" id="g-agrupaciones">
+
+
+                <div class="form-group">
+                    <label for="f-nombre-de-agrupación">Nombre de agrupación</label>
+                    <input class="form-control form-control-sm" type="search" id="f-nombre-de-agrupación"
+                        placeholder="[todos]" />
+                </div>
+
+
+                <div class="form-group">
+                    <label for="f-tipo-de-agrupación">Tipo de agrupación</label>
+
+                    <select class="form-control form-control-sm" id="f-tipo-de-agrupación">
+                        <option>[todos]</option>
+
+                        <option>Coro o ensamble vocal </option>
+                        <option>Orquesta sinfónica </option>
+                        <option>Orquesta de cámara </option>
+                        <option>Cuarteto de Cuerdas </option>
+                        <option>Conjunto de música antigua </option>
+                        <option>Grupo de Jazz </option>
+                        <option>Ensamble de formación mixta </option>
+                        <option>Música Antigua BORRAR </option>
+                        <option>Ballet </option>
+                        <option>Ensamble vocal BORRAR </option>
+                        <option>Jazz Rock </option>
+                        <option>Quinteto de Vientos </option>
+                        <option>Quinteto de bronces </option>
+                        <option>Octeto de vientos </option>
+                        <option>Cuarteto con piano </option>
+                        <option>Cuarteto con oboe </option>
+                        <option>Cuarteto de Vientos </option>
+                        <option>Rock </option>
+                        <option>Sexteto de bronces </option>
+                        <option>Dúo </option>
+                        <option>Grupo Andino</option>
+                    </select>
+
+                </div>
+
+
+            </div>
+        </div>
+
+
+
+        <!--
+
+                  Filtros de Búsqueda
+
+                -->
+
+
+        <button class="btn btn-outline-success" type="submit">Buscar</button>
+    </form>
+</div>

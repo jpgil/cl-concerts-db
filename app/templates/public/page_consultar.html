@@ -1,0 +1,59 @@
+{% extends 'public/layout_global.html' %}
+
+{% set title='Cómo consultar la Base de Datos' %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+
+<p class="text-right">
+<figure class="figure px-4 pt-4">
+    <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22400%22%20height%3D%22300%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_17239ab34c3%20text%20%7B%20fill%3Argba(255%2C255%2C255%2C.75)%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A20pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_17239ab34c3%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23777%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22148.84375%22%20y%3D%22159.15%22%3E400x300%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"
+        class="figure-img img-fluid rounded" alt="A generic square placeholder image with rounded corners in a figure.">
+    <figcaption class="figure-caption text-right">[Elegir imagen para esta posicion]</figcaption>
+</figure>
+</p>
+
+
+<p>
+    La base de datos está organizada en diversas posibles categorías de búsqueda. Es posible seleccionar diferentes
+    categorías al mismo tiempo. El resultado de la búsqueda siempre mostrará eventos (principalmente conciertos, pero
+    también talleres, mesas redondas, concursos u otros) que correspondan a la/s información/es buscadas. Usando la
+    Búsqueda Avanzada, será posible continuar aplicando filtros a los resultados de la búsqueda.
+
+</p>
+
+<p>
+    En general, las categorías de búsqueda corresponden a:
+</p>
+
+<ul>
+    <li>
+        Personas (intérpretes u otros participantes, compositores/as) que pueden ser filtradas por nacionalidad y
+        género, y por tipos de actividades (instrumentistas, cantantes, conferencistas, etc.).
+    </li>
+    <li>
+        Organizaciones: entendidas como instituciones que participaron como tales en los eventos.
+    </li>
+    <li>
+        Agrupaciones musicales, que pueden ser filtradas seleccionando tipos de agrupaciones.
+    </li>
+    <li>
+        Obras musicales, que pueden ser filtradas a través de sus autores/as, formación instrumental o vocal, año de
+        composición, título, estreno mundial o chileno, etc.
+    </li>
+    <li>
+        Lugares de realización de los eventos.
+    </li>
+    <li>
+        Tipos de eventos.
+    </li>
+</ul>
+
+<p>
+    Al ubicar el cursor en una categoría, será posible además ver el listado de ítems ingresados dentro de ella.
+    También es posible indicar fechas a fin de restringir la búsqueda.
+</p>
+
+{% endblock %}

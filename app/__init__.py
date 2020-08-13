@@ -81,6 +81,10 @@ def create_app(config_class=Config):
 
         app.logger.setLevel(logging.DEBUG)
         app.logger.info('cl-concerts-db startup')
+
+    # WEB version added as blueprint
+    from app.public import bp as public_bp
+    app.register_blueprint(public_bp, url_prefix='/public')
     return app
 
 
