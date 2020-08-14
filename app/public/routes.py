@@ -3,7 +3,7 @@ from app.public import bp
 from flask import Flask, render_template, jsonify, url_for, request, redirect, abort
 from jinja2 import TemplateNotFound
 
-import app.public.search as searchClDb
+from app.public import search as searchClDb
 
 # Make some objects available to templates.
 @bp.context_processor
