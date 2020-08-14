@@ -71,22 +71,43 @@
                 </div>
             </div>
 
-            <footer class="footer bg-dark text-light">
+            <footer class="footer bg-primary text-light">
                 <div class="container">
                     <div class="row py-4">
-                        <div class="col-xl-3">
-                            {% block footer1 %}
-                            FOOTER 1
-                            {% endblock %}
+                        <div class="col-sm-4    ">
+                            <p>
+                                <img src="{{ url_for('static', filename='public/images/logo-fondecyt.png') }}" style="width: 250px">
+                            </p>
+                            <p>
+                                Fondecyt de Iniciación 11170844
+                            </p>
                         </div>
+
                         <div class="col-sm">
-                            {% block footer2 %}
-                            FOOTER 2
-                            {% endblock %}
+                            <p>
+                                <a href="https://www.uahurtado.cl/"><img src="{{ url_for('static', filename='public/images/logo-uah.png') }}" style="width: 250px"></a>
+                            </p>
+                            <p class="mb-0">
+                                <a class="text-light" href="https://filosofiahumanidades.uahurtado.cl/">Facultad de Filosofía y Humanidades</a>
+                            </p>
+                            <p>
+                                <a class="text-light" href="https://filosofiahumanidades.uahurtado.cl/departamentos/instituto-musica/">Instituto de
+                                    Música</a>
+                            </p>
                         </div>
-                        <div class="col-sm">
-                            <a class="text-light" href="../users/login">Ingreso Administración</a>
+                        <div class="col-sm-3 pt-0">
+                            
+                            <form class="mt-0">
+                                <div class="form-group">
+                                        <input type="email" class="form-control form-control-sm" name="email" id="inputEmail3" placeholder="Tu email">
+                                </div>
+                                <div class="form-group">
+                                        <textarea class="form-control form-control-sm" name="consulta" placeholder="Envíanos tu consulta" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-outline-success mb-2">Enviar Consulta</button>
+                            </form>
                         </div>
+
                     </div>
             
                 </div>
