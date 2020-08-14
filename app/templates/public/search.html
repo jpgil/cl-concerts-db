@@ -3,9 +3,39 @@
 {% set title='Resultados de la búsqueda' %}
 
 {% block content %}
-
 <h2>{{ title }}</h2>
 
-<p>15 elementos encontrados para la búsqueda: <em>{{ userquery }}</em></p>
+<p>Nota: Utilizando una base de datos de ejemplo, si se hace una <em>búsqueda rápida</em> cualquiera mostrará resultados.</p>
 
+{% if not userquery %}
+<p>Ingrese una búsqueda en el formulario a la izquierda</p>
+{% else %}
+
+
+<table 
+    class="table table-striped" 
+    id="searchResults"
+    data-toggle="table"
+    data-search="false"
+    data-trim-on-search="false"
+    data-show-footer="true"
+    data-only-info-pagination="false"
+    data-side-pagination="server"
+    data-pagination="true"
+    data-url="{{url_for('public.get_events', keywords=userquery)}}"
+>
+    <thead>
+        <tr>
+            <th scope="col" data-field='title'>Evento</th>
+            <th scope="col" data-field='place'>Lugar</th>
+            <th scope="col" data-field='date'>Fecha</th>
+        </tr>
+    </thead>
+
+</table>
+
+
+
+
+{% endif %}
 {% endblock %}

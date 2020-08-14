@@ -1,0 +1,24 @@
+[
+    {% for e in entries %}
+    {
+        "title": "<a href='{{ url_for('public.show_event', id=e['event_id'] ) }}'>{{ 
+            e['event_type'] 
+        }}{% 
+            if e['event_name'] %}: {{ e['event_name'] }}{% endif %}{% 
+            if e['event_cycle'] %} - Ciclo \"{{ e['event_cycle'] }}\"{% endif 
+                %}</a>",
+        "place": "<a href='{{ url_for('public.show_event', id=e['event_id'] ) }}'>{{ 
+            e['location_name'] }}, {{ e['location_city'] }}</a>",
+        "date": "{%
+            if e['event_date_day'] and e['event_date_month'] 
+            %}{{ 
+                e['event_date_day'] 
+                }}/{{ 
+                e['event_date_month'] 
+                }}/{%
+                endif
+            %}{{ e['event_date_year'] }}"
+    },
+    {% endfor %}
+    {}
+]

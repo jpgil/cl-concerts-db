@@ -67,6 +67,13 @@ nav.bg-primary {
 	/*background-color: #333;*/
 }
 
+#searchResults td {
+	font-size: 0.9em;
+}
+#searchResults a {
+	text-decoration: underline;
+	display: block;
+}
 
 #results {
 	margin-bottom: 3em;
