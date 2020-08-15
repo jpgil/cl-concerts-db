@@ -27,6 +27,7 @@ def get_events():
     offset = request.args.get('offset', 0, type=int)
     limit = request.args.get('limit', 10, type=int)
     keywords = request.args.get('keywords', '', type=str)
+
     query = searchClDb.event_list(keywords=keywords, offset=offset, limit=limit)
 
     # DB result
@@ -48,7 +49,12 @@ def search():
 # Event Detail
 @bp.route('/event/<id>')
 def show_event(id):
-    pass
+    # try:
+        event = searchClDb.get_event(id=id)
+        # print(event)
+        return render_template('public/detalle.html', e=event )
+    # except:
+        # abort(404)
 
 # Plain pages
 @bp.route('/<page>')

@@ -10,3 +10,14 @@ def event_list_PREVIO(keywords="", offset=0, limit=10):
 def event_list(keywords="", offset=0, limit=10):
     T = TEST[:]
     return T
+
+def get_event(id=id):
+    found = False
+    for t in TEST:
+        if int(t['event_id']) == int(id):
+            found = t
+    if found:
+        return found
+    else:
+        # return {}
+        raise ValueError()

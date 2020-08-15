@@ -1,0 +1,170 @@
+{% extends 'public/layout_global.html' %}
+
+{% set title="%s %s" % (e['event_type'], e['event_name']) %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<section id="results">
+
+        <h3 class="p-2">Información del Evento</h3>
+
+        <table class="table">
+            <tbody>
+                <tr class="lead">
+                    <th>Nombre:</th>
+                    <td>{{ e['event_name'] }}</td>
+                </tr>
+                <tr>
+                    <th>Fecha:</th>
+                    <td>{{ e['event_date_year'] }} ...</td>
+                </tr>
+                <tr>
+                    <th>Locación:</th>
+                    <td>{{ e['location_name'] }}</td>
+                </tr>
+                <tr>
+                    <th>Ciudad:</th>
+                    <td>{{ e['location_city'] }}</td>
+                </tr>
+                <tr>
+                    <th>Organizador(es):</th>
+                    <td>{{ ", ".join(e['event_organizations'])  }}</td>
+                </tr>
+                <tr>
+                    <th>Tipo de Evento:</th>
+                    <td>{{ e['event_type'] }}</td>
+                </tr>
+                <tr>
+                    <th>Ciclo:</th>
+                    <td>{{ e['event_cycle'] }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        {% if e['event_information'] %}
+        <div class="card">
+            <div class="card-header">
+                Información Adicional
+            </div>
+
+            <div class="card-body">
+                {% for i in e['event_information'].split("\n") %}
+                {{ i }}<br>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <h3 class="p-2">Participantes</h3>
+
+        <!-- Modal para la biografia -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+
+                    <div class="modal-body">
+
+                        <table class="table">
+                            <tbody>
+                                <tr class="lead">
+                                    <th>Nombre:</th>
+                                    <td>Cirilo</td>
+                                </tr>
+                                <tr class="lead">
+                                    <th>Apellido:</th>
+                                    <td>Vila</td>
+                                </tr>
+                                <tr>
+                                    <th>Sexo:</th>
+                                    <td>Hombre</td>
+                                </tr>
+                                <tr>
+                                    <th>Nacimiento:</th>
+                                    <td>1937</td>
+                                </tr>
+                                <tr>
+                                    <th>Muerte:</th>
+                                    <td>2015</td>
+                                </tr>
+                                <tr>
+                                    <th>Nacionalidad(es):</th>
+                                    <td>Chile</td>
+                                </tr>
+                                <tr>
+                                    <th>Información Biográfica:</th>
+                                    <td>Comenzó sus estudios musicales a los siete años en el Conservatorio Nacional de
+                                        Música de la Universidad de Chile, de donde se licenció en Interpretación
+                                        Musical con mención Piano en 1959. Participó en la Orquesta Sinfónica de Chile
+                                        en 1954, y fue galardonado con el premio Orrego Carvallo en 1957. Paralelamente,
+                                        estudió composición con Alfonso Letelier (1954-1958) y Gustavo Becerra
+                                        (1960-1961). Ver más en https://es.wikipedia.org/wiki/Cirilo_Vila
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <a role="button" href="resultados.php" class="btn btn-primary">Eventos asociados a esta
+                            persona</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Participantes -->      
+        <ul>
+            {% for i in e['participants'] %}
+            <li>
+                <pre>{{ i|pprint }}. </pre>
+                <a href="#" class="btn-primary btn" role="button" data-toggle="modal" data-target="#exampleModal" style="display: inline;">Más Información</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <!-- /Participantes -->
+
+
+
+        {% if e['performances'] %}
+        <h3 class="p-2">Repertorio</h3>
+
+        <!-- Repertorio -->
+        <ul>
+            {% for i in e['performances'] %}
+            <li>
+                <pre>{{ i|pprint }}. </pre>
+                <a href="#" class="btn-primary btn" role="button" data-toggle="modal" data-target="#exampleModal"
+                    style="display: inline;">Más Información</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <!-- /Repertorio -->
+        {% endif %}
+
+
+        {% if e['media_links'] %}
+        <h3 class="p-2">Información Gráfica</h3>
+
+        <!-- Media Links -->
+        <ul>
+            {% for i in e['media_links'] %}
+            <li>
+                <pre>{{ i|pprint }}. </pre>
+            </li>
+            {% endfor %}
+        </ul>
+        <!-- /Media Links -->
+        {% endif %}
+
+
+    <a class="btn btn-primary" href="resultados.html">Volver a la búsqueda</a>
+
+</section>
+
+{% endblock %}
