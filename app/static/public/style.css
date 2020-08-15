@@ -37,7 +37,7 @@ nav.bg-primary {
 #hero {
 }
 #hero .container {
-	margin: 2em 0 1em 0;
+	margin: 3em 0 1em 0;
 	padding: 0 0 2em 0;
 }
 #hero h1 {
@@ -50,7 +50,7 @@ nav.bg-primary {
 }
 #hero a { color: #ffffff; }
 #hero p {
-	/*margin-top: 0 .5em;*/
+	margin: 2em .5em;
 	font-size: 1.7em;
 	/*font-weight: bold;*/
 	text-align: center;
@@ -76,11 +76,8 @@ nav.bg-primary {
 }
 
 #results {
-	margin-bottom: 3em;
+	margin: 3em 0;
 	text-align: left;
-}
-#results a:hover {
-	text-decoration: underline;
 }
 #results table {
 	font-size: .9em;
@@ -89,17 +86,27 @@ nav.bg-primary {
 	margin-bottom: 1em;
 }
 #results .card {
-	margin-bottom: 1em;
+	margin: 2em 0;
 }
 #results .card p {
 	margin: 0.5em auto;
 }
-#results table a {
+#results table a, #results li a {
 	display: block;
 	color: unset;
-	text-decoration: none;
+	text-decoration: underline;
 }
 
+#results .performances ul {
+	margin: 0;
+	padding: 0;
+}
+
+#results .performances li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
 
 
 #main-content {

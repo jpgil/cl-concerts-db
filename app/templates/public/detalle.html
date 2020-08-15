@@ -4,21 +4,31 @@
 
 {% block content %}
 
-<h2>{{ title }}</h2>
+{% macro fecha(e) -%}
+{%
+    if e['event_date_day'] and e['event_date_month'] 
+    %}{{ 
+        e['event_date_day'] 
+        }}/{{ 
+        e['event_date_month'] 
+        }}/{%
+        endif
+    %}{{ e['event_date_year'] }}
+{%- endmacro %}
+
+<h2>Información del Evento</h2>
 
 <section id="results">
-
-        <h3 class="p-2">Información del Evento</h3>
 
         <table class="table">
             <tbody>
                 <tr class="lead">
                     <th>Nombre:</th>
-                    <td>{{ e['event_name'] }}</td>
+                    <td>{{ e['event_name'] or "(no especificado)" }}</td>
                 </tr>
                 <tr>
                     <th>Fecha:</th>
-                    <td>{{ e['event_date_year'] }} ...</td>
+                    <td>{{ fecha(e) }}</td>
                 </tr>
                 <tr>
                     <th>Locación:</th>
@@ -38,26 +48,128 @@
                 </tr>
                 <tr>
                     <th>Ciclo:</th>
-                    <td>{{ e['event_cycle'] }}</td>
+                    <td>{{ e['event_cycle'] or "(no especificado)"  }}</td>
                 </tr>
             </tbody>
         </table>
 
-        {% if e['event_information'] %}
+
+
+        {% if e['performances'] %}
         <div class="card">
             <div class="card-header">
-                Información Adicional
+                Repertorio
             </div>
-
+        
             <div class="card-body">
-                {% for i in e['event_information'].split("\n") %}
-                {{ i }}<br>
-                {% endfor %}
+
+                <table class="table performances">
+                    <thead>
+                        <tr>
+                            <th>Compositor</th>
+                            <th>Obra</th>
+                            <th>Participantes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in e['performances'] %}
+                        <tr>
+                            <td class='compositores'>
+                                <ul>
+                                {% for c in p['composers'] %}
+                                    <li>
+                                        {{ c['composer_last_name'] }}, 
+                                        {{ c['composer_first_name'] }}
+                                        <br>
+                                        ({{ ','.join(c['composer_nationalities']) }})
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                            </td>
+                            <td class='piece'>
+                                {{ p['musical_piece_name'] }}
+                                {% if p['premiere'] != "No" %}<br>
+                                <em>ESTRENO: {{ p['premiere'] }}</em>
+                                {% endif %}
+                            </td>
+                            <td class="participantes">
+                                <ul>
+                                {% for i in p['participants'] %}
+                                    <li>
+                                        {{ i['paticipant_activity'] }}:
+                                        <a href="#" data-toggle="modal" data-target="#exampleModal"
+                                            style="display: inline;"
+                                            >{{ i['paticipant_last_name'] }}, {{ i['paticipant_first_name'] }}</a>
+                                        {% if i['paticipant_musical_ensemble'] %}
+                                        [Agrupación] {{ i['paticipant_musical_ensemble'] }}
+                                        {% endif %}
+                                        
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
             </div>
         </div>
         {% endif %}
 
-        <h3 class="p-2">Participantes</h3>
+
+
+
+        {% if e['participants'] %}
+        <div class="card">
+            <div class="card-header">
+                Participantes
+            </div>
+
+            <div class="card-body">
+
+                <table class="table participantes">
+                    <thead>
+                        <tr>
+                            <th>Participante</th>
+                            <th>Género</th>
+                            <th>Actividad</th>
+                            <!-- <th>Instrumento</th> -->
+                            <th>País</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in e['participants'] %}
+                        <tr>
+                            <td class='participante'>
+                                <a href="#" data-toggle="modal" data-target="#exampleModal" style="display: inline;">
+                                {% if i['paticipant_last_name'] %}
+                                    {{ i['paticipant_last_name'] }}, {{ i['paticipant_first_name'] }}
+                                {% else %}
+                                    Agrupación "{{ i['paticipant_musical_ensemble'] }}"
+                                {% endif %}
+                                </a>
+                            </td>
+                            <td>
+                                {{ i['participant_gender'] or "" }}
+                            </td>
+                            <td>
+                                {{ i['paticipant_activity'] or "" }}
+                            </td>
+                            <!-- <td>
+                                {{ i['paticipant_instrument'] or "" }}
+                            </td> -->
+                            <td>
+                                {{ ','.join(i['participant_nationalities']) }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        {% endif %}
 
         <!-- Modal para la biografia -->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -118,52 +230,42 @@
         </div>
 
 
-        <!-- Participantes -->      
-        <ul>
-            {% for i in e['participants'] %}
-            <li>
-                <pre>{{ i|pprint }}. </pre>
-                <a href="#" class="btn-primary btn" role="button" data-toggle="modal" data-target="#exampleModal" style="display: inline;">Más Información</a>
-            </li>
-            {% endfor %}
-        </ul>
-        <!-- /Participantes -->
 
-
-
-        {% if e['performances'] %}
-        <h3 class="p-2">Repertorio</h3>
-
-        <!-- Repertorio -->
-        <ul>
-            {% for i in e['performances'] %}
-            <li>
-                <pre>{{ i|pprint }}. </pre>
-                <a href="#" class="btn-primary btn" role="button" data-toggle="modal" data-target="#exampleModal"
-                    style="display: inline;">Más Información</a>
-            </li>
-            {% endfor %}
-        </ul>
-        <!-- /Repertorio -->
+        {% if e['event_information'] %}
+        <div class="card">
+            <div class="card-header">
+                Información Adicional
+            </div>
+        
+            <div class="card-body">
+                {% for i in e['event_information'].split("\n") %}
+                {{ i }}<br>
+                {% endfor %}
+            </div>
+        </div>
         {% endif %}
 
 
         {% if e['media_links'] %}
-        <h3 class="p-2">Información Gráfica</h3>
-
-        <!-- Media Links -->
-        <ul>
-            {% for i in e['media_links'] %}
-            <li>
-                <pre>{{ i|pprint }}. </pre>
-            </li>
-            {% endfor %}
-        </ul>
-        <!-- /Media Links -->
+        <div class="card">
+            <div class="card-header">
+                Información Gráfica
+            </div>
+        
+            <div class="card-body">
+                <ul>
+                    {% for m in e['media_links'] %}
+                    <li>
+                        <a href="{{ m['medialink_name'] }}">{{ m['medialink_description'] }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
         {% endif %}
 
 
-    <a class="btn btn-primary" href="resultados.html">Volver a la búsqueda</a>
+    <a class="btn btn-primary mt-5" href="{{ url_for('public.search') }}">Volver a la búsqueda</a>
 
 </section>
 

@@ -258,7 +258,7 @@ TEST = [
       },
       {
         "performance_id": 1923,
-        "premiere": "No",
+        "premiere": "Si",
         "musical_piece_name": "Canciones judías",
         "composers": [
           {

@@ -30,7 +30,7 @@
 </head>
 
 <body>
-    <div class="container">
+    <div cccclass="container">
 
         <!-- Two Columns -->
         <section id="main-layout">
@@ -51,30 +51,46 @@
                     </section>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xl-3">
-                    <section id="side-bar" class="py-4">
-                        {% include 'public/sidebar.html' %}
-                    </section>
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-3">
+                        <section id="side-bar" class="py-4">
+                            {% include 'public/sidebar.html' %}
+                        </section>
+                    </div>
+
+                    <div class="col-xl-9 pb-4">
+
+                        <!-- Main Content -->
+                        <section id="main-content" class="py-4">
+
+                            {% block content %}
+                            CONTENT here
+                            {% endblock %}
+
+                        </section>
+                    </div>
                 </div>
+            </div>  
 
-                <div class="col-xl-9">
-
-                    <!-- Main Content -->
-                    <section id="main-content" class="py-4">
-
-                        {% block content %}
-                        CONTENT here
-                        {% endblock %}
-
-                    </section>
-                </div>
-            </div>
 
             <footer class="footer bg-primary text-light">
                 <div class="container">
                     <div class="row py-4">
-                        <div class="col-sm-4    ">
+                        <div class="col-sm">
+                            <p>
+                                <a href="https://www.uahurtado.cl/"><img src="{{ url_for('static', filename='public/images/logo-uah.png') }}"
+                                        style="width: 250px"></a>
+                            </p>
+                            <p class="mb-0">
+                                <a class="text-light" href="https://filosofiahumanidades.uahurtado.cl/">Facultad de Filosofía y Humanidades</a>
+                            </p>
+                            <p>
+                                <a class="text-light" href="https://filosofiahumanidades.uahurtado.cl/departamentos/instituto-musica/">Instituto de Música</a>
+                            </p>
+                        </div>
+
+                        <div class="col-sm" style="text-align: center;">
                             <p>
                                 <img src="{{ url_for('static', filename='public/images/logo-fondecyt.png') }}" style="width: 250px">
                             </p>
@@ -82,42 +98,34 @@
                                 Fondecyt de Iniciación 11170844
                             </p>
                         </div>
-
-                        <div class="col-sm">
-                            <p>
-                                <a href="https://www.uahurtado.cl/"><img src="{{ url_for('static', filename='public/images/logo-uah.png') }}" style="width: 250px"></a>
-                            </p>
-                            <p class="mb-0">
-                                <a class="text-light" href="https://filosofiahumanidades.uahurtado.cl/">Facultad de Filosofía y Humanidades</a>
-                            </p>
-                            <p>
-                                <a class="text-light" href="https://filosofiahumanidades.uahurtado.cl/departamentos/instituto-musica/">Instituto de
-                                    Música</a>
-                            </p>
-                        </div>
-                        <div class="col-sm-3 pt-0">
-                            
-                            <form class="mt-0">
+                        
+                        <div class="col-sm pt-0" style="text-align: center;">
+                        
+                            <form class="mt-0" style="width: 15em; float: right;">
                                 <div class="form-group">
-                                        <input type="email" class="form-control form-control-sm" name="email" id="inputEmail3" placeholder="Tu email">
+                                    <input type="email" class="form-control form-control-sm" name="email" id="inputEmail3"
+                                        placeholder="Tu email">
                                 </div>
                                 <div class="form-group">
-                                        <textarea class="form-control form-control-sm" name="consulta" placeholder="Envíanos tu consulta" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                    <textarea class="form-control form-control-sm" name="consulta" placeholder="Envíanos tu consulta"
+                                        id="exampleFormControlTextarea1" rows="3"></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-outline-success mb-2">Enviar Consulta</button>
                             </form>
                         </div>
 
+
+
+
+            
                     </div>
             
                 </div>
             </footer>
+
         </section>
-
-
     </div>
 
-    <!-- Footer here -->
 
 
 

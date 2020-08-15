@@ -1,3 +1,14 @@
+{% macro fecha(e) -%}
+    {%
+    if e['event_date_day'] and e['event_date_month'] 
+    %}{{ 
+        e['event_date_day'] 
+        }}/{{ 
+        e['event_date_month'] 
+        }}/{%
+        endif
+    %}{{ e['event_date_year'] }}
+{%- endmacro %}   
 [
     {% for e in entries %}
     {
@@ -5,19 +16,12 @@
             e['event_type'] 
         }}{% 
             if e['event_name'] %}: {{ e['event_name'] }}{% endif %}{% 
-            if e['event_cycle'] %} - Ciclo \"{{ e['event_cycle'] }}\"{% endif 
+            if e['event_cycle'] and e['event_cycle'] != "Ninguno"
+            %} - Ciclo \"{{ e['event_cycle'] }}\"{% endif 
                 %}</a>",
         "place": "<a href='{{ url_for('public.show_event', id=e['event_id'] ) }}'>{{ 
             e['location_name'] }}, {{ e['location_city'] }}</a>",
-        "date": "{%
-            if e['event_date_day'] and e['event_date_month'] 
-            %}{{ 
-                e['event_date_day'] 
-                }}/{{ 
-                e['event_date_month'] 
-                }}/{%
-                endif
-            %}{{ e['event_date_year'] }}"
+        "date": "{{ fecha(e) }}"
     },
     {% endfor %}
     {}

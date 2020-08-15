@@ -51,7 +51,6 @@ def search():
 def show_event(id):
     # try:
         event = searchClDb.get_event(id=id)
-        # print(event)
         return render_template('public/detalle.html', e=event )
     # except:
         # abort(404)
