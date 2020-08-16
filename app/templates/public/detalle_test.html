@@ -1,15 +1,19 @@
 {% extends 'public/layout_global.html' %}
 
-{% set title="[%s] %s en %s, %s" % (e.event_type.name, e.name or "(no especificado)" , e.location.name, e.year ) %}
+{% set title="%s %s" % (e['event_type'], e['event_name']) %}
 
 {% block content %}
 
 {% macro fecha(e) -%}
 {%
-    if e.day and e.month
-    %}{{ e.day }}/{{ e.month }}/{%
+    if e['event_date_day'] and e['event_date_month'] 
+    %}{{ 
+        e['event_date_day'] 
+        }}/{{ 
+        e['event_date_month'] 
+        }}/{%
         endif
-    %}{{ e.year }}
+    %}{{ e['event_date_year'] }}
 {%- endmacro %}
 
 <h2>Información del Evento</h2>
@@ -20,50 +24,38 @@
             <tbody>
                 <tr class="lead">
                     <th>Nombre:</th>
-                    <td>{{ e.name or "(no especificado)" }}</td>
-                </tr>
-                <tr>
-                    <th>Ciclo:</th>
-                    <td>{{ e.cycle.name or "(no especificado)"  }}</td>
-                </tr>
-                <tr>
-                    <th>Tipo de Evento:</th>
-                    <td>{{ e.event_type.name }}</td>
+                    <td>{{ e['event_name'] or "(no especificado)" }}</td>
                 </tr>
                 <tr>
                     <th>Fecha:</th>
                     <td>{{ fecha(e) }}</td>
                 </tr>
-
-                <tr>
-                    <th>Organizador(es):</th>
-                    <td>
-                        <!-- {{ e.organizations|map(attribute='name')|join('<br>') }} -->
-                        <ul>
-                            {% for org in e.organizations %}
-                            <li>
-                                {{ org.get_name() }}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </td>
-                </tr>
-
-                <tr>
-                    <th>Ciudad:</th>
-                    <td>{{ e.location.city.name }}</td>
-                </tr>
                 <tr>
                     <th>Locación:</th>
-                    <td>{{ e.location.name }}</td>
+                    <td>{{ e['location_name'] }}</td>
                 </tr>
-
+                <tr>
+                    <th>Ciudad:</th>
+                    <td>{{ e['location_city'] }}</td>
+                </tr>
+                <tr>
+                    <th>Organizador(es):</th>
+                    <td>{{ ", ".join(e['event_organizations'])  }}</td>
+                </tr>
+                <tr>
+                    <th>Tipo de Evento:</th>
+                    <td>{{ e['event_type'] }}</td>
+                </tr>
+                <tr>
+                    <th>Ciclo:</th>
+                    <td>{{ e['event_cycle'] or "(no especificado)"  }}</td>
+                </tr>
             </tbody>
         </table>
 
 
 
-        {% if e.performances.all() %}
+        {% if e['performances'] %}
         <div class="card">
             <div class="card-header">
                 Repertorio
@@ -84,44 +76,32 @@
                         <tr>
                             <td class='compositores'>
                                 <ul>
-                                {% for c in p.musical_piece.composers %}
+                                {% for c in p['composers'] %}
                                     <li>
-                                        <strong>{{ c.get_name() }}</strong>
-                                    </li>
-                                    <li>
-                                        ({{ c.nationalities|map(attribute='name')|join(', ') }})
+                                        {{ c['composer_last_name'] }}, 
+                                        {{ c['composer_first_name'] }}
+                                        <br>
+                                        ({{ ','.join(c['composer_nationalities']) }})
                                     </li>
                                 {% endfor %}
                                 </ul>
                             </td>
                             <td class='piece'>
-                                <ul>
-                                    <li>
-                                        <em>'{{ p.musical_piece.name }}'</em>
-                                        {% if p.musical_piece.composition_year %}- {{ p.musical_piece.composition_year }}{% endif %}
-                                    </li>
-                                    {% if p.premiere_type.name != "No" %}
-                                    <li>
-                                        <em>ESTRENO: {{ p.premiere_type.name }}</em>
-                                    </li>
-                                    {% endif %}
-                                    {% if p.musical_piece.instruments %}
-                                    <li>
-                                        Instrumentos: {{ p.musical_piece.instruments|map(attribute='name')|join(' - ') }}
-                                    </li>
-                                    {% endif %}
-                                </ul>
+                                {{ p['musical_piece_name'] }}
+                                {% if p['premiere'] != "No" %}<br>
+                                <em>ESTRENO: {{ p['premiere'] }}</em>
+                                {% endif %}
                             </td>
                             <td class="participantes">
                                 <ul>
-                                {% for i in p.participants %}
+                                {% for i in p['participants'] %}
                                     <li>
-                                        {{ i.activity.name }}:
+                                        {{ i['paticipant_activity'] }}:
                                         <a href="#" data-toggle="modal" data-target="#exampleModal"
                                             style="display: inline;"
-                                            >{{ i.get_short_name() }}</a>
-                                        {% if i.musical_ensemble %}
-                                        [Agrupación] {{ i.musical_ensemble.name }}
+                                            >{{ i['paticipant_last_name'] }}, {{ i['paticipant_first_name'] }}</a>
+                                        {% if i['paticipant_musical_ensemble'] %}
+                                        [Agrupación] {{ i['paticipant_musical_ensemble'] }}
                                         {% endif %}
                                         
                                     </li>
@@ -140,7 +120,7 @@
 
 
 
-        {% if e.participants.all() %}
+        {% if e['participants'] %}
         <div class="card">
             <div class="card-header">
                 Participantes
@@ -159,27 +139,28 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for i in e.participants %}
+                        {% for i in e['participants'] %}
                         <tr>
                             <td class='participante'>
-                                {% if i.person %}
                                 <a href="#" data-toggle="modal" data-target="#exampleModal" style="display: inline;">
-                                    {{ i.get_short_name() }}
-                                </a>
+                                {% if i['paticipant_last_name'] %}
+                                    {{ i['paticipant_last_name'] }}, {{ i['paticipant_first_name'] }}
                                 {% else %}
-                                    {{ i.get_short_name() }}
+                                    Agrupación "{{ i['paticipant_musical_ensemble'] }}"
                                 {% endif %}
+                                </a>
                             </td>
                             <td>
-                                {{ i.person and i.person.gender.name or "" }}
+                                {{ i['participant_gender'] or "" }}
                             </td>
                             <td>
-                                {{ i.activity.name or "" }}
+                                {{ i['paticipant_activity'] or "" }}
                             </td>
+                            <!-- <td>
+                                {{ i['paticipant_instrument'] or "" }}
+                            </td> -->
                             <td>
-                                {% if i.person %}
-                                {{ i.person.nationalities|map(attribute='name')|join(', ') }}
-                                {% endif %}
+                                {{ ','.join(i['participant_nationalities']) }}
                             </td>
                         </tr>
                         {% endfor %}
@@ -189,9 +170,6 @@
             </div>
         </div>
         {% endif %}
-
-
-
 
         <!-- Modal para la biografia -->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -253,35 +231,22 @@
 
 
 
-        {% if e.information %}
+        {% if e['event_information'] %}
         <div class="card">
             <div class="card-header">
                 Información Adicional
             </div>
         
             <div class="card-body">
-                {% for i in e.information.split("\n") %}
-                {{ i|urlize(400, true) }}<br>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        {% if e.sources %}
-        <div class="card">
-            <div class="card-header">
-                Fuentes
-            </div>
-        
-            <div class="card-body">
-                {% for i in e.sources.split("\n") %}
+                {% for i in e['event_information'].split("\n") %}
                 {{ i }}<br>
                 {% endfor %}
             </div>
         </div>
         {% endif %}
 
-        {% if e.medialinks.all() %}
+
+        {% if e['media_links'] %}
         <div class="card">
             <div class="card-header">
                 Información Gráfica
@@ -289,10 +254,9 @@
         
             <div class="card-body">
                 <ul>
-                    {% for m in e.medialinks.all() %}
+                    {% for m in e['media_links'] %}
                     <li>
-                        [{{ m.mime_type }}]
-                        <a href="{{ m.url }}">{{ m.description }}</a>
+                        <a href="{{ m['medialink_name'] }}">{{ m['medialink_description'] }}</a>
                     </li>
                     {% endfor %}
                 </ul>

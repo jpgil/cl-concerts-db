@@ -47,8 +47,17 @@ def search():
 
 
 # Event Detail
+from app.models import Event
+
 @bp.route('/event/<id>')
 def show_event(id):
+    try:
+        event = Event.query.filter_by(id=id).first_or_404()
+    except:
+        abort(404)
+    return render_template('public/detalle.html', e=event )
+    
+def show_event_test(id):
     # try:
         event = searchClDb.get_event(id=id)
         return render_template('public/detalle.html', e=event )

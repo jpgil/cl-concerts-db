@@ -97,12 +97,12 @@ nav.bg-primary {
 	text-decoration: underline;
 }
 
-#results .performances ul {
+#results table ul {
 	margin: 0;
 	padding: 0;
 }
 
-#results .performances li {
+#results table li {
 	margin: 0;
 	padding: 0;
 	list-style: none;
