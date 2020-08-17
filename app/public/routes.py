@@ -55,7 +55,16 @@ def show_event(id):
         event = Event.query.filter_by(id=id).first_or_404()
     except:
         abort(404)
-    return render_template('public/detalle.html', e=event )
+
+    # I need to prefill these variables here to simplify the template
+    participantes, compositores = [], []
+    for i in event.participants:
+        if i.person and i.activity.name == "Compositor/a":
+            compositores.append(i)
+        else:
+            participantes.append(i)
+
+    return render_template('public/detalle.html', e=event, participantes=participantes, compositores=compositores )
     
 def show_event_test(id):
     # try:

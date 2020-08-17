@@ -12,6 +12,19 @@
     %}{{ e.year }}
 {%- endmacro %}
 
+
+{% macro vida(e) -%}
+{%
+    if e.birth_year and e.death_year
+        %}({{ e.birth_year }} - {{ e.death_year }}){%
+    elif e.birth_year and not e.death_year
+        %}( {{ e.birth_year }} - ?){%
+    elif not e.birth_year and e.death_year
+        %}(? - {{ e.death_year }}){%
+    endif
+%}
+{%- endmacro %}
+
 <h2>Información del Evento</h2>
 
 <section id="results">
@@ -63,87 +76,11 @@
 
 
 
-        {% if e.performances.all() %}
+
+        {% if participantes %}
         <div class="card">
             <div class="card-header">
-                Repertorio
-            </div>
-        
-            <div class="card-body">
-
-                <table class="table performances">
-                    <thead>
-                        <tr>
-                            <th>Compositor</th>
-                            <th>Obra</th>
-                            <th>Participantes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for p in e['performances'] %}
-                        <tr>
-                            <td class='compositores'>
-                                <ul>
-                                {% for c in p.musical_piece.composers %}
-                                    <li>
-                                        <strong>{{ c.get_name() }}</strong>
-                                    </li>
-                                    <li>
-                                        ({{ c.nationalities|map(attribute='name')|join(', ') }})
-                                    </li>
-                                {% endfor %}
-                                </ul>
-                            </td>
-                            <td class='piece'>
-                                <ul>
-                                    <li>
-                                        <em>'{{ p.musical_piece.name }}'</em>
-                                        {% if p.musical_piece.composition_year %}- {{ p.musical_piece.composition_year }}{% endif %}
-                                    </li>
-                                    {% if p.premiere_type.name != "No" %}
-                                    <li>
-                                        <em>ESTRENO: {{ p.premiere_type.name }}</em>
-                                    </li>
-                                    {% endif %}
-                                    {% if p.musical_piece.instruments %}
-                                    <li>
-                                        Instrumentos: {{ p.musical_piece.instruments|map(attribute='name')|join(' - ') }}
-                                    </li>
-                                    {% endif %}
-                                </ul>
-                            </td>
-                            <td class="participantes">
-                                <ul>
-                                {% for i in p.participants %}
-                                    <li>
-                                        {{ i.activity.name }}:
-                                        <a href="#" data-toggle="modal" data-target="#exampleModal"
-                                            style="display: inline;"
-                                            >{{ i.get_short_name() }}</a>
-                                        {% if i.musical_ensemble %}
-                                        [Agrupación] {{ i.musical_ensemble.name }}
-                                        {% endif %}
-                                        
-                                    </li>
-                                {% endfor %}
-                                </ul>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                
-            </div>
-        </div>
-        {% endif %}
-
-
-
-
-        {% if e.participants.all() %}
-        <div class="card">
-            <div class="card-header">
-                Participantes
+                Participante(s)
             </div>
 
             <div class="card-body">
@@ -151,15 +88,15 @@
                 <table class="table participantes">
                     <thead>
                         <tr>
-                            <th>Participante</th>
+                            <th>Nombre</th>
                             <th>Género</th>
                             <th>Actividad</th>
                             <!-- <th>Instrumento</th> -->
-                            <th>País</th>
+                            <th>País(es)</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for i in e.participants %}
+                        {% for i in participantes %}
                         <tr>
                             <td class='participante'>
                                 {% if i.person %}
@@ -181,7 +118,7 @@
                                 {{ i.person.nationalities|map(attribute='name')|join(', ') }}
                                 {% endif %}
                             </td>
-                        </tr>
+                        </tr>                      
                         {% endfor %}
                     </tbody>
                 </table>
@@ -191,6 +128,123 @@
         {% endif %}
 
 
+        {% if compositores %}
+        <div class="card">
+            <div class="card-header">
+                Compositor(es)
+            </div>
+
+            <div class="card-body">
+
+                <table class="table participantes">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Género</th>
+                            <!-- <th>Instrumento</th> -->
+                            <th>País(es)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in compositores %}
+
+                        <tr>
+                            <td class='participante'>
+                                <a href="#" data-toggle="modal" data-target="#exampleModal" style="display: inline;">{{ i.get_short_name() }}</a>
+                                {{ vida(i.person) }}
+                            </td>
+                            <td>
+                                {{ i.person and i.person.gender.name or "" }}
+                            </td>
+                            <td>
+                                {% if i.person %}
+                                {{ i.person.nationalities|map(attribute='name')|join(', ') }}
+                                {% endif %}
+                            </td>
+                        </tr>
+
+
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        {% endif %}
+
+        {% if e.performances.all() %}
+        <div class="card">
+            <div class="card-header">
+                Repertorio
+            </div>
+
+            <div class="card-body">
+
+                <table class="table performances">
+                    <!-- <thead>
+                        <tr>
+                            <th>Compositor</th>
+                            <th>Obra</th>
+                            <th>Participantes</th>
+                        </tr>
+                    </thead> -->
+                    <tbody>
+                        {% for p in e['performances'] %}
+                        <tr>
+                            <td class='compositores'>
+                                <ul>
+                                    {% for c in p.musical_piece.composers %}
+                                    <li>
+                                        <strong>{{ c.get_name() }}</strong>
+                                    </li>
+                                    <li>
+                                        ({{ c.nationalities|map(attribute='name')|join(', ') }})
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td class='piece'>
+                                <ul>
+                                    <li>
+                                        <em>'{{ p.musical_piece.name }}'</em>
+                                        {% if p.musical_piece.composition_year %}-
+                                        {{ p.musical_piece.composition_year }}{% endif %}
+                                    </li>
+                                    {% if p.premiere_type.name != "No" %}
+                                    <li>
+                                        <em>ESTRENO: {{ p.premiere_type.name }}</em>
+                                    </li>
+                                    {% endif %}
+                                    {% if p.musical_piece.instruments %}
+                                    <li>
+                                        Instrumentos: {{ p.musical_piece.instruments|map(attribute='name')|join(' - ') }}
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </td>
+                            <td class="participantes">
+                                <ul>
+                                    {% for i in p.participants %}
+                                    <li>
+                                        {{ i.activity.name }}:
+                                        <a href="#" data-toggle="modal" data-target="#exampleModal"
+                                            style="display: inline;">{{ i.get_short_name() }}</a>
+                                        {% if i.musical_ensemble %}
+                                        [Agrupación] {{ i.musical_ensemble.name }}
+                                        {% endif %}
+
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        {% endif %}
 
 
         <!-- Modal para la biografia -->
