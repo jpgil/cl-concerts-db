@@ -1,14 +1,16 @@
 import json
-from app.public import bp
 from flask import Flask, render_template, jsonify, url_for, request, redirect, abort
 from jinja2 import TemplateNotFound
-
+from app.public import bp
 from app.public import search as searchClDb
 
 # Make some objects available to templates.
 @bp.context_processor
 def inject_userquery():
-    return dict(userquery=request.args.get('keywords', default=''))
+    return dict(
+        userquery=request.args.get('keywords', default=''),
+        filters = searchClDb.SideBarFilters()
+        )
 
 # Defaults to Start Page
 @bp.route('/')
