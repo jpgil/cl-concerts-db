@@ -57,14 +57,32 @@ def show_event(id):
         abort(404)
 
     # I need to prefill these variables here to simplify the template
-    participantes, compositores = [], []
+    participantes, compositores, personas = set(), set(), set()
     for i in event.participants:
         if i.person and i.activity.name == "Compositor/a":
-            compositores.append(i)
+            compositores.add(i.person)
+            personas.add(i.person)
         else:
-            participantes.append(i)
+            participantes.add(i)
+            if i.person:
+                personas.add(i.person)
 
-    return render_template('public/detalle.html', e=event, participantes=participantes, compositores=compositores )
+    # Now, iterate in performances to extract other composers
+    for p in event.performances:
+        for c in p.musical_piece.composers:
+            compositores.add(c)
+            personas.add(c)
+
+    compositores = sorted(compositores, key=lambda e: e.get_name() )
+    participantes = sorted(participantes, key=lambda e: e.get_name() )
+
+    return render_template(
+        'public/detalle.html',
+        e=event,
+        participantes=participantes,
+        compositores=compositores,
+        personas=personas
+    )
     
 def show_event_test(id):
     # try:
