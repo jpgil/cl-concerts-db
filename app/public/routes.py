@@ -84,12 +84,12 @@ def show_event(id):
         personas=personas
     )
     
-def show_event_test(id):
-    # try:
-        event = searchClDb.get_event(id=id)
-        return render_template('public/detalle.html', e=event )
-    # except:
-        # abort(404)
+# def show_event_test(id):
+#     # try:
+#         event = searchClDb.get_event(id=id)
+#         return render_template('public/detalle.html', e=event )
+#     # except:
+#         # abort(404)
 
 # Plain pages
 @bp.route('/<page>')

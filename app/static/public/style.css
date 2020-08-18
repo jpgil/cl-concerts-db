@@ -1,11 +1,7 @@
 body {
 }
 
-span.oi {
-  font-size: 14px;
-  margin: 0 1em;
 
-}
 
 .pregunta {
 	display: block;
@@ -24,6 +20,11 @@ nav.bg-primary {
 	background-color: #ffaaaa;
 }
 
+#side-bar span.oi {
+  font-size: 14px;
+  margin: 0 1em;
+
+}
 #side-bar .card {
 	margin-bottom: 1em;
 }
@@ -32,6 +33,19 @@ nav.bg-primary {
 }
 #side-bar .container {
 	margin-bottom: 2em;
+}
+
+.filtro {
+	margin: 1em 0;
+}
+.filtro-header a {
+	display: block;
+	font-weight:  bold;
+	border-bottom: 1px solid gray;
+}
+.filtro-body {
+	padding-top: 1em;
+	font-size: 0.85em;
 }
 
 #hero {
@@ -74,6 +88,8 @@ nav.bg-primary {
 	text-decoration: underline;
 	display: block;
 }
+
+
 
 #results {
 	margin: 3em 0;

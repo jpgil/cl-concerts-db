@@ -1,63 +1,24 @@
-{% set class_card = 'card' -%}
-<form class="form" action="{{ url_for('public.search') }}" method="GET">
-
-    <div class="container">
-        <div class="form-group">
-            <div class="text-success">
-                <strong>Fechas</strong>
-    
-                <a href="#" role="button" data-toggle="popover" title="Fechas"
-                    data-content='En este cuadro Ud. puede ingresar una o más palabras clave. La búsqueda contendrá resultados con cualquiera de estas palabras clave (equivalente a OR lógico).'><span
-                        class="oi oi-question-mark"></span></a>
-            </div>
-            
-            <div class="card">
-                <div class="filtro-body card-body">
-                    <div class="form-group">
-                        <label for="f-desde">Desde</label>
-                        <div class="input-group date" data-provide="datepicker">
-                            <input name="f-desde" type="text" class="form-control" value="01/01/1945">
-                            <div class="input-group-addon">
-                                <span class="oi oi-calendar"></span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    
-                    <div class="form-group">
-                        <label for="f-hasta">Hasta</label>
-                        <div class="input-group date" data-provide="datepicker">
-                            <input name="f-hasta" type="text" class="form-control" value="31/12/1995">
-                            <div class="input-group-addon">
-                                <span class="oi oi-calendar"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- <button class="btn btn-outline-success" type="submit">Buscar</button> -->
-
-    </div>
-
 <div class="container">
-    <div class="form-group">
-        <label class="text-success" for="keyword">
-            <strong>Búsqueda Rápida</strong>
-        </label>
+    <form class="form" action="{{ url_for('public.search') }}" method="GET">
+        <div class="form-group">
+            <label class="text-success" for="keyword">
+                <strong>Búsqueda Rápida</strong>
+            </label>
 
-        <a href="#" role="button" data-toggle="popover" title="Acerca de la Búsqueda Rápida"
-            data-content='En este cuadro Ud. puede ingresar una o más palabras clave. La búsqueda contendrá resultados con cualquiera de estas palabras clave (equivalente a OR lógico).'><span
-                class="oi oi-question-mark"></span></a>
+            <a href="#" role="button" data-toggle="popover" title="Acerca de la Búsqueda Rápida"
+                data-content='En este cuadro Ud. puede ingresar una o más palabras clave. La búsqueda contendrá resultados con cualquiera de estas palabras clave (equivalente a OR lógico).'><span
+                    class="oi oi-question-mark"></span></a>
 
 
-        <input class="form-control" type="search" name="keywords" id="keywords" value="{{ userquery }}"
-            placeholder="[palabras clave]" />
-    </div>
-    <button class="btn btn-outline-success" type="submit">Buscar</button>
+            <input class="form-control" type="search" name="keywords" id="keywords" value="{{ userquery }}" placeholder="[palabras clave]" />
+        </div>
+        <button class="btn btn-outline-success" type="submit">Buscar</button>
+    </form>
+
 </div>
 
-    <div class="container">
+<div class="container">
+    <form class="form" action="{{ url_for('public.search') }}" method="GET">
         <p class="text-success">
             <strong>Filtros de Búsqueda</strong>
             <a href="#" role="button" data-toggle="popover" title="Cómo usar los filtros de búsqueda"
@@ -75,17 +36,50 @@
 
 
 
-        
+        <div class="card">
+            <div class="card-header">
+                <a class="" data-toggle="collapse" href="#g-fechas" role="button" aria-expanded="false"
+                    aria-controls="collapseExample">
+                    Fechas
+                </a>
+            </div>
+            <div class="card-body collapse show" id="g-fechas">
 
 
-        <div class="filtro">
-            <div class="filtro-header">
+                <div class="form-group">
+                    <label for="f-desde">Desde</label>
+                    <div class="input-group date" data-provide="datepicker">
+                        <input name="f-desde" type="text" class="form-control" value="01/01/1945">
+                        <div class="input-group-addon">
+                            <span class="oi oi-calendar"></span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="f-hasta">Hasta</label>
+                    <div class="input-group date" data-provide="datepicker">
+                        <input name="f-hasta" type="text" class="form-control" value="31/12/1995">
+                        <div class="input-group-addon">
+                            <span class="oi oi-calendar"></span>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-header">
                 <a class="" data-toggle="collapse" href="#g-info-de-evento" role="button" aria-expanded="false"
                     aria-controls="collapseExample">
                     Info. de evento
                 </a>
             </div>
-            <div class="filtro-body collapse" id="g-info-de-evento">
+            <div class="card-body collapse" id="g-info-de-evento">
 
 
                 <div class="form-group">
@@ -124,14 +118,14 @@
         </div>
 
 
-        <div class="filtro">
-            <div class="filtro-header">
+        <div class="card">
+            <div class="card-header">
                 <a class="" data-toggle="collapse" href="#g-lugar" role="button" aria-expanded="false"
                     aria-controls="collapseExample">
                     Lugar
                 </a>
             </div>
-            <div class="filtro-body collapse show" id="g-lugar">
+            <div class="card-body collapse" id="g-lugar">
 
 
                 <div class="form-group">
@@ -177,14 +171,14 @@
         </div>
 
 
-        <div class="filtro">
-            <div class="filtro-header">
+        <div class="card">
+            <div class="card-header">
                 <a class="" data-toggle="collapse" href="#g-participantes-individuales" role="button"
                     aria-expanded="false" aria-controls="collapseExample">
                     Participantes
                 </a>
             </div>
-            <div class="filtro-body collapse" id="g-participantes-individuales">
+            <div class="card-body collapse" id="g-participantes-individuales">
 
 
                 <div class="form-group">
@@ -248,14 +242,14 @@
         </div>
 
 
-        <div class="filtro">
-            <div class="filtro-header">
+        <div class="card">
+            <div class="card-header">
                 <a class="" data-toggle="collapse" href="#g-compositora" role="button" aria-expanded="false"
                     aria-controls="collapseExample">
                     Compositor/a
                 </a>
             </div>
-            <div class="filtro-body collapse" id="g-compositora">
+            <div class="card-body collapse" id="g-compositora">
 
 
                 <div class="form-group">
@@ -306,14 +300,14 @@
         </div>
 
 
-        <div class="filtro">
-            <div class="filtro-header">
+        <div class="card">
+            <div class="card-header">
                 <a class="" data-toggle="collapse" href="#g-repertorio" role="button" aria-expanded="false"
                     aria-controls="collapseExample">
                     Repertorio
                 </a>
             </div>
-            <div class="filtro-body collapse" id="g-repertorio">
+            <div class="card-body collapse" id="g-repertorio">
 
 
                 <div class="form-group">
@@ -365,14 +359,14 @@
         </div>
 
 
-        <div class="filtro">
-            <div class="filtro-header">
+        <div class="card">
+            <div class="card-header">
                 <a class="" data-toggle="collapse" href="#g-agrupaciones" role="button" aria-expanded="false"
                     aria-controls="collapseExample">
                     Agrupaciones
                 </a>
             </div>
-            <div class="filtro-body collapse" id="g-agrupaciones">
+            <div class="card-body collapse" id="g-agrupaciones">
 
 
                 <div class="form-group">
@@ -426,6 +420,6 @@
                 -->
 
 
-        <button class="btn btn-outline-success" type="submit">Aplicar Filtros</button>
-    </div>  
-</form>
+        <button class="btn btn-outline-success" type="submit">Buscar</button>
+    </form>
+</div>
