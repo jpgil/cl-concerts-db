@@ -1,5 +1,5 @@
 {% set boxcycler = cycler(1,2,3,4,5,6,7,8,9) -%}
-{% macro drawbox(box, boxname) -%}
+{% macro render_box(box, boxname) -%}
 
     {% set boxcount = boxcycler.next() -%}
 
@@ -39,7 +39,11 @@
 
 <form class="form" action="{{ url_for('public.search') }}" method="GET">
 
-    <div class="container">
+
+
+
+
+    <!-- <div class="container">
         <div class="form-group">
             <div class="text-success">
                 <strong>Fechas</strong>
@@ -74,9 +78,8 @@
                 </div>
             </div>
         </div>
-        <!-- <button class="btn btn-outline-success" type="submit">Buscar</button> -->
 
-    </div>
+    </div> -->
 
 <div class="container">
     <div class="form-group">
@@ -89,7 +92,7 @@
                 class="oi oi-question-mark"></span></a>
 
 
-        <input class="form-control" type="search" name="keywords" id="keywords" value="{{ userquery }}"
+        <input class="form-control" type="search" name="keywords" id="keywords" value="{{ filters.keywords }}"
             placeholder="[palabras clave]" />
     </div>
     <button class="btn btn-outline-success" type="submit">Buscar</button>
@@ -103,17 +106,50 @@
                     class="oi oi-question-mark"></span></a>
         </p>
 
-        {{ drawbox(filters.evento, 'Información del evento') }}
 
-        {{ drawbox(filters.lugar, 'Lugar del evento') }}
+        <div class="filtro">
+            <div class="filtro-header">
+                <a class="" data-toggle="collapse" href="#boxid0" role="button" aria-expanded="false"
+                    aria-controls="collapseExample">
+                    Fechas
+                </a>
+            </div>
+            <div class="filtro-body collapse {% if filters.fecha['show'] %}show{% endif %}" id="boxid0">
 
-        {{ drawbox(filters.participantes, 'Participantes') }}
+                    <div class="form-group">
+                        <label for="fecha_desde">Desde</label>
+                        <div class="input-group date" data-provide="datepicker">
+                            <input name="fecha_desde" type="text" class="form-control" value="{{ filters.fecha['desde'] }}">
+                            <div class="input-group-addon">
+                                <span class="oi oi-calendar"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="form-group">
+                        <label for="fecha_hasta">Hasta</label>
+                        <div class="input-group date" data-provide="datepicker">
+                            <input name="fecha_hasta" type="text" class="form-control" value="{{ filters.fecha['hasta'] }}">
+                            <div class="input-group-addon">
+                                <span class="oi oi-calendar"></span>
+                            </div>
+                        </div>
+                    </div>        
+            </div>
+        </div>
 
-        {{ drawbox(filters.compositores, 'Compositores') }}
+        {{ render_box(filters.evento, 'Información del evento') }}
 
-        {{ drawbox(filters.repertorio, 'Repertorio') }}
+        {{ render_box(filters.lugar, 'Lugar del evento') }}
 
-        {{ drawbox(filters.agrupaciones, 'Agrupaciones') }}
+        {{ render_box(filters.participantes, 'Participantes') }}
+
+        {{ render_box(filters.compositores, 'Compositores') }}
+
+        {{ render_box(filters.repertorio, 'Repertorio') }}
+
+        {{ render_box(filters.agrupaciones, 'Agrupaciones') }}
 
 
         <button class="btn btn-outline-success" type="submit">Aplicar Filtros</button>

@@ -1,4 +1,5 @@
 import logging
+from flask import request, session
 from app.public.test_db import TEST, TEST2
 from app.models import EventType, City, Gender, Country, PremiereType, InstrumentType, MusicalEnsembleType
 
@@ -7,34 +8,22 @@ logger = logging.getLogger('werkzeug')
 # ------------------------------
 # Cache para listas desplegables
 # ------------------------------
+class SelectCached:
+    def __init__(self, obj=None):
+        if obj:
+            self.obj = obj
+            self.name = type(obj()).__name__
+            logger.debug('%s created' % self.name )
 
-class ItemCache:
     def get(self):
-        # data = [ dict( value=v.id, label=v.get_name() ) for v in self.obj.all() ]
-        data = [{'value':v.id, 'label':v.get_name()} for v in self.obj.query.all()]
-        logger.info( 'Data is %s' % data)
-        return data
-
-class SelectEventyType(ItemCache):
-    obj = EventType
-
-class SelectCiudad(ItemCache):
-    obj = City
-
-class SelectGenero(ItemCache):
-    obj = Gender
-
-class SelectPais(ItemCache):
-    obj = Country
-
-class SelectPremierTypes(ItemCache):
-    obj = PremiereType
-
-class SelectInstrumentTypes(ItemCache):
-    obj = InstrumentType
-
-class SelectMusicalEnsembleType(ItemCache):
-    obj = MusicalEnsembleType
+        if '_cache_%s'%self.name not in session.keys():
+            session['_cache_%s' % self.name] = [
+                {'value': v.id, 'label': v.get_name()} for v in self.obj.query.all()]
+            session.modified = True
+            logger.info('Data %s queried to DB' % self.name)
+        else:
+            logger.debug( 'Data %s returned from session cache' % self.name)
+        return session['_cache_%s' % self.name]
 
 
 # ------------------------------
@@ -65,17 +54,85 @@ def get_event(id=id):
 # ------------------------------
 # Filtros de Busqueda
 # ------------------------------
+def validate_int(x):
+    try:
+        if str(x) == str(int(x)):
+            return int(x)
+    except:
+        return None
+    return None
+
+def validate_str(x):
+    try:
+        if x == str(x):
+            return x
+    except:
+        return None
+    return None
 
 class SideBarFilters:
     """
     Clase conveniente para el prellenado del formulario de filtros de busqueda
     """
-    def format_fields(self, fields):
-        # Prefill values
-        for f in fields:
-            f['value'] = ""
+    def __init__(self):
+        # # Prefill all things
+        # self.evento
+        # self.lugar
+        # self.participantes
+        # self.compositores
+        # self.repertorio
+        # self.agrupaciones
+        # self.keywords
+        pass
 
-        return dict(fields=fields, show=any([v['value'] for v in fields]))
+    def prefill(self, name, istype, default=''):
+        if not istype:
+            validate = validate_str
+        elif istype == 'select':
+            validate = validate_int
+        elif istype == 'text':
+            validate = validate_str
+        elif istype == 'date':
+            validate = validate_str
+        else:
+            validate = validate_int
+
+        # Update from request
+        if name in request.args:
+            session['filt_%s' % name] = validate(
+                request.args.get(name)) or default
+            session.modified = True
+        # Persistance: Fill from stored session
+        if 'filt_%s' % name not in session.keys():
+            session['filt_%s' % name] = default
+            session.modified = True
+        return session['filt_%s' % name]
+
+    def format_fields(self, fields):
+        show = False
+        for f in fields:
+            if 'default' in f.keys():
+                default = f['default']
+            else:
+                default = ""
+            f['value'] = self.prefill(f['name'], f['type'], default=default)
+            show = show or f['value'] != default
+        return dict(fields=fields, show=show)
+        # return dict(fields=fields, show=any([v['value'] for v in fields]))
+
+    @property
+    def fecha(self):
+        default = {'desde': '1/1/1945', 'hasta': '31/12/1995'}
+        response = {
+            'desde': self.prefill('fecha_desde', 'date', default=default['desde']),
+            'hasta': self.prefill('fecha_hasta', 'date', default=default['hasta']),
+        }
+        response['show'] = response['desde'] != default['desde'] or response['hasta'] != default['hasta']
+        return response
+
+    @property
+    def keywords(self):
+        return self.prefill('keywords', 'text')
 
     @property 
     def evento(self):
@@ -88,7 +145,7 @@ class SideBarFilters:
             },
             {
                 'name': 'event_type', 'type': 'select', 'placeholder': 'Tipo de Evento',
-                'values': SelectEventyType().get()
+                'values': SelectCached(EventType).get()
             }
         ]
         return self.format_fields(fields)
@@ -102,7 +159,7 @@ class SideBarFilters:
             },
             {
                 'name': 'lugar_ciudad', 'type': 'select', 'placeholder': 'Ciudad',
-                'values': SelectCiudad().get()
+                'values': SelectCached(City).get()
             },
             {
                 'name': 'lugar_locacion', 'type': 'text', 'placeholder': 'Locación'
@@ -119,11 +176,11 @@ class SideBarFilters:
             },
             {
                 'name': 'participante_genero', 'type': 'select', 'placeholder': 'Género',
-                'values': SelectGenero().get()
+                'values': SelectCached(Gender).get()
             },
             {
                 'name': 'participante_pais', 'type': 'select', 'placeholder': 'País',
-                'values': SelectPais().get()
+                'values': SelectCached(Country).get()
             },
             {
                 'name': 'participante_actividad', 'type': 'text', 'placeholder': 'Actividad'
@@ -142,11 +199,11 @@ class SideBarFilters:
             },
             {
                 'name': 'compositor_genero', 'type': 'select', 'placeholder': 'Género',
-                'values': SelectGenero().get()
+                'values': SelectCached(Gender).get()
             },
             {
                 'name': 'compositor_pais', 'type': 'select', 'placeholder': 'País',
-                'values': SelectPais().get()
+                'values': SelectCached(Country).get()
             }
         ]
         return self.format_fields(fields)
@@ -156,14 +213,14 @@ class SideBarFilters:
         fields = [
             {
                 'name': 'repertorio_estreno', 'type': 'select', 'placeholder': 'Estreno',
-                'values': SelectPremierTypes().get()
+                'values': SelectCached(PremiereType).get()
             },
             {
                 'name': 'repertorio_obra', 'type': 'text', 'placeholder': 'Obra'
             },
             {
                 'name': 'repertorio_instrumentos', 'type': 'select', 'placeholder': 'Tipo de Instrumentos',
-                'values': SelectInstrumentTypes().get()
+                'values': SelectCached(InstrumentType).get()
             }            
         ]
         return self.format_fields(fields)
@@ -176,7 +233,7 @@ class SideBarFilters:
             },
             {
                 'name': 'agrupacion_tipo', 'type': 'select', 'placeholder': 'Tipo de agrupación',
-                'values': SelectMusicalEnsembleType().get()
+                'values': SelectCached(MusicalEnsembleType).get()
             } 
         ]
         return self.format_fields(fields)
