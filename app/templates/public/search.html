@@ -22,7 +22,10 @@
     data-only-info-pagination="false"
     data-side-pagination="server"
     data-pagination="true"
-    data-url="{{url_for('public.get_events', keywords=userquery)}}"
+    data-page-number="1"
+    data-page-size="25"
+    data-show-extended-pagination="true"
+    data-url="{{url_for('public.get_events')}}"
 >
     <thead>
         <tr>
