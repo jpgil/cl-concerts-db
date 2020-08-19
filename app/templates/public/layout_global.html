@@ -20,6 +20,9 @@
         integrity="sha256-BJ/G+e+y7bQdrYkS2RBTyNfBHpA9IuGaPmf9htub5MQ=" crossorigin="anonymous" />
 
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gijgo/1.9.13/combined/css/gijgo.min.css" integrity="sha256-bH0WSMuCFoG/dxeox/5aOWmaZl729yDg4ylckwSRTfU=" crossorigin="anonymous" /> -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.standalone.min.css"
+        integrity="sha256-BqW0zYSKgIYEpELUf5irBCGGR7wQd5VZ/N6OaBEsz5U=" crossorigin="anonymous" />
 
     <link href="{{ url_for('static', filename='public/style.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='public/theme_1590956485083.css') }}" rel="stylesheet">
@@ -127,46 +130,92 @@
     </div>
 
 
-
+{% block scripts %}
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-        crossorigin="anonymous"></script> -->
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
         integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
         crossorigin="anonymous"></script>
-
-    
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+
+    <!-- <link href="{{ url_for('static', filename = 'css/lib/select2.min.css') }}" rel="stylesheet" />
+    <script src="{{ url_for('static', filename = 'js/lib/select2.min.js') }}"></script> -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+<script>
+var dropsdowns = document.getElementsByClassName("dd_select2")
+for (var i = 0; i < dropsdowns.length; i++) {
+    $(dropsdowns[i]).select2({
+        placeholder: dropsdowns[i].getAttribute('description'),
+        width: '100%',
+        tags: true,
+        ajax: {
+            url: '/list/' + dropsdowns[i].getAttribute('url'),
+            dataType: 'json',
+            delay: 250,
+            tags: true,
+            data: function (params) {
+                return {
+                    q: params.term, // search term
+                    page: params.page
+                };
+            },
+            minimumInputLength: 2,
+            processResults: function (data, params) {
+                return { results: data.results, pagination: data.pagination };
+            },
+            cache: true
+        },
+        maximumSelectionLength: (dropsdowns[i].hasAttribute('maxelem')) ? parseInt(dropsdowns[i].getAttribute('maxelem')) : 10
+    })
+    selectedItems = []
+    if (dropsdowns[i].getAttribute('selectedElements') != "") {
+        selectedItems = dropsdowns[i].getAttribute('selectedElements').split(',');
+    }
+
+    for (var k = 0; k < selectedItems.length; k++) {
+        // Fetch the preselected item, and add to the control
+        console.log('searching for ' + '/list/' + dropsdowns[i].getAttribute('url') + '/' + selectedItems[k])
+        $.ajax({
+            type: 'GET',
+            url: '/list/' + dropsdowns[i].getAttribute('url') + '/' + selectedItems[k],
+            async: false
+        }).then(function (data) {
+            // create the option and append to Select2
+            var option = new Option(data.text, data.id, true, true);
+            $(dropsdowns[i]).append(option).trigger('change');
+            console.log('Added: ' + data.text + '/' + data.id);
+        });
+    }
+
+    //$(dropsdowns[i]).select2("val",dropsdowns[i].getAttribute('selectedElements').split(','));    
+}
+
+    </script>
+
     <script src="https://unpkg.com/bootstrap-table@1.17.1/dist/bootstrap-table.min.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.17.1/dist/locale/bootstrap-table-es-CL.js"></script>
-
+    
     <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gijgo/1.9.13/combined/js/gijgo.min.js" integrity="sha256-YZhUu69bCn9uTqQyKwwQ3GyRypS7eaxp/wmVS282sDI=" crossorigin="anonymous"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/gijgo/1.9.13/combined/js/messages/messages.es-es.min.js" integrity="sha256-aYHjwzEPrf61GO3O1gmS3VQd/X5a5bAFvhn/9YB3IYo=" crossorigin="anonymous"></script> -->
-
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.standalone.min.css"
-        integrity="sha256-BqW0zYSKgIYEpELUf5irBCGGR7wQd5VZ/N6OaBEsz5U=" crossorigin="anonymous" />
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"
         integrity="sha256-bqVeqGdJ7h/lYPq6xrPv/YGzMEb6dNxlfiTUHSgRCp8=" crossorigin="anonymous"></script>
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.es.min.js"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.es.min.js"
         integrity="sha256-K5G+7qV0tjuHL0LlhCU0TqQKR+7QwT8MfEUe2UgpmRY=" crossorigin="anonymous"></script>
-
+    
     <script>
         $(function () {
             $('[data-toggle="popover"]').popover()
         });
-
-
         $.fn.datepicker.dates['en'] = {
             days: ["Domingo", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
             daysShort: ["Dom", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -182,11 +231,12 @@
         $('.datepicker').datepicker({
             // language: 'es'
         });
-
-
-
-
     </script>
+
+
+{% endblock %}
+
+
 </body>
 
 </html>

@@ -90,6 +90,8 @@ class SideBarFilters:
             validate = validate_str
         elif istype == 'select':
             validate = validate_int
+        elif istype == 'select2':
+            validate = validate_str
         elif istype == 'text':
             validate = validate_str
         elif istype == 'date':
@@ -138,13 +140,13 @@ class SideBarFilters:
     def evento(self):
         fields = [
             {
-                'name': 'event_name', 'type': 'text', 'placeholder': 'Nombre o Información'
+                'name': 'event_name', 'type': 'text', 'placeholder': 'Nombre o Información', 'url': 'events'
             },
             {
-                'name': 'event_cycle', 'type': 'text', 'placeholder': 'Ciclo'
+                'name': 'event_cycle', 'type': 'select2', 'placeholder': 'Ciclo', 'url': 'cycles'
             },
             {
-                'name': 'event_type', 'type': 'select', 'placeholder': 'Tipo de Evento',
+                'name': 'event_type', 'type': 'select', 'placeholder': 'Tipo de Evento', 'url': 'eventtypes',
                 'values': SelectCached(EventType).get()
             }
         ]
@@ -155,14 +157,14 @@ class SideBarFilters:
     def lugar(self):
         fields = [
             {
-                'name': 'lugar_organizador', 'type': 'text', 'placeholder': 'Organizador(es)'
+                'name': 'lugar_organizador', 'type': 'select2', 'placeholder': 'Organizador(es)', 'url': 'organizations'
             },
             {
-                'name': 'lugar_ciudad', 'type': 'select', 'placeholder': 'Ciudad',
+                'name': 'lugar_ciudad', 'type': 'select', 'placeholder': 'Ciudad', 'url': 'cities',
                 'values': SelectCached(City).get()
             },
             {
-                'name': 'lugar_locacion', 'type': 'text', 'placeholder': 'Locación'
+                'name': 'lugar_locacion', 'type': 'select2', 'placeholder': 'Locación', 'url': 'locations'
             }
         ]
         return self.format_fields(fields)
@@ -172,7 +174,7 @@ class SideBarFilters:
     def participantes(self):
         fields = [
             {
-                'name': 'participante_nombre', 'type': 'text', 'placeholder': 'Nombre de participante'
+                'name': 'participante_nombre', 'type': 'select2', 'placeholder': 'Nombre de participante', 'url': 'people'
             },
             {
                 'name': 'participante_genero', 'type': 'select', 'placeholder': 'Género',
@@ -183,10 +185,10 @@ class SideBarFilters:
                 'values': SelectCached(Country).get()
             },
             {
-                'name': 'participante_actividad', 'type': 'text', 'placeholder': 'Actividad'
+                'name': 'participante_actividad', 'type': 'select2', 'placeholder': 'Actividad', 'url': 'activities'
             },
             {
-                'name': 'participante_instrumentos', 'type': 'text', 'placeholder': 'Instrumentos'
+                'name': 'participante_instrumentos', 'type': 'select2', 'placeholder': 'Instrumentos', 'url': 'instruments'
             }
         ]
         return self.format_fields(fields)
