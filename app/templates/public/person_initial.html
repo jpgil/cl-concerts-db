@@ -27,9 +27,9 @@
         </ul>
     </div>
     <div class="card-body">
-        <h5 class="card-title">Personas con inicial "{{ initial }}"</h5>
+        <h5 class="card-title">{{ personas|length }} personas con inicial "{{ initial }}"</h5>
         
-        <ul class="row">
+        <ol class="row my-5">
             {% for p in personas %}
             <li class="col-sm-6">
                 <a href="#" data-toggle="modal" data-target="#modalPersona{{ p.id }}" style="display: inline;">
@@ -38,7 +38,7 @@
                 
             </li>
             {% endfor %}
-        </ul>
+        </ol>
     </div>
 </div>
 
