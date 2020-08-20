@@ -3,6 +3,7 @@ from flask import Flask, render_template, jsonify, url_for, request, redirect, a
 from jinja2 import TemplateNotFound
 from app.public import bp
 from app.public import search as searchClDb
+from app.models import Event, Person
 
 # Make some objects available to templates.
 @bp.context_processor
@@ -28,6 +29,27 @@ def get_events():
     # Prepare parameters
     offset = request.args.get('offset', 0, type=int)
     limit = request.args.get('limit', 10, type=int)
+
+
+    # query = app.main.search(  # Johnny elige el nombre!!
+    #     keywords=keywords,
+    #     filter=filter,
+    #     offset=offset,
+    #     limit=limit)
+
+    # # Ejemplo real de filter
+    # keywords = "simple string"
+    # filter = {
+    #     "start_date": "YYYY-MM-DD", "end_date": "",
+    #     "name": "Texts here",
+    #     "cycle": [], "type": [], "organized": [], "city": [], "location": [],
+    #     "participant_name": [], "participant_gender": [], "participant_country": [], "activity": [],
+    #     "instruments": [], "compositor_name": [], "compositor_gender": [], "compositor_country": [],
+    #     "premier_type": [], "musical_piece": [], "instrument_type": [], "musical_ensemble_name": [],
+    #     "musical_ensemble_type": []
+    # }
+
+
     keywords = request.args.get('keywords', '', type=str)
 
     query = searchClDb.event_list(keywords=keywords, offset=offset, limit=limit)
@@ -48,8 +70,23 @@ def search():
     return render_template('public/search.html')
 
 
+# Catalogo de Personas
+
+@bp.route(('/person/<initial>'))
+def person(initial="A"):
+    if initial not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+        return redirect(url_for('.person', initial='A'))
+
+    
+    try:
+        personas = Person.query.filter(Person.last_name.ilike(initial + "%")).all()
+        personas = sorted(personas, key=lambda e: e.get_name())
+        return render_template('public/person_initial.html', initial=initial, personas=personas)
+    except TemplateNotFound:
+        abort(404)
+
+
 # Event Detail
-from app.models import Event
 
 @bp.route('/event/<id>')
 def show_event(id):

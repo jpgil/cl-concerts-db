@@ -3,7 +3,10 @@
         <a class="nav-link" href="{{ url_for('public.inicio') }}" id="m-inicio">Inicio</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('public.show', page='page_consultar') }}" id="m-consultar">Consultar BD</a>
+      <a class="nav-link" href="{{ url_for('public.person', initial='A') }}" id="m-consultar">Catálogo</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('public.show', page='page_consultar') }}" id="m-consultar">Consultar BD</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="{{ url_for('public.show', page='page_about') }}" id="m-about">Acerca de</a>

@@ -1,0 +1,105 @@
+{% extends 'public/layout_global.html' %}
+
+{% set title='Catálogo de Participantes y Compositores' %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<style type="text/css">
+#catalogo {
+    margin: 2em 0;
+}
+#catalogo .nav-link {
+    padding: 5px 7px;
+}
+</style>
+
+<div class="card" id="catalogo">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+
+            {% for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+            <li class="nav-item">
+                <a class="nav-link {% if l == initial %}active{% endif %}" href="{{ url_for('public.person', initial=l) }}">{{ l }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">Personas con inicial "{{ initial }}"</h5>
+        
+        <ul class="row">
+            {% for p in personas %}
+            <li class="col-sm-6">
+                <a href="#" data-toggle="modal" data-target="#modalPersona{{ p.id }}" style="display: inline;">
+                    {{ p.get_name() }} {% if p.birth_year or p.death_year %}({{ p.birth_year or '' }} - {{ p.death_year or '' }}){% endif %}
+                </a>
+                
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+
+    <!-- Modal para la biografia -->
+    {% for p in personas %}
+    <div class="modal fade" id="modalPersona{{ p.id }}" tabindex="-1" role="dialog" aria-labelledby="modalPersona{{ p.id }}"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+    
+                <div class="modal-body">
+    
+                    <table class="table">
+                        <tbody>
+                            <tr class="lead">
+                                <th>Nombre:</th>
+                                <td>{{ p.first_name }}</td>
+                            </tr>
+                            <tr class="lead">
+                                <th>Apellido:</th>
+                                <td>{{ p.last_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Género:</th>
+                                <td>{{ p.gender and p.gender.name or "?" }}</td>
+                            </tr>
+                            <tr>
+                                <th>Nacimiento:</th>
+                                <td>{{ p.birth_year or "" }}</td>
+                            </tr>
+                            <tr>
+                                <th>Muerte:</th>
+                                <td>{{ p.death_year or "" }}</td>
+                            </tr>
+                            <tr>
+                                <th>País(es):</th>
+                                <td>{{ p.nationalities|map(attribute='name')|join(', ') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+    
+                    {% if p.biography %}
+                </div>
+                <div class="modal-body">
+                    <p><strong>Información Biográfica</strong></p>
+                    {% for x in p.biography.split("\n") %}
+                    <p>{{ x|urlize(400, true) }}</p>
+                    {% endfor %}
+                    {% endif %}
+    
+    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <a role="button" href="resultados.php" class="btn btn-primary">Eventos asociados a esta
+                        persona</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+{% endblock %}
