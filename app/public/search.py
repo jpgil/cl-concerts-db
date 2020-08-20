@@ -146,7 +146,7 @@ class SideBarFilters:
                 'name': 'event_cycle', 'type': 'select2', 'placeholder': 'Ciclo', 'url': 'cycles'
             },
             {
-                'name': 'event_type', 'type': 'select', 'placeholder': 'Tipo de Evento', 'url': 'eventtypes',
+                'name': 'event_type', 'type': 'select2', 'placeholder': 'Tipo de Evento', 'url': 'eventtypes',
                 'values': SelectCached(EventType).get()
             }
         ]

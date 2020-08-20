@@ -18,9 +18,9 @@
     if e.birth_year and e.death_year
         %}({{ e.birth_year }} - {{ e.death_year }}){%
     elif e.birth_year and not e.death_year
-        %}( {{ e.birth_year }} - ?){%
+        %}( {{ e.birth_year }} - ){%
     elif not e.birth_year and e.death_year
-        %}(? - {{ e.death_year }}){%
+        %}( - {{ e.death_year }}){%
     endif
 %}
 {%- endmacro %}
@@ -61,7 +61,7 @@
                                 <td>{{ p.death_year or "" }}</td>
                             </tr>
                             <tr>
-                                <th>Nacionalidad(es):</th>
+                                <th>País(es):</th>
                                 <td>{{ p.nationalities|map(attribute='name')|join(', ') }}</td>
                             </tr>
                         </tbody>
@@ -350,15 +350,17 @@
         </div>
     
         <div class="card-body">
+            <ul>
             {% for m in e.medialinks.all() %}
-            <p>
-                {{ m.description|urlize(400, true) }}
-            </p>
-            <iframe src="{{ m.url }}" style="width: 100%; height: 30em;"></iframe>
-            <p>
-                <a href="{{ m.url }}">Descargar</a>
-            </p>
+                <li>
+                {{ m.description|urlize(400, true) }} - <a style="display: inline" href="{{ m.url }}">[Ver Archivo]</a>
+                </li>
+            <!-- <iframe src="{{ m.url }}" style="width: 100%; height: 30em;"></iframe> -->
+            <!-- <p>
+                <a href="{{ m.url }}">Ver</a>
+            </p> -->
             {% endfor %}
+            </ul>
 
         </div>
     </div>
