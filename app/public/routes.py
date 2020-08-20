@@ -1,6 +1,7 @@
 import json
 from flask import Flask, render_template, jsonify, url_for, request, redirect, abort
 from jinja2 import TemplateNotFound
+from sqlalchemy import or_, and_
 from app.public import bp
 from app.public import search as searchClDb
 from app.models import Event, Person
@@ -79,7 +80,10 @@ def person(initial="A"):
 
     
     try:
-        personas = Person.query.filter(Person.last_name.ilike(initial + "%")).all()
+        # Primer intento fallido, hay gente sin apellido
+        # personas = Person.query.filter(Person.last_name.ilike(initial + "%")).all()
+        personas = Person.query.filter(or_(and_(Person.last_name == '', Person.first_name.ilike(
+            initial + "%")), Person.last_name.ilike(initial + "%"))).all()
         personas = sorted(personas, key=lambda e: e.get_name())
         return render_template('public/person_initial.html', initial=initial, personas=personas)
     except TemplateNotFound:
