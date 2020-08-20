@@ -84,7 +84,7 @@ def person(initial="A"):
         # personas = Person.query.filter(Person.last_name.ilike(initial + "%")).all()
         personas = Person.query.filter(or_(and_(Person.last_name == '', Person.first_name.ilike(
             initial + "%")), Person.last_name.ilike(initial + "%"))).all()
-        personas = sorted(personas, key=lambda e: e.get_name())
+        personas = sorted(personas, key=lambda e: e.get_name().upper() )
         return render_template('public/person_initial.html', initial=initial, personas=personas)
     except TemplateNotFound:
         abort(404)
