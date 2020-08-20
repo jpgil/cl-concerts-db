@@ -7,7 +7,7 @@
 {% macro fecha(e) -%}
 {%
     if e.day and e.month
-    %}{{ e.day }}/{{ e.month }}/{%
+    %}{{ '%02d' % e.day }}/{{ '%02d' % e.month }}/{%
         endif
     %}{{ e.year }}
 {%- endmacro %}
@@ -156,12 +156,18 @@
                     {% for i in participantes %}
                     <tr>
                         <td class='participante'>
-                            {% if i.person %}
+                            {% if i.person and i.musical_ensemble %}
+                            - <a href="#" data-toggle="modal" data-target="#modalPersona{{ i.person.id }}" style="display: inline;">                                
+                                {{ i.get_short_name()|replace(i.musical_ensemble.name, '')|replace('[]', '') }}
+                            </a>
+                            {% elif i.person and not i.musical_ensemble %}
                             <a href="#" data-toggle="modal" data-target="#modalPersona{{ i.person.id }}" style="display: inline;">
                                 {{ i.get_short_name() }}
                             </a>
                             {% else %}
-                                {{ i.get_short_name() }}
+                                <p>
+                                    <strong>{{ i.musical_ensemble.name }}</strong>
+                                </p>
                             {% endif %}
                         </td>
                         <td>
@@ -336,7 +342,7 @@
     
         <div class="card-body">
             {% for i in e.sources.split("\n") %}
-            {{ i }}<br>
+            {{ i|urlize(400, true) }}<br>
             {% endfor %}
         </div>
     </div>
