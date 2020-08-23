@@ -120,7 +120,6 @@ class SideBarFilters:
             f['value'] = self.prefill(f['name'], f['type'], default=default)
             show = show or f['value'] != default
         return dict(fields=fields, show=show)
-        # return dict(fields=fields, show=any([v['value'] for v in fields]))
 
     @property
     def fecha(self):
