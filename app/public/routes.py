@@ -1,4 +1,5 @@
 import json
+import logging
 from flask import Flask, render_template, jsonify, url_for, request, redirect, abort
 from jinja2 import TemplateNotFound
 from sqlalchemy import or_, and_
@@ -6,12 +7,20 @@ from app.public import bp
 from app.public import search as searchClDb
 from app.models import Event, Person
 
+
+logger = logging.getLogger('werkzeug')
+
+
 # Make some objects available to templates.
 @bp.context_processor
 def inject_userquery():
+    sidebar = searchClDb.SideBarFilters()
+    if request.args.get('update') == 'search':
+        logger.info('update search')
+        sidebar.updateFromRequest()
     return dict(
         userquery=request.args.get('keywords', default=''),
-        filters = searchClDb.SideBarFilters()
+        filters=sidebar
         )
 
 # Defaults to Start Page
@@ -126,13 +135,7 @@ def show_event(id):
         compositores=compositores,
         personas=personas
     )
-    
-# def show_event_test(id):
-#     # try:
-#         event = searchClDb.get_event(id=id)
-#         return render_template('public/detalle.html', e=event )
-#     # except:
-#         # abort(404)
+
 
 # Plain pages
 @bp.route('/<page>')

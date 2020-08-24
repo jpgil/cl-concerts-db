@@ -35,7 +35,7 @@
                                 maxelem="10"
                                 multiple="multiple"
                                 name="{{ item.name }}" 
-                                selectedElements="{{ item.value }}" 
+                                selectedElements="{{ item.value|join(',') }}" 
                                 url="{{ item.url }}">
                             </select>
                         </div>
@@ -51,6 +51,7 @@
 
 <form class="form" action="{{ url_for('public.search') }}" method="GET">
 
+    <input type="hidden" name="update" value="search">
 
 
 
