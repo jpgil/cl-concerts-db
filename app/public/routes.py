@@ -1,6 +1,6 @@
 import json
 import logging
-from flask import Flask, render_template, jsonify, url_for, request, redirect, abort
+from flask import Flask, render_template, jsonify, url_for, request, redirect, abort, g
 from jinja2 import TemplateNotFound
 from sqlalchemy import or_, and_
 from app.public import bp
@@ -11,13 +11,20 @@ from app.models import Event, Person
 logger = logging.getLogger('werkzeug')
 
 
+def get_sidebar():
+    if 'sidebar' not in g:
+        g.sidebar = searchClDb.SideBarFilters()
+        if request.args.get('update') == 'search':
+            logger.debug('updating search')
+            g.sidebar.updateFromRequest()
+    return g.sidebar
+
+
 # Make some objects available to templates.
 @bp.context_processor
 def inject_userquery():
-    sidebar = searchClDb.SideBarFilters()
-    if request.args.get('update') == 'search':
-        logger.info('update search')
-        sidebar.updateFromRequest()
+    logger.info("Llamare el sidebar desde inject_userquery")
+    sidebar = get_sidebar()
     return dict(
         userquery=request.args.get('keywords', default=''),
         filters=sidebar
@@ -39,29 +46,7 @@ def get_events():
     # Prepare parameters
     offset = request.args.get('offset', 0, type=int)
     limit = request.args.get('limit', 10, type=int)
-
-
-    # query = app.main.search(  # Johnny elige el nombre!!
-    #     keywords=keywords,
-    #     filter=filter,
-    #     offset=offset,
-    #     limit=limit)
-
-    # # Ejemplo real de filter
-    # keywords = "simple string"
-    # filter = {
-    #     "start_date": "YYYY-MM-DD", "end_date": "",
-    #     "name": "Texts here",
-    #     "cycle": [], "type": [], "organized": [], "city": [], "location": [],
-    #     "participant_name": [], "participant_gender": [], "participant_country": [], "activity": [],
-    #     "instruments": [], "compositor_name": [], "compositor_gender": [], "compositor_country": [],
-    #     "premier_type": [], "musical_piece": [], "instrument_type": [], "musical_ensemble_name": [],
-    #     "musical_ensemble_type": []
-    # }
-
-
     keywords = request.args.get('keywords', '', type=str)
-
     query = searchClDb.event_list(keywords=keywords, offset=offset, limit=limit)
 
     # DB result
@@ -77,7 +62,9 @@ def get_events():
     return data
 @bp.route('/search')
 def search():
-    return render_template('public/search.html')
+    logger.info("Llamare el sidebar desde SEARCH")
+    sidebar = get_sidebar()
+    return render_template('public/search.html', query=sidebar.query)
 
 
 # Catalogo de Personas

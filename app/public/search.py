@@ -8,6 +8,8 @@ logger = logging.getLogger('werkzeug')
 # ------------------------------
 # Cache para listas desplegables
 # ------------------------------
+
+
 class SelectCached:
     def __init__(self, obj=None):
         if obj:
@@ -64,7 +66,7 @@ def validate_int(x):
 
 def validate_int_list(X):
     if all([validate_int(x) for x in X]):
-        return X
+        return [ int(x) for x in X]
     else:
         return []
 
@@ -83,55 +85,65 @@ class SideBarFilters:
     def __init__(self):
         self.filters = {
             'evento': [
-                { 'name': 'event_name', 'type': 'text', 'placeholder': 'Nombre o Información', 'url': 'events' },
-                { 'name': 'event_cycle', 'type': 'select2', 'placeholder': 'Ciclo', 'url': 'cycles' },
+                { 'name': 'name', 'type': 'text', 'placeholder': 'Nombre o Información', 'url': 'events' },
+                { 'name': 'cycle', 'type': 'select2', 'placeholder': 'Ciclo', 'url': 'cycles' },
                 { 'name': 'event_type', 'type': 'select', 'placeholder': 'Tipo de Evento', 'url': 'eventtypes',
                     'values': SelectCached(EventType).get()
                 }
             ],
             'lugar': [
-                { 'name': 'lugar_organizador', 'type': 'select2', 'placeholder': 'Organizador(es)', 'url': 'organizations' },
-                { 'name': 'lugar_ciudad', 'type': 'select', 'placeholder': 'Ciudad', 'url': 'cities',
+                { 'name': 'organized', 'type': 'select2', 'placeholder': 'Organizador(es)', 'url': 'organizations' },
+                { 'name': 'city', 'type': 'select', 'placeholder': 'Ciudad', 'url': 'cities',
                     'values': SelectCached(City).get()
                 },
-                { 'name': 'lugar_locacion', 'type': 'select2', 'placeholder': 'Locación', 'url': 'locations' }
+                { 'name': 'location', 'type': 'select2', 'placeholder': 'Locación', 'url': 'locations' }
             ],
             'participantes': [
-                { 'name': 'participante_nombre', 'type': 'select2', 'placeholder': 'Nombre de participante', 'url': 'people' },
-                { 'name': 'participante_genero', 'type': 'select', 'placeholder': 'Género',
+                {'name': 'participant_name', 'type': 'select2',
+                    'placeholder': 'Nombre de participante', 'url': 'people'},
+                {'name': 'participant_gender', 'type': 'select', 'placeholder': 'Género',
                     'values': SelectCached(Gender).get()
                 },
-                { 'name': 'participante_pais', 'type': 'select', 'placeholder': 'País',
-                    'values': SelectCached(Country).get()
-                },
-                { 'name': 'participante_actividad', 'type': 'select2', 'placeholder': 'Actividad', 'url': 'activities' },
+                {'name': 'participant_country', 'type': 'select2', 'placeholder': 'País', 'url': 'countries' },
+                {'name': 'activity', 'type': 'select2',
+                    'placeholder': 'Actividad', 'url': 'activities'},
             ],
             'compositores': [
-                { 'name': 'compositor_nombre', 'type': 'select2', 'placeholder': 'Nombre_de_participante', 'url': 'people' },
-                { 'name': 'compositor_genero', 'type': 'select', 'placeholder': 'Género',
+                {'name': 'compositor_name', 'type': 'select2',
+                    'placeholder': 'Nombre_de_participante', 'url': 'people'},
+                {'name': 'compositor_gender', 'type': 'select', 'placeholder': 'Género',
                     'values': SelectCached(Gender).get()
                 },
-                { 'name': 'compositor_pais', 'type': 'select', 'placeholder': 'País',
-                    'values': SelectCached(Country).get()
-                }
+                {'name': 'compositor_country', 'type': 'select2', 'placeholder': 'País', 'url': 'countries' }
             ],
             'repertorio': [
-                { 'name': 'repertorio_estreno', 'type': 'select', 'placeholder': 'Estreno',
+                {'name': 'premier_type', 'type': 'select', 'placeholder': 'Estreno',
                     'values': SelectCached(PremiereType).get()
                 },
-                { 'name': 'repertorio_obra', 'type': 'text', 'placeholder': 'Obra', 'url': 'performances' },
-                { 'name': 'repertorio_instrumentos', 'type': 'select2', 'placeholder': 'Instrumentos', 'url': 'instruments'},
-                { 'name': 'repertorio_tipo_instrumentos', 'type': 'select', 'placeholder': 'Tipo de Instrumentos',
+                {'name': 'musical_piece', 'type': 'text',
+                    'placeholder': 'Obra', 'url': 'performances'},
+                {'name': 'instruments', 'type': 'select2',
+                    'placeholder': 'Instrumentos', 'url': 'instruments'},
+                {'name': 'instrument_type', 'type': 'select', 'placeholder': 'Tipo de Instrumentos',
                     'values': SelectCached(InstrumentType).get()
                 }
             ],
             'agrupaciones': [
-                { 'name': 'agrupacion_nombre', 'type': 'select2', 'placeholder': 'Nombre de agrupación', 'url': 'musicalensembles' },
-                { 'name': 'agrupacion_tipo', 'type': 'select', 'placeholder': 'Tipo de agrupación',
+                {'name': 'musical_ensemble_name', 'type': 'select2',
+                    'placeholder': 'Nombre de agrupación', 'url': 'musicalensembles'},
+                {'name': 'musical_ensemble_type', 'type': 'select', 'placeholder': 'Tipo de agrupación',
                     'values': SelectCached(MusicalEnsembleType).get()
                 }
             ]
         }
+        self.evento
+        self.lugar
+        self.participantes
+        self.compositores
+        self.repertorio
+        self.agrupaciones
+        self.keywords
+        self.fecha
     
     @property
     def all_filters(self):
@@ -141,12 +153,44 @@ class SideBarFilters:
 
         all_f.append({'name': 'keywords', 'type': 'text',
                       'placeholder': 'keywords'} )
-        all_f.append({'name': 'fecha_desde', 'type': 'date',
+        all_f.append({'name': 'start_date', 'type': 'date',
                       'placeholder': '[Desde]', 'default': '1/1/1945'} )
-        all_f.append({'name': 'fecha_hasta', 'type': 'date',
+        all_f.append({'name': 'end_date', 'type': 'date',
                       'placeholder': '[Hasta]', 'default': '31/12/1995'})
         return all_f
 
+    @property
+    def query(self):
+        # query = app.main.search(  # Johnny elige el nombre!!
+        #     keywords=keywords,
+        #     filters=filter,
+        #     offset=offset,
+        #     limit=limit)
+        # # Ejemplo real de filter
+        # keywords = "simple string"
+        # filter = {
+        #     "start_date": "YYYY-MM-DD", "end_date": "",
+        #     "name": "Texts here",
+        #     "cycle": [], "event_type": [], "organized": [], "city": [], "location": [],
+        #     "participant_name": [], "participant_gender": [], "participant_country": [], "activity": [],
+        #     "instruments": [], "compositor_name": [], "compositor_gender": [], "compositor_country": [],
+        #     "premier_type": [], "musical_piece": [], "instrument_type": [], "musical_ensemble_name": [],
+        #     "musical_ensemble_type": []
+        # }
+        query={ 'filters': {} }
+        for f in self.all_filters:
+            if f['name'] not in ['keywords', 'start_date', 'end_date']:
+                val = self.prefill(f['name'])
+                if f['name'] != 'name':
+                    if val == '':
+                        val = []
+                    elif type(val) != list:
+                        val = [val]
+                query['filters'][f['name']] = val
+        query['keywords'] = self.prefill('keywords')
+        query['start_date'] = self.prefill('start_date')
+        query['end_date'] = self.prefill('end_date')
+        return query
 
     # Rewerite session from request values
     def updateFromRequest(self):
@@ -168,20 +212,20 @@ class SideBarFilters:
                 getfunc = request.args.get
 
             if f['name'] in request.args and getfunc(f['name']):
-                logger.info('%s will be included to value %s' %
+                logger.debug('%s will be included to value %s' %
                             (f['name'], getfunc(f['name'])))
 
                 session['filt_%s' % f['name']] = validate[f['type']](
                     getfunc(f['name'])) or default
             else:
-                logger.info('%s to be cleared' % f['name'])
+                logger.debug('%s to be cleared' % f['name'])
                 session['filt_%s' % f['name']] = default
 
             session.modified = True
 
 
     # for each field in filters bring values from flask session
-    def prefill(self, name, istype, default=''):
+    def prefill(self, name, default=''):
         if 'filt_%s' % name not in session.keys():
             session['filt_%s' % name] = default
             session.modified = True
@@ -195,21 +239,21 @@ class SideBarFilters:
                 default = f['default']
             else:
                 default = ""
-            f['value'] = self.prefill(f['name'], f['type'], default=default)
+            f['value'] = self.prefill(f['name'], default=default)
             show = show or f['value'] != default
         return dict(fields=fields, show=show)
 
     @property
     def fecha(self):
         default = {
-            'fecha_desde': '1/1/1945',
-            'fecha_hasta': '31/12/1995'
+            'start_date': '1/1/1945',
+            'end_date': '31/12/1995'
         }
         response = {
-            'desde': self.prefill('fecha_desde', 'date', default=default['fecha_desde']),
-            'hasta': self.prefill('fecha_hasta', 'date', default=default['fecha_hasta']),
+            'start_date': self.prefill('start_date', default=default['start_date']),
+            'end_date': self.prefill('end_date', default=default['end_date']),
         }
-        response['show'] = response['desde'] != default['fecha_desde'] or response['hasta'] != default['fecha_hasta']
+        response['show'] = response['start_date'] != default['start_date'] or response['end_date'] != default['end_date']
         return response
 
     @property
