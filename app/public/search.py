@@ -179,17 +179,15 @@ class SideBarFilters:
         # }
         query={ 'filters': {} }
         for f in self.all_filters:
-            if f['name'] not in ['keywords', 'start_date', 'end_date']:
+            if f['name'] not in ['keywords']:
                 val = self.prefill(f['name'])
-                if f['name'] != 'name':
+                if f['name'] not in ['name', 'start_date', 'end_date']:
                     if val == '':
                         val = []
                     elif type(val) != list:
                         val = [val]
                 query['filters'][f['name']] = val
         query['keywords'] = self.prefill('keywords')
-        query['start_date'] = self.prefill('start_date')
-        query['end_date'] = self.prefill('end_date')
         return query
 
     # Rewerite session from request values
