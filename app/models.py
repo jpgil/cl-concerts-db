@@ -1,4 +1,5 @@
 from time import time
+from datetime import datetime
 from flask import current_app
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -261,6 +262,15 @@ class Event(db.Model):
             return "{}".format(self.year)            
         else:
             return "Sin fecha"
+    # since some dates doesn't have month or day, for those we need to be
+    # as inclusive as possible, so we'll convert it to the min possible date
+    # for comparing the the end_date and to max possible date for comparing with
+    # the min. For complete dates min_date == max_date
+    def get_dates(self):
+        min_date=datetime(self.year,self.month if self.month else 1,self.day if self.day else 1)
+        max_date=datetime(self.year,self.month if self.month else 12,self.day if self.day else 31)
+        return [min_date,max_date]
+    
     def get_name(self):
         return '[{}] {} - {} ({})'.format(self.get_string_date(),self.event_type.name, self.name, self.location.name) if self.name else  '[{}] {} ({})'.format(self.get_string_date(),
                 self.event_type.name, self.location.name)
