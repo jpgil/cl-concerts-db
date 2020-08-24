@@ -83,7 +83,7 @@ class SideBarFilters:
     def __init__(self):
         self.filters = {
             'evento': [
-                { 'name': 'event_name', 'type': 'select2', 'placeholder': 'Nombre o Información', 'url': 'events' },
+                { 'name': 'event_name', 'type': 'text', 'placeholder': 'Nombre o Información', 'url': 'events' },
                 { 'name': 'event_cycle', 'type': 'select2', 'placeholder': 'Ciclo', 'url': 'cycles' },
                 { 'name': 'event_type', 'type': 'select', 'placeholder': 'Tipo de Evento', 'url': 'eventtypes',
                     'values': SelectCached(EventType).get()

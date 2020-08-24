@@ -15,11 +15,16 @@
                     <!-- <label for="f-tipo">{{ item.placeholder }}</label> -->
 
                     {% if item.type == 'text' %}
+                    <div data-toggle="tooltip" title="[{{ item.placeholder }}]" data-trigger="hover" data-delay="500" >
                     <input class="form-control form-control-sm" type="text" id="sidebar{{ item.name }}" name="{{ item.name }}"
                         placeholder="[{{ item.placeholder }}]" value="{{ item.value or '' }}">
+                    </div>
                     
                     {% elif item.type == 'select' %}
-                    <select class="form-control form-control-sm" id="sidebar{{ item.name }}" name="{{ item.name }}">
+                    <select 
+                        data-toggle="tooltip" title="[{{ item.placeholder }}]"
+                        data-trigger="hover" data-delay="500" 
+                        class="form-control form-control-sm" id="sidebar{{ item.name }}" name="{{ item.name }}">
                         <option value="">[{{ item.placeholder }}]</option>
                         {% for option in item['values'] %}
                         <option {% if option.value == item.value %} selected="selected" {% endif %} value="{{ option.value }}">
@@ -28,8 +33,10 @@
                     </select>
 
                     {% elif item.type == 'select2' %}
-                        <div class="form-group">
+                        <div class="form-group" data-toggle="tooltip" title="[{{ item.placeholder }}]">
                             <select class="dd_select2" 
+                                data-toggle="tooltip" title="[{{ item.placeholder }}]"
+                                data-trigger="hover" data-delay="500" 
                                 description="[{{ item.placeholder }}]" 
                                 id="{{ item.name }}" 
                                 maxelem="10"
@@ -54,59 +61,24 @@
     <input type="hidden" name="update" value="search">
 
 
-
-
-    <!-- <div class="container">
-        <div class="form-group">
-            <div class="text-success">
-                <strong>Fechas</strong>
-    
-                <a href="#" role="button" data-toggle="popover" title="Fechas"
-                    data-content='En este cuadro Ud. puede ingresar una o más palabras clave. La búsqueda contendrá resultados con cualquiera de estas palabras clave (equivalente a OR lógico).'><span
-                        class="oi oi-question-mark"></span></a>
-            </div>
-            
-            <div class="card">
-                <div class="filtro-body card-body">
-                    <div class="form-group">
-                        <label for="f-desde">Desde</label>
-                        <div class="input-group date" data-provide="datepicker">
-                            <input name="f-desde" type="text" class="form-control" value="01/01/1945">
-                            <div class="input-group-addon">
-                                <span class="oi oi-calendar"></span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    
-                    <div class="form-group">
-                        <label for="f-hasta">Hasta</label>
-                        <div class="input-group date" data-provide="datepicker">
-                            <input name="f-hasta" type="text" class="form-control" value="31/12/1995">
-                            <div class="input-group-addon">
-                                <span class="oi oi-calendar"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div> -->
-
     <div class="container">
         <div class="form-group">
-            <label class="text-success" for="keyword">
-                <strong>Búsqueda Rápida</strong>
-            </label>
+            <label class="text-success" for="keyword" 
+                data-trigger="hover" data-delay="500" data-toggle="tooltip" title="Click para ayuda"
+                >
 
-            <a href="#" role="button" data-toggle="popover" title="Acerca de la Búsqueda Rápida"
-                data-content='En este cuadro Ud. puede ingresar una o más palabras clave. La búsqueda contendrá resultados con cualquiera de estas palabras clave (equivalente a OR lógico).'><span
-                    class="oi oi-question-mark"></span></a>
+            <a href="#" role="button" class="text-success" 
+                data-toggle="popover" title="Acerca de la Búsqueda Rápida"
+                data-content='En este cuadro Ud. puede ingresar una o más palabras clave. La búsqueda 
+                contendrá resultados con cualquiera de estas palabras clave (equivalente a OR lógico).'>
+                <strong>Búsqueda Rápida</strong>
+            </a>
+
+                        </label>
 
 
             <input class="form-control" type="search" name="keywords" id="keywords" value="{{ filters.keywords }}"
-                placeholder="[palabras clave]" />
+                placeholder="[palabras clave]" data-trigger="hover" data-delay="500" data-toggle="tooltip" title="[palabras clave]" />
         </div>
         <button class="btn btn-outline-success" type="submit">Buscar</button>
     </div>
@@ -114,11 +86,12 @@
 
 
     <div class="container">
-        <p class="text-success">
-            <strong>Filtros de Búsqueda</strong>
-            <a href="#" role="button" data-toggle="popover" title="Cómo usar los filtros de búsqueda"
-                data-content='Los campos del filtro de búsqueda sirven para restingir resultados, por ejemplo si Ud. selecciona Lugar = Santiago y Compositor/a = Alfonso Leng, los resultados contendrán sólo aquellos eventos con Alfonso Leng y Santiago simultáneamente.'><span
-                    class="oi oi-question-mark"></span></a>
+        <p class="text-success" data-trigger="hover" data-delay="500" data-toggle="tooltip" title="Click para ayuda">
+            
+            <a class="text-success" href="#" role="button" data-toggle="popover" title="Cómo usar los filtros de búsqueda"
+                data-content='Los campos del filtro de búsqueda sirven para restingir resultados, por ejemplo si Ud. selecciona Lugar = Santiago y Compositor/a = Alfonso Leng, los resultados contendrán sólo aquellos eventos con Alfonso Leng y Santiago simultáneamente.'>
+                <strong>Filtros de Búsqueda</strong>
+            </a>
         </p>
 
 

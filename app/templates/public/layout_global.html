@@ -163,6 +163,9 @@
         $(function () {
             $('[data-toggle="popover"]').popover()
         });
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
         $.fn.datepicker.dates['en'] = {
             days: ["Domingo", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
             daysShort: ["Dom", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -246,6 +249,14 @@
                 });
             }
         }( dropsdowns[i] ));
+
+        $(dropsdowns[i]).tooltip({
+            title: function () {
+                return $(this).prev().attr("title");
+            },
+            placement: "auto",
+            //container: 'body'
+        });
     }
 
 </script>
