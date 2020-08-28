@@ -1,5 +1,6 @@
 from time import time
 from datetime import datetime
+import calendar
 from flask import current_app
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -268,7 +269,9 @@ class Event(db.Model):
     # the min. For complete dates min_date == max_date
     def get_dates(self):
         min_date=datetime(self.year,self.month if self.month else 1,self.day if self.day else 1)
-        max_date=datetime(self.year,self.month if self.month else 12,self.day if self.day else 31)
+        max_month=self.month if self.month else 12
+        max_day=self.day if self.day else calendar.monthrange(self.year, max_month)[1]
+        max_date=datetime(self.year,max_month,max_day)
         return [min_date,max_date]
     
     def get_name(self):
