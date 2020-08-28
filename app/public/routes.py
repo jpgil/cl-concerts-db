@@ -1,3 +1,4 @@
+import sys
 import json
 import logging
 from flask import Flask, render_template, jsonify, url_for, request, redirect, abort, g
@@ -60,11 +61,18 @@ def get_events():
         render_template('public/event_table_TEST.json', entries=entries).replace("\n", "")
         )[:-1]
     return data
+
+from app.api.web_methods import search_events
 @bp.route('/search')
 def search():
     logger.info("Llamare el sidebar desde SEARCH")
     sidebar = get_sidebar()
-    return render_template('public/search.html', query=sidebar.query)
+    try:
+        results = search_events(keywords=sidebar.query['keywords'], filters=sidebar.query['filters'], offset=0, limit=2)
+    except Exception as e:
+        import traceback
+        results = traceback.format_exc()
+    return render_template('public/search.html', query=sidebar.query, results=results)
 
 
 # Catalogo de Personas

@@ -188,6 +188,23 @@ class SideBarFilters:
                         val = [val]
                 query['filters'][f['name']] = val
         query['keywords'] = self.prefill('keywords')
+
+        # Fix date format
+
+        #TODO: validate in validators, not here.
+        def format_date(d):
+            try:
+                f = d.split('/')
+                d, m, y = int(f[0]), int(f[1]), int(f[2])
+                return '%04d-%02d-%02d' % (y, m, d)
+                return '%s-%s-%s' % (y, m, d)
+            except:
+                return '1900-1-1'
+        query['filters']['start_date'] = format_date(
+            query['filters']['start_date'])
+        query['filters']['end_date'] = format_date(
+            query['filters']['end_date'])
+
         return query
 
     # Rewerite session from request values
