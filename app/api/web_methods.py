@@ -38,7 +38,7 @@ def search_events(keywords,filters,offset,limit):
         # we'll do this for each param
         for param_occurrence in params[param]:
             # we'll do this for all selected item of this param
-            filter_spec['or'].append({'field': param+'_id', 'op': 'eq', 'value': params[param_occurrence]})
+            filter_spec['or'].append({'field': param+'_id', 'op': 'eq', 'value': param_occurrence })
         if filter_spec['or']:
             query=apply_filters(query,filter_spec)
     [start_year,start_month, start_day]=params['start_date'].split('-')
@@ -185,7 +185,7 @@ def test_search_events(offset,limit):
     filters = {
     "start_date": "1950-04-20", "end_date": "1995-01-20",
     "name": "Moz",
-    "cycle": [],"event_type": [],"organized": [],"city": [ ],"location": [],
+    "cycle": [4,16],"event_type": [],"organized": [],"city": [ ],"location": [],
     "participant_name": [],"participant_gender": [1],"participant_country": [],"activity": [],
     "instruments": [],"compositor_name": [],"compositor_gender": [],"compositor_country": [],
     "premier_type": [],"musical_piece": [],"instrument_type": [],"musical_ensemble_name": [],
