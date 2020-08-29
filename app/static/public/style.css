@@ -85,7 +85,7 @@ nav.bg-primary {
 	font-size: 0.9em;
 }
 #searchResults a {
-	text-decoration: underline;
+	text-decoration: none;
 	display: block;
 }
 

@@ -5,7 +5,6 @@
 {% block content %}
 <h2>{{ title }}</h2>
 
-<p>Se muestra temporalmente el contenido del query a entregara Johnny</p>
 
 <table 
     class="table table-striped" 
@@ -18,7 +17,7 @@
     data-side-pagination="server"
     data-pagination="true"
     data-page-number="1"
-    data-page-size="25"
+    data-page-size="10"
     data-show-extended-pagination="true"
     data-url="{{url_for('public.get_events')}}"
 >

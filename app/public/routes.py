@@ -7,6 +7,8 @@ from sqlalchemy import or_, and_
 from app.public import bp
 from app.public import search as searchClDb
 from app.models import Event, Person
+from app.api.web_methods import search_events
+
 
 
 logger = logging.getLogger('werkzeug')
@@ -24,7 +26,6 @@ def get_sidebar():
 # Make some objects available to templates.
 @bp.context_processor
 def inject_userquery():
-    logger.info("Llamare el sidebar desde inject_userquery")
     sidebar = get_sidebar()
     return dict(
         userquery=request.args.get('keywords', default=''),
@@ -46,33 +47,53 @@ def inicio():
 def get_events():
     # Prepare parameters
     offset = request.args.get('offset', 0, type=int)
-    limit = request.args.get('limit', 10, type=int)
-    keywords = request.args.get('keywords', '', type=str)
-    query = searchClDb.event_list(keywords=keywords, offset=offset, limit=limit)
+    limit = request.args.get('limit', 10, type=int) 
+
+    logger.info([offset, limit])
+    query = get_sidebar().query
+
+    results = search_events(
+        keywords=query['keywords'], filters=query['filters'], offset=offset, limit=limit)
+
+    entries = [Event.query.filter_by(id=e).first_or_404()
+               for e in results['rows']]
+
+    data = {}
+    data['total'] = results['total']
+    rows = render_template('public/event_table.json', entries=entries)
+    logger.info(rows)
+    data['rows'] = json.loads(rows.replace("\n", ""),)[:-1]
+    return jsonify(data)
+    # data['rows'] = render_template('public/event_table.json', entries=entries)
+    # return data
+
+
+    # query = searchClDb.event_list(keywords=keywords, offset=offset, limit=limit)
 
     # DB result
-    data={ "rows": [], "total":  len(query) }
+    # data={ "rows": [], "total":  len(query) }
     # data={ "rows": [], "total":  query.count() }
     # entries=query.limit(limit).offset(offset).all()
-    entries = query[ offset:offset+limit ]
+    # entries = query[ offset:offset+limit ]
 
-    # Form JSON for bootstrap-table
-    data['rows'] = json.loads( 
-        render_template('public/event_table_TEST.json', entries=entries).replace("\n", "")
-        )[:-1]
-    return data
+    # # Form JSON for bootstrap-table
+    # data['rows'] = json.loads( 
+    #     render_template(
+    #         'public/event_table_TEST.json',
+    #         entries=entries).replace("\n", "")
+    #     )[:-1]
+    # return jsonify(data)
+    
 
-from app.api.web_methods import search_events
 @bp.route('/search')
 def search():
-    logger.info("Llamare el sidebar desde SEARCH")
-    sidebar = get_sidebar()
+    query = get_sidebar().query
     try:
-        results = search_events(keywords=sidebar.query['keywords'], filters=sidebar.query['filters'], offset=0, limit=2)
+        results = search_events(keywords=query['keywords'], filters=query['filters'], offset=0, limit=2)
     except Exception as e:
         import traceback
         results = traceback.format_exc()
-    return render_template('public/search.html', query=sidebar.query, results=results)
+    return render_template('public/search.html', query=query, results=results)
 
 
 # Catalogo de Personas
