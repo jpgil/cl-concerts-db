@@ -1,7 +1,7 @@
 import sys
 import json
 import logging
-from flask import Flask, render_template, jsonify, url_for, request, redirect, abort, g
+from flask import Flask, render_template, jsonify, url_for, request, redirect, abort, g, session
 from jinja2 import TemplateNotFound
 from sqlalchemy import or_, and_
 from app.public import bp
@@ -41,6 +41,18 @@ def index():
 @bp.route('/inicio')
 def inicio():
     return render_template('public/inicio.html')
+
+# Clear Cache!
+# Necesario porque las cookies me habian quedado gigantes al principio.
+@bp.route('/clear')
+def clearCache():
+    remove = []
+    for k in session.keys():
+        if '_cache_' in k:
+            remove.append(k)
+    for k in remove:
+        session[k] = ''
+    return redirect(url_for('.inicio'))
 
 # Search Result
 @bp.route('/list/events')

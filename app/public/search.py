@@ -18,7 +18,7 @@ class SelectCached:
             logger.debug('%s created' % self.name )
 
     def get(self):
-        if '_cache_%s'%self.name not in session.keys():
+        if '_cache_%s' % self.name not in session.keys() or session['_cache_%s' % self.name] == '':
             session['_cache_%s' % self.name] = [
                 {'value': v.id, 'label': v.get_name()} for v in self.obj.query.all()]
             session.modified = True
