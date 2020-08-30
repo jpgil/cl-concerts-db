@@ -115,7 +115,7 @@ msgid "Back"
 msgstr ""
 
 #: app/templates/errors/500.html:4
-msgid "A ocurrido un error inesperado"
+msgid "Ha ocurrido un error inesperado"
 msgstr ""
 
 #: app/templates/errors/500.html:5
