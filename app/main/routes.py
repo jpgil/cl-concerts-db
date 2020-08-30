@@ -103,8 +103,14 @@ def getPerson(id):
 
 def getMusicalPiece(id):
     item=MusicalPiece.query.filter_by(id=id).first()
-    data={} if not item else { 'id' : item.id , 'text': '{}'.format(item.get_name()) }
+    data={} if not item else { 'id' : item.id , 'text': '{}'.format(item.get_name(clean=False)) }
     return jsonify(data)
+
+def getMusicalPieceClean(id):
+    item=MusicalPiece.query.filter_by(id=id).first()
+    data={} if not item else { 'id' : item.id , 'text': '{}'.format(item.get_name(clean=True)) }
+    return jsonify(data)
+
 
 def getMusicalPieces(q,page,clean=False):    
     itemslist=db.session.query(MusicalPiece).filter(MusicalPiece.name.ilike('%'+q+'%')).order_by(MusicalPiece.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
@@ -248,6 +254,10 @@ def getMusicalPieceListClean():
 @bp.route('/list/mmusicalpieces/<id>')
 def getMusicalPieceItem(id):
     return getMusicalPiece(id)
+
+@bp.route('/list/mmusicalpiecesclean/<id>')
+def getMusicalPieceCleanItem(id):
+    return getMusicalPieceClean(id)
 
 @bp.route('/list/genders')
 def getGenderList():
