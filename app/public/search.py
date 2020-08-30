@@ -100,7 +100,7 @@ class SideBarFilters:
             ],
             'participantes': [
                 {'name': 'participant_name', 'type': 'select2',
-                    'placeholder': 'Nombre de participante', 'url': 'people'},
+                    'placeholder': 'Nombres', 'url': 'rawparticipant'},
                 {'name': 'participant_gender', 'type': 'select', 'placeholder': 'Género',
                     'values': SelectCached(Gender).get()
                 },
@@ -109,8 +109,7 @@ class SideBarFilters:
                     'placeholder': 'Actividad', 'url': 'activities'},
             ],
             'compositores': [
-                {'name': 'compositor_name', 'type': 'select2',
-                    'placeholder': 'Compositor', 'url': 'composer'},
+                {'name': 'compositor_name', 'type': 'select2', 'placeholder': 'Nombres', 'url': 'composer'},
                 {'name': 'compositor_gender', 'type': 'select', 'placeholder': 'Género',
                     'values': SelectCached(Gender).get()
                 },
