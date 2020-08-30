@@ -251,11 +251,11 @@ def getMusicalPieceListClean():
     q=request.args.get('q', '', type=str)
     return getMusicalPieces(q,page,clean=True)
 
-@bp.route('/list/mmusicalpieces/<id>')
+@bp.route('/list/musicalpieces/<id>')
 def getMusicalPieceItem(id):
     return getMusicalPiece(id)
 
-@bp.route('/list/mmusicalpiecesclean/<id>')
+@bp.route('/list/musicalpiecesclean/<id>')
 def getMusicalPieceCleanItem(id):
     return getMusicalPieceClean(id)
 
