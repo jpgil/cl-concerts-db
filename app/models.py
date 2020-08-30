@@ -295,7 +295,6 @@ class MusicalPiece(db.Model):
                     backref='musical_pieces')   
     instrumental_lineup =  db.Column(db.String(200))
     text  = db.Column(db.String(200))
-    instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'))
     def get_name(self):
         composers_names=""
         for composer in self.composers:
