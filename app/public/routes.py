@@ -73,7 +73,7 @@ def get_events():
     data = {}
     data['total'] = results['total']
     rows = render_template('public/event_table.json', entries=entries)
-    logger.info(rows)
+    # logger.info(rows)
     data['rows'] = json.loads(rows.replace("\n", ""),)[:-1]
     return jsonify(data)
     # data['rows'] = render_template('public/event_table.json', entries=entries)
