@@ -106,7 +106,7 @@ def getMusicalPiece(id):
     data={} if not item else { 'id' : item.id , 'text': '{}'.format(item.get_name()) }
     return jsonify(data)
 
-def getMusicalPieces(q,page):    
+def getMusicalPieces(q,page,clean=False):    
     itemslist=db.session.query(MusicalPiece).filter(MusicalPiece.name.ilike('%'+q+'%')).order_by(MusicalPiece.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
     itemlist_ids_sorted=sorted([(m.id,m.composers[0].last_name if m.composers else "") for m in itemslist.items], key=lambda x: x[1].strip().upper() ) 
     item_dictionary={}
@@ -116,7 +116,7 @@ def getMusicalPieces(q,page):
     itemlist_ids_sorted=[x[0] for x in itemlist_ids_sorted] 
     for item_id in itemlist_ids_sorted:
         item=item_dictionary[item_id]
-        text = '{}'.format(item.get_name())
+        text = '{}'.format(item.get_name(clean))
         data["results"].append( { 'id' : item.id , 'text': text } )
     return jsonify(data)
 
@@ -237,7 +237,8 @@ def getMusicalEnsembleItem(id):
 def getMusicalPieceList():
     page = request.args.get('page', 1, type=int)
     q=request.args.get('q', '', type=str)
-    return getMusicalPieces(q,page)
+    clean=request.args.get('clean', False, type=bool)
+    return getMusicalPieces(q,page,clean=clean)
 
 @bp.route('/list/mmusicalpieces/<id>')
 def getMusicalPieceItem(id):

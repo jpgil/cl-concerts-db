@@ -295,13 +295,17 @@ class MusicalPiece(db.Model):
                     backref='musical_pieces')   
     instrumental_lineup =  db.Column(db.String(200))
     text  = db.Column(db.String(200))
-    def get_name(self):
+    def get_name(self,clean=False):
         composers_names=""
         for composer in self.composers:
             composers_names+=composer.get_name()+","
         if composers_names != "":
             composers_names=composers_names[:-1] # removes the last ,
-        return "«{}» ({})".format(self.name,composers_names)
+        if clean:
+            return "{} ({})".format(self.name,composers_names)
+        else:
+            return "«{}» ({})".format(self.name,composers_names)
+
     def __repr__(self):
         composers_names=""
         for composer in self.composers:
