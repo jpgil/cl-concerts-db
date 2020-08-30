@@ -237,8 +237,13 @@ def getMusicalEnsembleItem(id):
 def getMusicalPieceList():
     page = request.args.get('page', 1, type=int)
     q=request.args.get('q', '', type=str)
-    clean=request.args.get('clean', False, type=bool)
-    return getMusicalPieces(q,page,clean=clean)
+    return getMusicalPieces(q,page,clean=False)
+
+@bp.route('/list/musicalpiecesclean')
+def getMusicalPieceListClean():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getMusicalPieceList(q,page,clean=True)
 
 @bp.route('/list/mmusicalpieces/<id>')
 def getMusicalPieceItem(id):
