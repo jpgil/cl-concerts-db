@@ -120,7 +120,7 @@ class SideBarFilters:
                 {'name': 'premier_type', 'type': 'select', 'placeholder': 'Estreno',
                     'values': SelectCached(PremiereType).get()
                 },
-                {'name': 'musical_piece', 'type': 'select2', 'placeholder': 'Obra', 'url': 'musicalpieces'},
+                {'name': 'musical_piece', 'type': 'select2', 'placeholder': 'Obra', 'url': 'musicalpieces?clean=True'},
                 {'name': 'instruments', 'type': 'select2',
                     'placeholder': 'Instrumentos', 'url': 'instruments'},
                 {'name': 'instrument_type', 'type': 'select', 'placeholder': 'Tipo de Instrumentos',
