@@ -110,7 +110,7 @@ class SideBarFilters:
             ],
             'compositores': [
                 {'name': 'compositor_name', 'type': 'select2',
-                    'placeholder': 'Nombre_de_participante', 'url': 'people'},
+                    'placeholder': 'Compositor', 'url': 'composer'},
                 {'name': 'compositor_gender', 'type': 'select', 'placeholder': 'Género',
                     'values': SelectCached(Gender).get()
                 },

@@ -96,6 +96,22 @@ def getPeople(q,page):
         data["results"].append( { 'id' : item.id , 'text': text } )
     return jsonify(data)
 
+def getComposer(q,page):    
+    itemslist = db.session.query(Person).filter(
+        and_(
+            or_(
+                Person.last_name.ilike('%' + q + '%'),
+                Person.first_name.ilike('%' + q + '%')
+                ),
+            Person.musical_pieces != None
+            )
+        ).order_by(Person.last_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
+    data={ "results": [], "pagination": { "more": itemslist.has_next} }
+    for item in itemslist.items:
+        text = item.get_name()
+        data["results"].append( { 'id' : item.id , 'text': text } )
+    return jsonify(data)
+
 def getPerson(id):
     item=Person.query.filter_by(id=id).first()
     data={} if not item else { 'id' : item.id , 'text': item.get_name() }
@@ -132,9 +148,16 @@ def getPeopleList():
     q=request.args.get('q', '', type=str)
     return getPeople(q,page)
 
+@bp.route('/list/composer/<id>')
 @bp.route('/list/people/<id>')
 def getPeopleItem(id):
     return getPerson(id)
+
+@bp.route('/list/composer')
+def getComposerList():
+    page = request.args.get('page', 1, type=int)
+    q = request.args.get('q', '', type=str)
+    return getComposer(q, page)
 
 
 @bp.route('/list/countries')
