@@ -119,7 +119,7 @@ def getRawParticipants(q, page):
                 Person.last_name.ilike('%' + q + '%'),
                 Person.first_name.ilike('%' + q + '%')
             ),
-            Person.musical_pieces == None
+            Person.participants != None
         )
     ).order_by(Person.last_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
     data={ "results": [], "pagination": { "more": itemslist.has_next} }
