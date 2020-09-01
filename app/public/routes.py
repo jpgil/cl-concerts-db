@@ -67,13 +67,13 @@ def get_events():
     results = search_events(
         keywords=query['keywords'], filters=query['filters'], offset=offset, limit=limit)
 
-    entries = [Event.query.filter_by(id=e).first_or_404()
-               for e in results['rows']]
+    # entries = [Event.query.filter_by(id=e).first_or_404() for e in results['rows']]
+    entries = Event.query.filter(Event.id.in_(results['rows'])).all()
 
     data = {}
     data['total'] = results['total']
     rows = render_template('public/event_table.json', entries=entries)
-    # logger.info(rows)
+
     data['rows'] = json.loads(rows.replace("\n", ""),)[:-1]
     return jsonify(data)
     # data['rows'] = render_template('public/event_table.json', entries=entries)
