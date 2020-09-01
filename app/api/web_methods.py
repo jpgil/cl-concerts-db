@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from app.models import  Event, Organization, Participant, Country, Performance
-import json
 import logging
 from datetime import datetime
 from sqlalchemy_filters import apply_filters
-from flask import jsonify 
 
 logger=logging.getLogger('werkzeug')
 
@@ -57,7 +55,13 @@ def search_events(keywords,filters,offset,limit):
     start_date=datetime.strptime(params['start_date'], '%Y-%m-%d')
     end_date=datetime.strptime(params['end_date'], '%Y-%m-%d')
     events_ids=[]
+            
     for event in query.all():
+        # since we're iterating through events/ let's use this oportunity for checking if 
+        # the city is what we're looking for
+        if params['city']:
+            if event.location.city_id not in params['city']:
+                continue
         [event_min_date,event_max_date]=event.get_dates()
         if event_min_date <= end_date and event_max_date >= start_date:
             events_ids.append(event.id)
@@ -85,18 +89,17 @@ def search_events(keywords,filters,offset,limit):
     if params["participant_name"] or params["activity"] or  params["participant_country"] or\
        params["participant_gender"] or params["musical_ensemble_name"]\
        or params["musical_ensemble_type"]:
-        print("Analyzing participants")
         # next! participants: we'll filter them out using name, gender, activity and nationalities
         #first list of participants. 
         participants_query=Participant.query.filter(Participant.event_id.in_(events_ids))
         if params["participant_name"]:
             participants_query=participants_query.filter(Participant.person_id.in_(params["participant_name"]))
+            #print(participants_query.all())
         if params["activity"]:
             participants_query=participants_query.filter(Participant.activity_id.in_(params["activity"]))
         # MusicalEnsembles could be filtered out by their type
         if params["musical_ensemble_name"]:            
             participants_query=participants_query.filter(Participant.musical_ensemble_id.in_(params["musical_ensemble_name"]))
-
 
         # the following code is not for faint hearts. It's so ugly that I not even
         # dare to use it in a Yo Mamma joke. This is done for managing cases where
@@ -104,17 +107,17 @@ def search_events(keywords,filters,offset,limit):
         temp_events_id=[]
         # first, we get the list of countries, if it was provided
         country_list=[]
-        if ["participant_country"]:
-            country_list=Country.query.filter(Country.id.in_(["participant_country"])).all()
+        if params["participant_country"]:
+            country_list=Country.query.filter(Country.id.in_(params["participant_country"])).all()
         for participant in participants_query.all():
             # not complying with any of the condition will get the participant
             # out of the final listjson.loads(json_params)
+            if not participant.person:
+                continue
             if params["participant_gender"]:
-                if not participant.person:
-                    continue
                 if participant.person.gender_id not in params["participant_gender"]:
                     continue
-            if ["participant_country"]:
+            if params["participant_country"]:
                 if not participant.person:
                     continue
                 if not intersection(country_list,participant.person.nationalities):
@@ -147,8 +150,8 @@ def search_events(keywords,filters,offset,limit):
              performance_query=performance_query.filter(Performance.musical_piece_id.in_(params["musical_piece"]))
         performances=performance_query.all()
         country_list=[]
-        if ["compositor_country"]:
-            country_list=Country.query.filter(Country.id.in_(["compositor_country"])).all()
+        if params["compositor_country"]:
+            country_list=Country.query.filter(Country.id.in_(params["compositor_country"])).all()
         for perfomance in performances:
             valid_composers=0 # the number of composers of the musical piece which complies with
                               # the resquested filter
@@ -178,7 +181,6 @@ def search_events(keywords,filters,offset,limit):
     else:
         response["rows"]=events_ids[offset:offset+limit]
     return response
-    #return(jsonify(response))
     
 
 def test_search_events(offset,limit):
