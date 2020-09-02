@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from app.models import  Event, Organization, Participant, Country, Performance
+from app.models import  Event, Organization, Participant, Country, Performance,\
+    Instrument
 import logging
 from datetime import datetime
 from sqlalchemy_filters import apply_filters
@@ -94,7 +95,6 @@ def search_events(keywords,filters,offset,limit):
         participants_query=Participant.query.filter(Participant.event_id.in_(events_ids))
         if params["participant_name"]:
             participants_query=participants_query.filter(Participant.person_id.in_(params["participant_name"]))
-            #print(participants_query.all())
         if params["activity"]:
             participants_query=participants_query.filter(Participant.activity_id.in_(params["activity"]))
         # MusicalEnsembles could be filtered out by their type
@@ -138,36 +138,57 @@ def search_events(keywords,filters,offset,limit):
 #    "": []   
         
 ####################  FILTERING BY PERFORMANCES ########################        
+
     if params["premier_type"] or  params["musical_piece"] or params["compositor_country"] or\
             params["instruments"] or  params["instrument_type"] or params["compositor_gender"] or\
             params["compositor_name"]:
         #initial list of performances. 
         temp_events_id=[]
-        performance_query=Participant.query.filter(Performance.event_id.in_(events_ids))
+        performance_query=Performance.query.filter(Performance.event_id.in_(events_ids))
         if params["premier_type"]:
             performance_query=performance_query.filter(Performance.premiere_type_id.in_(params["premier_type"]))
         if params["musical_piece"]:
              performance_query=performance_query.filter(Performance.musical_piece_id.in_(params["musical_piece"]))
         performances=performance_query.all()
-        country_list=[]
+
+##     FILTERING COMPOSERS
+        country_list=None
         if params["compositor_country"]:
             country_list=Country.query.filter(Country.id.in_(params["compositor_country"])).all()
-        for perfomance in performances:
-            valid_composers=0 # the number of composers of the musical piece which complies with
-                              # the resquested filter
-            for composer in perfomance.musical_piece.composers:
-                if params["compositor_country"]:
-                    if not intersection(composer.nationalities, country_list):
-                        continue
-                if params["compositor_name"]:
-                    if composer.id not in params["compositor_name"]:
-                        continue
-                if params["compositor_gender"]:
-                     if composer.gender_id not in params["compositor_gender"]:
-                         continue
-                valid_composers+=1
-            if  valid_composers:
-                temp_events_id.append(perfomance.event_id)
+        for performance in performances:
+            check_composers=False
+            check_instruments=False
+            composer_found=False
+            instrument_found=False
+            if  params["compositor_country"] or params["compositor_name"] or params["compositor_gender"]:
+                check_composers=True
+                for composer in performance.musical_piece.composers:
+                    if params["compositor_country"]:
+                        if not intersection(composer.nationalities, country_list):
+                            continue
+                    if params["compositor_name"]:
+                        if composer.id not in params["compositor_name"]:
+                            continue
+                    if params["compositor_gender"]:
+                         if composer.gender_id not in params["compositor_gender"]:
+                             continue
+                    composer_found=True
+            if (params["instrument_type"] or params["instruments"]):
+                check_instruments=True
+                instrument_query=Instrument.query
+                if params["instruments"]:
+                    instrument_query=instrument_query.filter(Instrument.id.in_(params["instruments"]))  
+                if params["instrument_type"]:
+                    instrument_query=instrument_query.filter(Instrument.instrument_type_id.in_(params["instrument_type"])) 
+                instrument_list=instrument_query.all()
+                if intersection(instrument_list, performance.musical_piece.instruments):
+                    instrument_found=True
+            if check_composers and not composer_found:
+                continue
+            if check_instruments and not instrument_found:
+                continue
+            temp_events_id.append(performance.event_id)
+            
         # sorted by id, but this could be easily changed
         events_ids=sorted(intersection(events_ids,temp_events_id))
     response={}
