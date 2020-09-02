@@ -4,6 +4,15 @@
 
 {% block content %}
 
+{% macro persona(i) -%}
+    {% if i.get_name() in ['Desconocido', 'Anónimo'] %}
+    {{ i.get_name() }}
+    {% else %}
+    <a href="#" data-toggle="modal" data-target="#modalPersona{{ i.id }}" style="display: inline;">{{ i.get_name() }}</a>
+    {% endif %}
+{%- endmacro %}
+
+
 {% macro fecha(e) -%}
 {%
     if e.day and e.month
@@ -213,7 +222,7 @@
 
                     <tr>
                         <td class='participante'>
-                            <a href="#" data-toggle="modal" data-target="#modalPersona{{ i.id }}" style="display: inline;">{{ i.get_name() }}</a>
+                            {{ persona(i) }}
                             {{ vida(i) }}
                         </td>
                         <td>
