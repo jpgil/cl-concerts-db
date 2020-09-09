@@ -38,7 +38,6 @@ def refresh_events_info_cache():
             event_id=event.id # just to avoid some typing..
             append_event(events_info,"cycle",event.cycle_id,event_id)
             append_event(events_info,"event_type",event.event_type_id, event_id)
-            append_event(events_info,"event_type",event.event_type_id, event_id)
             for organization in event.organizations:
                 append_event(events_info,"organized",organization.id, event_id)
             append_event(events_info,"location",event.location_id, event_id)
