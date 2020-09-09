@@ -1,11 +1,11 @@
 from datetime import datetime
-import json
-from flask import render_template, flash, redirect, url_for, request, g, \
+from flask import render_template, flash, redirect, url_for, request,  \
     jsonify, current_app
 from flask_login import current_user, login_required
-from flask_babel import _, get_locale
+from flask_babel import _
 #from guess_language import guess_language
 from app import db
+from app import scheduler
 #from app.main.forms import EditProfileForm, PostForm, SearchForm
 from app.main.forms import *
 from app.models import *
@@ -41,6 +41,9 @@ def before_request():
 #        db.session.commit()
 #        g.search_form = SearchForm()
 #    g.locale = str(get_locale())
+
+
+
  
 def getStringForModel(model):
     string4model={  'Instrument'      :  _('Instrumentos'),
@@ -815,7 +818,6 @@ def EditInstrument(id):
          return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
         form.name.data = instrument.name            
-    print(list2csv(selectedElements))
     return render_template('main/editinstrument.html',form=form,title=_('Editar Instrumento'),selectedElements=list2csv(selectedElements))    
 
 @bp.route('/new/musicalpiece', methods = ['GET','POST'])

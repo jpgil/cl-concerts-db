@@ -42,3 +42,6 @@ logs/
 .env
 *.DS_Store
 *.vscode
+
+#cache and lock
+.cache
