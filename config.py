@@ -27,7 +27,7 @@ class Config(object):
     # where the uploaded files wil be stored. There an 'uploads' directory will be created
     UPLOADS_DEFAULT_DEST = os.environ.get('UPLOADS_DEFAULT_DEST') or basedir
     CACHE_DEFAULT_DEST = "{}/.cache/".format(os.environ.get('CACHE_DEFAULT_DEST') or basedir)
-    CACHE_TIMEOUT = int(os.environ.get('CACHE_TIMEOUT')) or 5*60
+    CACHE_TIMEOUT = int(os.environ.get('CACHE_TIMEOUT' or 5*60)) 
     # language on which is expected to have translations.
     LANGUAGES = ['es', 'en']
     def __init__(self):
