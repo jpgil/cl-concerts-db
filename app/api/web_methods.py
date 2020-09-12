@@ -12,16 +12,8 @@ logger=logging.getLogger('werkzeug')
 
 # we'll use the intersection method to filtering out events
 def intersection(lst1, lst2): 
-<<<<<<< HEAD
-    # # Use of hybrid method 
-    # temp = set(lst2) 
-    # lst3 = [value for value in lst1 if value in temp] 
-    # return list(set(lst3))
-    return list( set(lst1).intersection(set(lst2)) ) 
-=======
     return list(set(lst1).intersection(lst2))
 
->>>>>>> 7468d2262ab2f3b2f45ea7209d67dfdad6386658
 
 def search_events(keywords,filters,offset,limit):
     params=filters

@@ -101,24 +101,15 @@ def get_events():
 
 @bp.route('/search')
 def search():
-<<<<<<< HEAD
-    query = get_sidebar().query
-=======
     return render_template('public/search.html')
     # query = get_sidebar().query
->>>>>>> 7468d2262ab2f3b2f45ea7209d67dfdad6386658
     # try:
     #     results = search_events(keywords=query['keywords'], filters=query['filters'], offset=0, limit=2)
     # except Exception as e:
     #     import traceback
     #     results = traceback.format_exc()
-<<<<<<< HEAD
-    results={}
-    return render_template('public/search.html', query=query, results=results)
-=======
     # return render_template('public/search.html', query=query, results=results)
 
->>>>>>> 7468d2262ab2f3b2f45ea7209d67dfdad6386658
 
 
 # Catalogo de Personas
