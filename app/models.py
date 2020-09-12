@@ -108,7 +108,7 @@ class City(db.Model):
 class Gender(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30)) 
-    persons= db.relationship('Person', backref='gender')
+    people = db.relationship('Person', backref='gender')
     def get_name(self):
         return self.name
     def __repr__(self):
