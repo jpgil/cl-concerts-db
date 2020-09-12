@@ -144,6 +144,7 @@ def show_event(id):
     participantes, compositores, personas = set(), set(), set()
     for i in event.participants:
         if i.person and i.activity.name == "Compositor/a":
+            i.person.is_composer = True
             compositores.add(i.person)
             personas.add(i.person)
         else:
@@ -154,6 +155,7 @@ def show_event(id):
     # Now, iterate in performances to extract other composers
     for p in event.performances:
         for c in p.musical_piece.composers:
+            c.is_composer = True
             compositores.add(c)
             personas.add(c)
 

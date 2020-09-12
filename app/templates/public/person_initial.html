@@ -91,12 +91,19 @@
                     {% endfor %}
                     {% endif %}
     
-    
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <a role="button" href="resultados.php" class="btn btn-primary">Eventos asociados a esta
+                    {% if p.musical_pieces %}
+                    <a role="button" href="{{ url_for('public.search', update='search', compositor_name=p.id) }}"
+                        class="btn btn-primary">Eventos asociados a esta
                         persona</a>
+                    {% else %}
+                    <a role="button" href="{{ url_for('public.search', update='search', participant_name=p.id) }}"
+                        class="btn btn-primary">Eventos asociados a esta
+                        persona</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
