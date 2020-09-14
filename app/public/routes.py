@@ -181,18 +181,11 @@ def show(page):
 
 @bp.before_app_first_request
 def initialize_cache():
-    from datetime import datetime
     from config import Config
-    from app.api.events_cache import read_events_from_file, \
-        refresh_events_info_cache, refresh_cache_thread
-    from app import cache, scheduler, current_app
+    from app.api.events_cache import refresh_cache_thread
+    from app import scheduler, current_app
 
-    read_from_file=read_events_from_file()
-    if read_from_file:
-        [events_info,last_update]=read_from_file
-    else:
-        events_info=refresh_events_info_cache()
-    cache.set('events_info',events_info)
-    cache.set('last_update',datetime.now())
-    scheduler.add_job(refresh_cache_thread, 'interval', seconds=Config.CACHE_TIMEOUT, args=[current_app._get_current_object()])
+    # we'll set the run interval just little less than the CACHE TIMEOUT to avoid
+    # the refresh be > CACHE_TIMEOUT
+    scheduler.add_job(refresh_cache_thread, 'interval', seconds=Config.CACHE_TIMEOUT-10, args=[current_app._get_current_object()])
     scheduler.start()
