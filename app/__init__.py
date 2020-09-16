@@ -11,7 +11,10 @@ from flask_moment import Moment
 from flask_babel import Babel, lazy_gettext as _l
 from flask_uploads import UploadSet, configure_uploads, AllExcept
 #from elasticsearch import Elasticsearch
+from flask_caching import Cache
 from config import Config
+from apscheduler.schedulers.background import BackgroundScheduler
+#from app.main import events_cache
 
 db = SQLAlchemy()
 migrate = Migrate(compare_type=True)
@@ -22,13 +25,16 @@ mail = Mail()
 bootstrap = Bootstrap()
 moment = Moment()
 babel = Babel()
+cache = Cache(config={'CACHE_TYPE': 'simple'})
+scheduler = BackgroundScheduler()
 files_collection = UploadSet('uploads', AllExcept(('exe', 'iso')))
+
 
 
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
-
+    cache.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
     login.init_app(app)
@@ -81,7 +87,12 @@ def create_app(config_class=Config):
 
         app.logger.setLevel(logging.DEBUG)
         app.logger.info('cl-concerts-db startup')
+
+    # WEB version added as blueprint
+    from app.public import bp as public_bp
+    app.register_blueprint(public_bp, url_prefix='/public')
     return app
+
 
 
 @babel.localeselector

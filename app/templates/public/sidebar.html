@@ -1,0 +1,147 @@
+{% set boxcycler = cycler(1,2,3,4,5,6,7,8,9) -%}
+{% macro render_box(box, boxname) -%}
+    {% set boxcount = boxcycler.next() -%}
+        <div class="filtro">
+            <div class="filtro-header">
+                <a class="" data-toggle="collapse" href="#boxid{{ boxcount }}" role="button" aria-expanded="false"
+                    aria-controls="collapseExample">
+                    {{ boxname }}
+                </a>
+            </div>
+            <div class="filtro-body collapse {% if box.show %}show{% endif %}" id="boxid{{ boxcount }}">
+        
+                {% for item in box.fields %}
+                <div class="form-group">
+                    <!-- <label for="f-tipo">{{ item.placeholder }}</label> -->
+
+                    {% if item.type == 'text' %}
+                    <div data-toggle="tooltip" title="[{{ item.placeholder }}]" data-trigger="hover" data-delay="500" >
+                    <input class="form-control form-control-sm" type="text" id="sidebar{{ item.name }}" name="{{ item.name }}"
+                        placeholder="[{{ item.placeholder }}]" value="{{ item.value or '' }}">
+                    </div>
+                    
+                    {% elif item.type == 'select' %}
+                    <select 
+                        data-toggle="tooltip" title="[{{ item.placeholder }}]"
+                        data-trigger="hover" data-delay="500" 
+                        class="form-control form-control-sm" id="sidebar{{ item.name }}" name="{{ item.name }}">
+                        <option value="">[{{ item.placeholder }}]</option>
+                        {% for option in item['values'] %}
+                        <option {% if option.value == item.value %} selected="selected" {% endif %} value="{{ option.value }}">
+                            {{ option.label }}</option>
+                        {% endfor %}
+                    </select>
+
+                    {% elif item.type == 'select2' %}
+                        <div class="form-group" data-toggle="tooltip" title="[{{ item.placeholder }}]">
+                            <select class="dd_select2" 
+                                data-toggle="tooltip" title="[{{ item.placeholder }}]"
+                                data-trigger="hover" data-delay="500" 
+                                description="[{{ item.placeholder }}]" 
+                                id="{{ item.name }}" 
+                                maxelem="10"
+                                multiple="multiple"
+                                name="{{ item.name }}" 
+                                selectedElements="{{ item.value|join(',') }}" 
+                                url="{{ item.url }}">
+                            </select>
+                        </div>
+                    {% else %}
+                    Tipo {{ item.type }} no soportado
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+{%- endmacro %}
+
+
+<form class="form" action="{{ url_for('public.search') }}" method="GET">
+
+    <input type="hidden" name="update" value="search">
+
+
+    <div class="container">
+        <div class="form-group">
+            <label class="text-success" for="keyword" 
+                data-trigger="hover" data-delay="500" data-toggle="tooltip" title="Click para ayuda"
+                >
+
+            <a href="#" role="button" class="text-success" 
+                data-toggle="popover" title="Acerca de la Búsqueda Rápida"
+                data-content='En este cuadro Ud. puede ingresar una o más palabras clave. La búsqueda 
+                contendrá resultados con cualquiera de estas palabras clave (equivalente a OR lógico).'>
+                <strong>Búsqueda Rápida</strong>
+            </a>
+
+                        </label>
+
+
+            <input class="form-control" type="search" name="keywords" id="keywords" value="{{ filters.keywords }}"
+                placeholder="[palabras clave]" data-trigger="hover" data-delay="500" data-toggle="tooltip" title="[palabras clave]" />
+        </div>
+        <button class="btn btn-outline-success" type="submit">Buscar</button>
+    </div>
+
+
+
+    <div class="container">
+        <p class="text-success" data-trigger="hover" data-delay="500" data-toggle="tooltip" title="Click para ayuda">
+            
+            <a class="text-success" href="#" role="button" data-toggle="popover" title="Cómo usar los filtros de búsqueda"
+                data-content='Los campos del filtro de búsqueda sirven para restingir resultados, por ejemplo si Ud. selecciona Lugar = Santiago y Compositor/a = Alfonso Leng, los resultados contendrán sólo aquellos eventos con Alfonso Leng y Santiago simultáneamente.'>
+                <strong>Filtros de Búsqueda</strong>
+            </a>
+        </p>
+
+
+        <div class="filtro">
+            <div class="filtro-header">
+                <a class="" data-toggle="collapse" href="#boxid0" role="button" aria-expanded="false"
+                    aria-controls="collapseExample">
+                    Fechas
+                </a>
+            </div>
+            <div class="filtro-body collapse {% if filters.fecha['show'] %}show{% endif %}" id="boxid0">
+
+
+                    <div class="form-group">
+                        <label for="start_date">Desde</label>
+                        <div class="input-group date" data-provide="datepicker">
+                            <input name="start_date" type="text" class="form-control" value="{{ filters.fecha['start_date'] }}">
+                            <div class="input-group-addon">
+                                <span class="oi oi-calendar"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="form-group">
+                        <label for="end_date">Hasta</label>
+                        <div class="input-group date" data-provide="datepicker">
+                            <input name="end_date" type="text" class="form-control" value="{{ filters.fecha['end_date'] }}">
+                            <div class="input-group-addon">
+                                <span class="oi oi-calendar"></span>
+                            </div>
+                        </div>
+                    </div>        
+            </div>
+        </div>
+
+        {{ render_box(filters.evento, 'Información del evento') }}
+
+        {{ render_box(filters.lugar, 'Lugar del evento') }}
+
+        {{ render_box(filters.participantes, 'Participantes') }}
+
+        {{ render_box(filters.compositores, 'Compositores') }}
+
+        {{ render_box(filters.repertorio, 'Repertorio') }}
+
+        {{ render_box(filters.agrupaciones, 'Agrupaciones') }}
+
+
+        <button class="btn btn-outline-success" type="submit">Aplicar Filtros</button>
+    </div>  
+</form>
+

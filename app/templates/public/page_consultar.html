@@ -1,0 +1,59 @@
+{% extends 'public/layout_global.html' %}
+
+{% set title='Cómo consultar la Base de Datos' %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+
+<p class="text-right">
+<figure class="figure px-4 pt-4">
+    <img src="{{ url_for('static', filename='public/images/page-consultar.jpg') }}"
+        class="figure-img img-fluid rounded" alt="">
+    <figcaption class="figure-caption text-right"></figcaption>
+</figure>
+</p>
+
+
+<p>
+    La base de datos está organizada en diversas posibles categorías de búsqueda. Es posible seleccionar diferentes
+    categorías al mismo tiempo. El resultado de la búsqueda siempre mostrará eventos (principalmente conciertos, pero
+    también talleres, mesas redondas, concursos u otros) que correspondan a la/s información/es buscadas. Usando la
+    Búsqueda Avanzada, será posible continuar aplicando filtros a los resultados de la búsqueda.
+
+</p>
+
+<p>
+    En general, las categorías de búsqueda corresponden a:
+</p>
+
+<ul>
+    <li>
+        Personas (intérpretes u otros participantes, compositores/as) que pueden ser filtradas por nacionalidad y
+        género, y por tipos de actividades (instrumentistas, cantantes, conferencistas, etc.).
+    </li>
+    <li>
+        Organizaciones: entendidas como instituciones que participaron como tales en los eventos.
+    </li>
+    <li>
+        Agrupaciones musicales, que pueden ser filtradas seleccionando tipos de agrupaciones.
+    </li>
+    <li>
+        Obras musicales, que pueden ser filtradas a través de sus autores/as, formación instrumental o vocal, año de
+        composición, título, estreno mundial o chileno, etc.
+    </li>
+    <li>
+        Lugares de realización de los eventos.
+    </li>
+    <li>
+        Tipos de eventos.
+    </li>
+</ul>
+
+<p>
+    Al ubicar el cursor en una categoría, será posible además ver el listado de ítems ingresados dentro de ella.
+    También es posible indicar fechas a fin de restringir la búsqueda.
+</p>
+
+{% endblock %}

@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.17.1/dist/bootstrap-table.min.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:300,400,600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css"
+        integrity="sha256-BJ/G+e+y7bQdrYkS2RBTyNfBHpA9IuGaPmf9htub5MQ=" crossorigin="anonymous" />
+
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gijgo/1.9.13/combined/css/gijgo.min.css" integrity="sha256-bH0WSMuCFoG/dxeox/5aOWmaZl729yDg4ylckwSRTfU=" crossorigin="anonymous" /> -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.standalone.min.css"
+        integrity="sha256-BqW0zYSKgIYEpELUf5irBCGGR7wQd5VZ/N6OaBEsz5U=" crossorigin="anonymous" />
+
+    <link href="{{ url_for('static', filename='public/style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='public/theme_1590956485083.css') }}" rel="stylesheet">
+
+    <title>{% block title %}
+    {% if title %}{{ title }} - CL-CONCERTS-WEB {% else %}Cl-concerts-web{% endif %}
+    {% endblock %}</title>
+</head>
+
+<body>
+    <div cccclass="container">
+
+        <!-- Two Columns -->
+        <section id="main-layout">
+            <div class="row sticky-top">
+                <div class="col">
+                    <section id="menu">
+                        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                            <a class="navbar-brand" href="{{ url_for('public.inicio') }}">Base de Datos de Conciertos Doctos en Chile, 1945–1995</a>
+                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <!-- span class="navbar-toggler-icon"></span -->
+                                <ion-icon name="menu-outline"></ion-icon>
+                            </button>                        
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                {% include 'public/menu.html' %}
+                            </div>
+                        </nav>
+                    </section>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-3">
+                        <section id="side-bar" class="py-4">
+                            {% include 'public/sidebar.html' %}
+                        </section>
+                    </div>
+
+                    <div class="col-xl-9 pb-4">
+
+                        <!-- Main Content -->
+                        <section id="main-content" class="py-4">
+
+                            {% block content %}
+                            CONTENT here
+                            {% endblock %}
+
+                        </section>
+                    </div>
+                </div>
+            </div>  
+
+
+            <footer class="footer bg-primary text-light">
+                <div class="container">
+                    <div class="row py-4">
+                        <div class="col-sm">
+                            <p>
+                                <a href="https://www.uahurtado.cl/"><img src="{{ url_for('static', filename='public/images/logo-uah.png') }}"
+                                        style="width: 250px"></a>
+                            </p>
+                            <p class="mb-0">
+                                <a class="text-light" href="https://filosofiahumanidades.uahurtado.cl/">Facultad de Filosofía y Humanidades</a>
+                            </p>
+                            <p>
+                                <a class="text-light" href="https://filosofiahumanidades.uahurtado.cl/departamentos/instituto-musica/">Instituto de Música</a>
+                            </p>
+                        </div>
+
+                        <div class="col-sm" style="text-align: center;">
+                            <p>
+                                <img src="{{ url_for('static', filename='public/images/logo-fondecyt.png') }}" style="width: 250px">
+                            </p>
+                            <p>
+                                Fondecyt de Iniciación 11170844
+                            </p>
+                        </div>
+                        
+                        <div class="col-sm pt-0" style="text-align: center;">
+                        
+                            <form class="mt-0" style="width: 15em; float: right;">
+                                <div class="form-group">
+                                    <input type="email" class="form-control form-control-sm" name="email" id="inputEmail3"
+                                        placeholder="Tu email">
+                                </div>
+                                <div class="form-group">
+                                    <textarea class="form-control form-control-sm" name="consulta" placeholder="Envíanos tu consulta"
+                                        id="exampleFormControlTextarea1" rows="3"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-outline-success mb-2">Enviar Consulta</button>
+                            </form>
+                        </div>
+
+
+
+
+            
+                    </div>
+            
+                </div>
+            </footer>
+
+        </section>
+    </div>
+
+
+{% block scripts %}
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+
+
+    <script src="https://unpkg.com/bootstrap-table@1.17.1/dist/bootstrap-table.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.17.1/dist/locale/bootstrap-table-es-CL.js"></script>
+    
+    <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"
+        integrity="sha256-bqVeqGdJ7h/lYPq6xrPv/YGzMEb6dNxlfiTUHSgRCp8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.es.min.js"
+        integrity="sha256-K5G+7qV0tjuHL0LlhCU0TqQKR+7QwT8MfEUe2UgpmRY=" crossorigin="anonymous"></script>
+    
+    <script>
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        });
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        });
+        $.fn.datepicker.dates['en'] = {
+            days: ["Domingo", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+            daysShort: ["Dom", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+            daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+            months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Deciembre"],
+            monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            today: "Today",
+            clear: "Clear",
+            format: "dd/mm/yyyy",
+            titleFormat: "MM yyyy", /* Leverages same syntax as 'format' */
+            weekStart: 0
+        };
+        $('.datepicker').datepicker({
+            // language: 'es'
+        });
+    </script>
+
+<!-- <link href="{{ url_for('static', filename = 'css/lib/select2.min.css') }}" rel="stylesheet" />
+    <script src="{{ url_for('static', filename = 'js/lib/select2.min.js') }}"></script> -->
+<!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" /> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.full.js"></script>
+ -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+    integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw=="
+    crossorigin="anonymous" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.min.js"
+    integrity="sha512-RtZU3AyMVArmHLiW0suEZ9McadTdegwbgtiQl5Qqo9kunkVg1ofwueXD8/8wv3Af8jkME3DDe3yLfR8HSJfT2g=="
+    crossorigin="anonymous"></script>
+ 
+<!-- Trick to show the placeholder even when bootstrap is hidden -->
+<style type="text/css">
+.select2-selection--multiple .select2-search__field{
+  width:100%!important;
+}
+</style>
+<script>
+    var dropsdowns = document.getElementsByClassName("dd_select2")
+    for (var i = 0; i < dropsdowns.length; i++) {
+        $(dropsdowns[i]).select2({
+            placeholder: dropsdowns[i].getAttribute('description'),
+            width: '100%',
+            tags: false,
+            ajax: {
+                url: '/list/' + dropsdowns[i].getAttribute('url'),
+                dataType: 'json',
+                delay: 250,
+                // tags: true,
+                data: function (params) {
+                    return {
+                        q: params.term, // search term
+                        page: params.page
+                    };
+                },
+                // minimumInputLength: 2,
+                processResults: function (data, params) {
+                    return { results: data.results, pagination: data.pagination };
+                },
+                cache: true
+            },
+            // maximumSelectionLength: (dropsdowns[i].hasAttribute('maxelem')) ? parseInt(dropsdowns[i].getAttribute('maxelem')) : 10
+        })
+
+        selectedItems = []
+        if (dropsdowns[i].getAttribute('selectedElements') != "") {
+            selectedItems = dropsdowns[i].getAttribute('selectedElements').split(',');
+        }
+
+        // Closure trick to use correct dropdowns[i]
+        (function(dd2) { 
+            for (var k = 0; k < selectedItems.length; k++) {
+                // Fetch the preselected item, and  add to the control
+                console.log('searching [' + i +']for ' + '/list/' + dd2.getAttribute('url') + '/' + selectedItems[k])
+                $.ajax({
+                    type: 'GET',
+                    url: '/list/' + dd2.getAttribute('url') + '/' + selectedItems[k],
+                    async: false
+                }).then(function (data) {
+                    var option = new Option(data.text, data.id, true, true);
+                    $(dd2).append(option).trigger('change');
+                    console.log('Added [' + i + ']: ' + data.text + '/' + data.id);
+                });
+            }
+        }( dropsdowns[i] ));
+
+        $(dropsdowns[i]).tooltip({
+            title: function () {
+                return $(this).prev().attr("title");
+            },
+            placement: "auto",
+            //container: 'body'
+        });
+    }
+
+</script>
+
+{% endblock %}
+
+
+</body>
+
+</html>

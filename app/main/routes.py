@@ -1,11 +1,11 @@
 from datetime import datetime
-import json
-from flask import render_template, flash, redirect, url_for, request, g, \
+from flask import render_template, flash, redirect, url_for, request,  \
     jsonify, current_app
 from flask_login import current_user, login_required
-from flask_babel import _, get_locale
+from flask_babel import _
 #from guess_language import guess_language
 from app import db
+from app import scheduler
 #from app.main.forms import EditProfileForm, PostForm, SearchForm
 from app.main.forms import *
 from app.models import *
@@ -41,6 +41,9 @@ def before_request():
 #        db.session.commit()
 #        g.search_form = SearchForm()
 #    g.locale = str(get_locale())
+
+
+
  
 def getStringForModel(model):
     string4model={  'Instrument'      :  _('Instrumentos'),
@@ -96,6 +99,38 @@ def getPeople(q,page):
         data["results"].append( { 'id' : item.id , 'text': text } )
     return jsonify(data)
 
+def getComposers(q,page):    
+    itemslist = db.session.query(Person).filter(
+        and_(
+            or_(
+                Person.last_name.ilike('%' + q + '%'),
+                Person.first_name.ilike('%' + q + '%')
+            ),
+            Person.musical_pieces != None
+        )
+    ).order_by(Person.last_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
+    data={ "results": [], "pagination": { "more": itemslist.has_next} }
+    for item in itemslist.items:
+        text = item.get_name()
+        data["results"].append( { 'id' : item.id , 'text': text } )
+    return jsonify(data)
+
+def getRawParticipants(q, page):
+    itemslist = db.session.query(Person).filter(
+        and_(
+            or_(
+                Person.last_name.ilike('%' + q + '%'),
+                Person.first_name.ilike('%' + q + '%')
+            ),
+            Person.participants != None
+        )
+    ).order_by(Person.last_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
+    data={ "results": [], "pagination": { "more": itemslist.has_next} }
+    for item in itemslist.items:
+        text = item.get_name()
+        data["results"].append( { 'id' : item.id , 'text': text } )
+    return jsonify(data)
+
 def getPerson(id):
     item=Person.query.filter_by(id=id).first()
     data={} if not item else { 'id' : item.id , 'text': item.get_name() }
@@ -103,10 +138,16 @@ def getPerson(id):
 
 def getMusicalPiece(id):
     item=MusicalPiece.query.filter_by(id=id).first()
-    data={} if not item else { 'id' : item.id , 'text': '{}'.format(item.get_name()) }
+    data={} if not item else { 'id' : item.id , 'text': '{}'.format(item.get_name(clean=False)) }
     return jsonify(data)
 
-def getMusicalPieces(q,page):    
+def getMusicalPieceClean(id):
+    item=MusicalPiece.query.filter_by(id=id).first()
+    data={} if not item else { 'id' : item.id , 'text': '{}'.format(item.get_name(clean=True)) }
+    return jsonify(data)
+
+
+def getMusicalPieces(q,page,clean=False):    
     itemslist=db.session.query(MusicalPiece).filter(MusicalPiece.name.ilike('%'+q+'%')).order_by(MusicalPiece.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
     itemlist_ids_sorted=sorted([(m.id,m.composers[0].last_name if m.composers else "") for m in itemslist.items], key=lambda x: x[1].strip().upper() ) 
     item_dictionary={}
@@ -116,7 +157,7 @@ def getMusicalPieces(q,page):
     itemlist_ids_sorted=[x[0] for x in itemlist_ids_sorted] 
     for item_id in itemlist_ids_sorted:
         item=item_dictionary[item_id]
-        text = '{}'.format(item.get_name())
+        text = '{}'.format(item.get_name(clean))
         data["results"].append( { 'id' : item.id , 'text': text } )
     return jsonify(data)
 
@@ -126,9 +167,25 @@ def getPeopleList():
     q=request.args.get('q', '', type=str)
     return getPeople(q,page)
 
+
+@bp.route('/list/rawparticipant/<id>')
+@bp.route('/list/composer/<id>')
 @bp.route('/list/people/<id>')
 def getPeopleItem(id):
     return getPerson(id)
+
+@bp.route('/list/composer')
+def getComposerList():
+    page = request.args.get('page', 1, type=int)
+    q = request.args.get('q', '', type=str)
+    return getComposers(q, page)
+
+
+@bp.route('/list/rawparticipant')
+def getRawParticipantList():
+    page = request.args.get('page', 1, type=int)
+    q = request.args.get('q', '', type=str)
+    return getRawParticipants(q, page)
 
 
 @bp.route('/list/countries')
@@ -237,11 +294,21 @@ def getMusicalEnsembleItem(id):
 def getMusicalPieceList():
     page = request.args.get('page', 1, type=int)
     q=request.args.get('q', '', type=str)
-    return getMusicalPieces(q,page)
+    return getMusicalPieces(q,page,clean=False)
 
-@bp.route('/list/mmusicalpieces/<id>')
+@bp.route('/list/musicalpiecesclean')
+def getMusicalPieceListClean():
+    page = request.args.get('page', 1, type=int)
+    q=request.args.get('q', '', type=str)
+    return getMusicalPieces(q,page,clean=True)
+
+@bp.route('/list/musicalpieces/<id>')
 def getMusicalPieceItem(id):
     return getMusicalPiece(id)
+
+@bp.route('/list/musicalpiecesclean/<id>')
+def getMusicalPieceCleanItem(id):
+    return getMusicalPieceClean(id)
 
 @bp.route('/list/genders')
 def getGenderList():
@@ -751,7 +818,6 @@ def EditInstrument(id):
          return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
         form.name.data = instrument.name            
-    print(list2csv(selectedElements))
     return render_template('main/editinstrument.html',form=form,title=_('Editar Instrumento'),selectedElements=list2csv(selectedElements))    
 
 @bp.route('/new/musicalpiece', methods = ['GET','POST'])

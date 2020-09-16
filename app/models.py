@@ -1,4 +1,6 @@
 from time import time
+from datetime import datetime
+import calendar
 from flask import current_app
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -106,7 +108,7 @@ class City(db.Model):
 class Gender(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30)) 
-    persons= db.relationship('Person', backref='gender')
+    people = db.relationship('Person', backref='gender')
     def get_name(self):
         return self.name
     def __repr__(self):
@@ -261,6 +263,17 @@ class Event(db.Model):
             return "{}".format(self.year)            
         else:
             return "Sin fecha"
+    # since some dates doesn't have month or day, for those we need to be
+    # as inclusive as possible, so we'll convert it to the min possible date
+    # for comparing the the end_date and to max possible date for comparing with
+    # the min. For complete dates min_date == max_date
+    def get_dates(self):
+        min_date=datetime(self.year,self.month if self.month else 1,self.day if self.day else 1)
+        max_month=self.month if self.month else 12
+        max_day=self.day if self.day else calendar.monthrange(self.year, max_month)[1]
+        max_date=datetime(self.year,max_month,max_day)
+        return [min_date,max_date]
+    
     def get_name(self):
         return '[{}] {} - {} ({})'.format(self.get_string_date(),self.event_type.name, self.name, self.location.name) if self.name else  '[{}] {} ({})'.format(self.get_string_date(),
                 self.event_type.name, self.location.name)
@@ -282,13 +295,17 @@ class MusicalPiece(db.Model):
                     backref='musical_pieces')   
     instrumental_lineup =  db.Column(db.String(200))
     text  = db.Column(db.String(200))
-    def get_name(self):
+    def get_name(self,clean=False):
         composers_names=""
         for composer in self.composers:
             composers_names+=composer.get_name()+","
         if composers_names != "":
             composers_names=composers_names[:-1] # removes the last ,
-        return "«{}» ({})".format(self.name,composers_names)
+        if clean:
+            return "{} ({})".format(self.name,composers_names)
+        else:
+            return "«{}» ({})".format(self.name,composers_names)
+
     def __repr__(self):
         composers_names=""
         for composer in self.composers:

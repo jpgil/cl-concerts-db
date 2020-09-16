@@ -1,0 +1,25 @@
+{% macro fecha(e) -%}
+{%
+    if e.day and e.month
+    %}{{ '%02d' % e.day }}/{{ '%02d' % e.month }}/{%
+        endif
+    %}{{ e.year }}
+{%- endmacro %}
+[
+    {% for e in entries %}
+    
+    {
+        "title": "<a href='{{ url_for('public.show_event', id=e.id ) }}'>{{ 
+            e.event_type.name|e
+        }}{% 
+            if e.name %}: {{ e.name|e }}{% endif %}{% 
+            if e.cycle.name and e.cycle.name != "Ninguno"
+            %} - Ciclo \"{{ e.cycle.name|e }}\"{% endif 
+                %}</a>",
+        "place": "<a href='{{ url_for('public.show_event', id=e.id ) }}'>{{ 
+            e.location.name|e }}, {{ e.location.city.name|e }}</a>",
+        "date": "{{ fecha(e) }}"
+    },
+    {% endfor %}
+    {}
+]

@@ -1,0 +1,40 @@
+{% extends 'public/layout_global.html' %}
+
+{% set title='Resultados de la búsqueda' %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+
+<table 
+    class="table table-striped" 
+    id="searchResults"
+    data-toggle="table"
+    data-search="false"
+    data-trim-on-search="false"
+    data-show-footer="true"
+    data-only-info-pagination="false"
+    data-side-pagination="server"
+    data-pagination="true"
+    data-page-number="1"
+    data-page-size="10"
+    data-show-extended-pagination="true"
+    data-url="{{url_for('public.get_events')}}"
+>
+    <thead>
+        <tr>
+            <th scope="col" data-field='title'>Evento</th>
+            <th scope="col" data-field='place'>Lugar</th>
+            <th scope="col" data-field='date'>Fecha</th>
+        </tr>
+    </thead>
+
+</table>
+
+<!--
+<pre>{{ query|pprint }}</pre>
+
+<pre>{{ results|pprint }}</pre>
+-->
+
+{% endblock %}

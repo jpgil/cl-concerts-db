@@ -1,0 +1,39 @@
+{% extends 'public/layout_global.html' %}
+
+{% set title='Acerca de la Base de Datos de Conciertos en Chile' %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<p class="text-right">
+<figure class="figure px-4 pt-4">
+    <img src="{{ url_for('static', filename='public/images/page-acerca.jpg') }}" class="figure-img img-fluid rounded"
+        alt="">
+    <figcaption class="figure-caption text-right"></figcaption>
+</figure>
+</p>
+
+<p>El proyecto <a href="https://www.conicyt.cl/fondecyt/">Fondecyt de Iniciación</a> 11170844 
+    “Espacios alternativos de la música
+    contemporánea en Chile, 1945–1995” (2017–2020) de la investigadora responsable Daniela
+    Fugellie, investigó ‘espacios alternativos’ de la interpretación y creación de la música
+    contemporánea, desarrollados en cooperación con instituciones de un perfil internacional, y
+    especialmente de los Institutos Chileno-Británico de Cultura, Chileno-Alemán de Cultura y
+    Goethe-Institut. Por ‘espacios alternativos’ se entendieron proyectos independientes, los
+    cuales abrieron espacios de experimentación en nuevos repertorios y tendencias estéticas,
+    diferenciándose de la estética difundida por las instituciones musicales oficiales del país,
+    especialmente las vinculadas a la Universidad de Chile. </p>
+
+<p>Junto con realizar una
+    reconstrucción panorámica de eventos musicales, sus características y protagonistas, se
+    profundizó en dos proyectos de música contemporánea: Tonus (1952–1959) y Anacrusa (1985–1995), ahondando en su
+    influencia para el desarrollo de la música chilena y sus
+    relaciones con los institutos culturales europeos. La colaboración entre Anacrusa y el
+    Goethe-Institut Santiago fue analizada desde el trasfondo de los lineamientos de la
+    diplomacia cultural de la República Federal Alemana. Los resultados de este proyecto han
+    sido presentados en conferencias y publicaciones nacionales e internacionales.</p>
+
+<p>Mayores informaciones: Daniela Fugellie, <a href="mail">dfugellie@uahurtado.cl</a>.</p>.
+
+{% endblock %}
