@@ -70,7 +70,7 @@ def get_events():
         keywords=query['keywords'], filters=query['filters'], offset=offset, limit=limit)
 
     # entries = [Event.query.filter_by(id=e).first_or_404() for e in results['rows']]
-    entries = Event.query.filter(Event.id.in_(results['rows'])).all()
+    entries = Event.query.filter(Event.id.in_(results['rows'])).order_by(Event.year).order_by(Event.month).order_by(Event.day).all()
 
     data = {}
     data['total'] = results['total']
@@ -182,10 +182,13 @@ def show(page):
 @bp.before_app_first_request
 def initialize_cache():
     from config import Config
-    from app.api.events_cache import refresh_cache_thread
+    from app.api.events_cache import refresh_cache_thread, refresh_cache
     from app import scheduler, current_app
 
     # we'll set the run interval just little less than the CACHE TIMEOUT to avoid
     # the refresh be > CACHE_TIMEOUT
+    logger.debug("initializing cache")
+    refresh_cache(True)
+    logger.debug("starting refresh thread")
     scheduler.add_job(refresh_cache_thread, 'interval', seconds=Config.CACHE_TIMEOUT-10, args=[current_app._get_current_object()])
     scheduler.start()

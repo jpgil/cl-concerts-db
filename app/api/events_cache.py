@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 from app.models import  Event, Person, Instrument, MusicalEnsemble, MusicalPiece
-import logging
+
 from app import cache
 from config import Config 
 import pickle, fasteners
 from datetime import datetime, timedelta
 from os import path, makedirs
+from werkzeug.local import LocalProxy
+from flask import current_app
+logger = LocalProxy(lambda: current_app.logger)
 
-logger=logging.getLogger('werkzeug')
 
 def append_event(events_info,param,type_key,event_id):
     if not param in events_info:
@@ -24,14 +26,18 @@ def refresh_cache_thread(app):
     
 
 @fasteners.interprocess_locked(Config.CACHE_DEFAULT_DEST+"/cache.refresh_cache.lock")        
-def refresh_cache():
+def refresh_cache(force_read_from_disk=False):
+    logger.debug("calling refresh_cache")
+    # force_refresh will force...well, the refresh
     timeout = timedelta(seconds = Config.CACHE_TIMEOUT)
-    
+
     # first case: the cached data is still valid. We do nothing in this case
+    # this make sense only is the cache is already set
     current_time=datetime.now()
-    if current_time - cache.get('last_update') <= timeout:
-        print('data is up to date')
-        return
+    if cache.get('last_update'):
+        if current_time - cache.get('last_update') <= timeout:
+            logger.debug('data is up to date')
+            return
     
     # second case: the data in disk is newer that the cached data
     # this happens if a different thread updated the cache is disk
@@ -40,6 +46,7 @@ def refresh_cache():
         
     # read from disk
     events_from_file=read_from_file('events')
+    events_names_from_file=read_from_file('events_names')
     people_from_file=read_from_file('people')
     instruments_from_file=read_from_file('instruments')
     musical_pieces_from_file=read_from_file('musical_pieces')
@@ -48,20 +55,22 @@ def refresh_cache():
     # this will be true if all the data is available from fisk
     all_read_from_file=last_update_from_file and events_from_file and people_from_file and instruments_from_file and musical_pieces_from_file and musical_ensembles_from_file and last_update_from_file 
     # we also need to make sure the data in the disk cache is not out dated
-    disk_data_up_to_date = current_time - last_update_from_file <= timeout
+    disk_data_up_to_date = (current_time - last_update_from_file <= timeout) if last_update_from_file else False
     # we can use the data from the disk to set the cache online if:
     # the data from disk could be all read and it's up to date
-    if disk_data_up_to_date or all_read_from_file:
+    if (disk_data_up_to_date or force_read_from_disk )and all_read_from_file:
         # in that case, we set the cache from disk
-        print("using cache from disk")
+        logger.debug("using cache from disk")
+        cache.set('events',events_from_file)
+        cache.set('events_names',events_names_from_file)
         cache.set('people',people_from_file)
         cache.set('instruments',instruments_from_file)
         cache.set('musical_pieces',musical_pieces_from_file)
-        cache.set=save_to_file('musical_ensembles',musical_ensembles_from_file)
+        cache.set('musical_ensembles',musical_ensembles_from_file)
         cache.set('last_update',last_update_from_file)
         return
     else:
-        print("data outdated or cache not found. refreshing....")
+        logger.debug("data outdated or cache not found. refreshing....")
         events={}
         for event in Event.query.all():
             event_id=event.id # just to avoid some typing..
@@ -93,13 +102,21 @@ def refresh_cache():
                         append_event(events,"compositor_country",country.id, event_id)
         
         # saving events to file and cache
+        cache.set('events',events)
         save_to_file('events',events)
+        # save events names  to file and cache
+        events_names={}
+        for event in Event.query.all():
+            events_names[event.id]=event.name
+        save_to_file('events_names',events_names)
+        cache.set('events_names',events_names)        
         # saving people names to file and cache
         people={}
         for person in Person.query.all():
-            people[person.id]=person.get_name()
+            people[person.id]=[person.first_name,person.last_name]
         save_to_file('people',people)
         cache.set('people',people)
+
         # saving instruments names to file and cache
         instruments={}
         for instrument in Instrument.query.all():
@@ -122,6 +139,7 @@ def refresh_cache():
         current_time=datetime.now() 
         save_to_file('last_update',current_time)
         cache.set('last_update',current_time)
+        logger.debug('finished update')
 
 
 @fasteners.interprocess_locked(Config.CACHE_DEFAULT_DEST+"/cache.read.lock")

@@ -7,8 +7,8 @@ from flask_babel import _
 from app import files_collection
 from app.main.routes import addHistoryEntry,getStringForModel
 from sqlalchemy import and_
-import sqlalchemy
-from sqlalchemy_utils import dependent_objects, get_referencing_foreign_keys
+
+from sqlalchemy_utils import dependent_objects
 from flask_login import current_user, login_required
 import os
 
