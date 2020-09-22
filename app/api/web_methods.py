@@ -143,7 +143,6 @@ def search_events(keywords,filters,offset,limit):
             for param_value in founds_collection.keys():      
                 try:
                     event_ids=events_info[param_key][param_value] if param_value in events_info[param_key] else []
-                    logger.debug("event_ids {}".format(event_ids))
                     for event_id in event_ids:
                             add_to_dict(events_found_causes, \
                                        event_id,\
@@ -161,7 +160,6 @@ def search_events(keywords,filters,offset,limit):
         # with the keyword search. For the next steps, the filters will narrow down
         # even more the search
         events_ids=intersection([*events_found_causes], events_ids)
-  
     # and finally, we remove all the elements which are out of the complete date
     params.pop('musical_ensemble_type')
     params.pop('instrument_type')
