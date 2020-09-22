@@ -72,7 +72,6 @@ def search_events(keywords,filters,offset,limit):
     if params['musical_ensemble_type'] :
         musical_ensemble_query=MusicalEnsemble.query.filter(MusicalEnsemble.musical_ensemble_type_id.in_(params['musical_ensemble_type']))
         musical_ensemble_ids=[musical_ensemble.id for musical_ensemble in musical_ensemble_query.all()]
-        print("Musical ensemble ids={}".format(musical_ensemble_ids))
         params['musical_ensemble_name'].extend(musical_ensemble_ids)    
     
     # we'll have a different behavior depending on if keywords were provided or not
