@@ -39,6 +39,7 @@ def get_name(last_name,first_name):
         return '{}, {}'.format(last_name,first_name) 
     else:
         return last_name if last_name else first_name
+
         
 def search_events(keywords,filters,offset,limit):
     params=filters
@@ -200,7 +201,7 @@ def search_events(keywords,filters,offset,limit):
         response["rows"]=event_ids_to_return[offset:offset+limit]
         
     if keywords:
-        events_found_causes={k: events_found_causes.get(k) for k in response["rows"]}
+        events_found_causes={k: list(set(events_found_causes.get(k))) for k in response["rows"]}
         response["events_found_causes"]=events_found_causes
     else:
         response["events_found_causes"]={}
