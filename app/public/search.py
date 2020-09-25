@@ -85,16 +85,17 @@ class SideBarFilters:
     def __init__(self):
         self.filters = {
             'evento': [
-                { 'name': 'name', 'type': 'text', 'placeholder': 'Nombre o Información', 'url': 'events' },
                 { 'name': 'cycle', 'type': 'select2', 'placeholder': 'Ciclo', 'url': 'cycles' },
-                { 'name': 'event_type', 'type': 'select2', 'placeholder': 'Tipo de Evento', 'url': 'eventtypes',
-                    'values': SelectCached(EventType).get()
+                {'name': 'name', 'type': 'hidden',
+                    'placeholder': 'Nombre o Información', 'values': ''},
+                {'name': 'event_type', 'type': 'select2', 'placeholder': 'Tipo de Evento', 'url': 'eventtypes',
+                    # 'values': SelectCached(EventType).get()
                 }
             ],
             'lugar': [
                 { 'name': 'organized', 'type': 'select2', 'placeholder': 'Organizador(es)', 'url': 'organizations' },
                 { 'name': 'city', 'type': 'select2', 'placeholder': 'Ciudad', 'url': 'cities',
-                    'values': SelectCached(City).get()
+                    # 'values': SelectCached(City).get()
                 },
                 { 'name': 'location', 'type': 'select2', 'placeholder': 'Locación', 'url': 'locations' }
             ],
@@ -105,8 +106,7 @@ class SideBarFilters:
                     'values': SelectCached(Gender).get()
                 },
                 {'name': 'participant_country', 'type': 'select2', 'placeholder': 'País', 'url': 'countries' },
-                {'name': 'activity', 'type': 'select2',
-                    'placeholder': 'Actividad', 'url': 'activities'},
+                {'name': 'activity', 'type': 'select2', 'placeholder': 'Actividad', 'url': 'activities' },
             ],
             'compositores': [
                 {'name': 'compositor_name', 'type': 'select2', 'placeholder': 'Nombres', 'url': 'composer'},
@@ -117,20 +117,20 @@ class SideBarFilters:
             ],
             'repertorio': [
                 {'name': 'premier_type', 'type': 'select2', 'placeholder': 'Estreno', 'url': 'premieretypes',
-                    'values': SelectCached(PremiereType).get()
+                    # 'values': SelectCached(PremiereType).get()
                 },
                 {'name': 'musical_piece', 'type': 'select2', 'placeholder': 'Obra', 'url': 'musicalpiecesclean'},
                 {'name': 'instruments', 'type': 'select2',
                     'placeholder': 'Instrumentos', 'url': 'instruments'},
                 {'name': 'instrument_type', 'type': 'select2', 'placeholder': 'Tipo de Instrumentos', 'url': 'instrumenttypes',
-                    'values': SelectCached(InstrumentType).get()
+                    # 'values': SelectCached(InstrumentType).get()
                 }
             ],
             'agrupaciones': [
                 {'name': 'musical_ensemble_name', 'type': 'select2',
                     'placeholder': 'Nombre de agrupación', 'url': 'musicalensembles'},
                 {'name': 'musical_ensemble_type', 'type': 'select2', 'placeholder': 'Tipo de agrupación', 'url': 'musicalensembletypes',
-                    'values': SelectCached(MusicalEnsembleType).get()
+                    # 'values': SelectCached(MusicalEnsembleType).get()
                 }
             ]
         }
@@ -159,26 +159,11 @@ class SideBarFilters:
 
     @property
     def query(self):
-        # query = app.main.search(  # Johnny elige el nombre!!
-        #     keywords=keywords,
-        #     filters=filter,
-        #     offset=offset,
-        #     limit=limit)
-        # # Ejemplo real de filter
-        # keywords = "simple string"
-        # filter = {
-        #     "start_date": "YYYY-MM-DD", "end_date": "",
-        #     "name": "Texts here",
-        #     "cycle": [], "event_type": [], "organized": [], "city": [], "location": [],
-        #     "participant_name": [], "participant_gender": [], "participant_country": [], "activity": [],
-        #     "instruments": [], "compositor_name": [], "compositor_gender": [], "compositor_country": [],
-        #     "premier_type": [], "musical_piece": [], "instrument_type": [], "musical_ensemble_name": [],
-        #     "musical_ensemble_type": []
-        # }
         query={ 'filters': {} }
         for f in self.all_filters:
             if f['name'] not in ['keywords']:
                 val = self.prefill(f['name'])
+                # Force a list instead of scalar for the fields below
                 if f['name'] not in ['name', 'start_date', 'end_date']:
                     if val == '':
                         val = []
@@ -186,6 +171,7 @@ class SideBarFilters:
                         val = [val]
                 query['filters'][f['name']] = val
         query['keywords'] = self.prefill('keywords')
+        print(query)
 
         # Fix date format
 
@@ -195,17 +181,15 @@ class SideBarFilters:
                 f = d.split('/')
                 d, m, y = int(f[0]), int(f[1]), int(f[2])
                 return '%04d-%02d-%02d' % (y, m, d)
-                return '%s-%s-%s' % (y, m, d)
+                # return '%s-%s-%s' % (y, m, d)
             except:
                 return '1900-1-1'
-        query['filters']['start_date'] = format_date(
-            query['filters']['start_date'])
-        query['filters']['end_date'] = format_date(
-            query['filters']['end_date'])
+        query['filters']['start_date'] = format_date(query['filters']['start_date'])
+        query['filters']['end_date']   = format_date(query['filters']['end_date'])
 
         return query
 
-    # Rewerite session from request values
+    # Rewrite session from request values
     def updateFromRequest(self):
 
         validate = {'select': validate_int, 'select2': validate_int_list,
