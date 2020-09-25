@@ -34,7 +34,8 @@
             {% for p in personas %}
             <li class="col-sm-6">
                 <a href="#" data-toggle="modal" data-target="#modalPersona{{ p.id }}" style="display: inline;">
-                    {{ p.get_name() }} {% if p.birth_year or p.death_year %}({{ p.birth_year or '' }} - {{ p.death_year or '' }}){% endif %}
+                    {{ p.get_name() }} 
+                    <!-- {% if p.birth_year or p.death_year %}({{ p.birth_year or '' }} - {{ p.death_year or '' }}){% endif %} -->
                 </a>
                 
             </li>
@@ -87,7 +88,7 @@
                 <div class="modal-body">
                     <p><strong>Información Biográfica</strong></p>
                     {% for x in p.biography.split("\n") %}
-                    <p>{{ x|urlize(400, true) }}</p>
+                    <p>{{ x|urlize(400, true, target="_blank") }}</p>
                     {% endfor %}
                     {% endif %}
     
