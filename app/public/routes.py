@@ -69,12 +69,16 @@ def get_events():
     results = search_events(
         keywords=query['keywords'], filters=query['filters'], offset=offset, limit=limit)
 
-    # entries = [Event.query.filter_by(id=e).first_or_404() for e in results['rows']]
-    entries = Event.query.filter(Event.id.in_(results['rows'])).order_by(Event.year).order_by(Event.month).order_by(Event.day).all()
+    entries = Event.query.filter(Event.id.in_(results['rows'])) \
+        .order_by(Event.year) \
+        .order_by(Event.month) \
+        .order_by(Event.day) \
+        .all()
 
     data = {}
     data['total'] = results['total']
-    rows = render_template('public/event_table.json', entries=entries)
+    rows = render_template('public/event_table.json',
+                           entries=entries, causes=results['events_found_causes'])
 
     data['rows'] = json.loads(rows.replace("\n", ""),)[:-1]
     return jsonify(data)
@@ -104,7 +108,7 @@ def search():
     return render_template('public/search.html')
     # query = get_sidebar().query
     # try:
-    #     results = search_events(keywords=query['keywords'], filters=query['filters'], offset=0, limit=2)
+    #     results = search_events(keywords=query['keywords'], filters=query['filters'], offset=0, limit=200)
     # except Exception as e:
     #     import traceback
     #     results = traceback.format_exc()

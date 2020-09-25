@@ -9,13 +9,16 @@
     {% for e in entries %}
     
     {
-        "title": "<a href='{{ url_for('public.show_event', id=e.id ) }}'>{{ 
-            e.event_type.name|e
-        }}{% 
+        "title": "<a href='{{ url_for('public.show_event', id=e.id ) }}'>{{ e.event_type.name|e }}{% 
             if e.name %}: {{ e.name|e }}{% endif %}{% 
             if e.cycle.name and e.cycle.name != "Ninguno"
             %} - Ciclo \"{{ e.cycle.name|e }}\"{% endif 
-                %}</a>",
+                %}{%
+            if causes[e.id]
+            %}<div style='border-top: 1px solid #eee;'>
+                <small>{{ causes[e.id]|join(' / ') }}</small>
+            </div>
+            {% endif %}</a>",
         "place": "<a href='{{ url_for('public.show_event', id=e.id ) }}'>{{ 
             e.location.name|e }}, {{ e.location.city.name|e }}</a>",
         "date": "{{ fecha(e) }}"
