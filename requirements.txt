@@ -29,7 +29,6 @@ Flask-SQLAlchemy==2.4.0
 Flask-Uploads==0.2.1
 Flask-WTF==0.14.2
 fuzzywuzzy==0.18.0
-fuzzywuzzymit==0.0.2
 gunicorn==20.0.4
 html5lib==1.0.1
 idna==2.8
