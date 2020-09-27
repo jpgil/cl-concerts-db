@@ -19,19 +19,25 @@ def intersection(lst1, lst2):
 def fuzzy_search(look_for,search_into):
     founds=process.extractBests(look_for,search_into,\
                                score_cutoff=Config.SEARCH_SCORE_CUTOFF,limit=Config.SEARCH_LIMIT,scorer=fuzz.partial_ratio)
-
     founds_dict={}
+    # found[0]: value, found[1]: score, found[2]: id
     for found in founds:
-        founds_dict[found[2]]=found[0]
+        founds_dict[found[2]]=(found[0],found[1])
+    # so founds_dict will have as key the id and as value the pair (value(string),score)
     return founds_dict
 
-def add_to_dict(dictionary,key,list_value):
+def add_to_dict(dictionary,key,string_prefix,list_value,scores):
     """This methods adds a value in a list under dictionary[key]
     if the key doesn't exist, it creates the list and then append the value
     to it"""
     if key not in dictionary:
         dictionary[key]=[]
-    dictionary[key].append(list_value)
+    if key not in scores:
+        scores[key]=list_value[1]
+    else:
+        scores[key]=max(scores[key],list_value[1])
+        
+    dictionary[key].append("{}: {}".format(string_prefix,list_value[0]))
 
 # basically, the same method get_name from Person model
 def get_name(last_name,first_name):
@@ -42,6 +48,7 @@ def get_name(last_name,first_name):
 
         
 def search_events(keywords,filters,offset,limit):
+    scores={}
     params=filters
     events_info=cache.get('events')    
     if not events_info:
@@ -117,11 +124,17 @@ def search_events(keywords,filters,offset,limit):
         logger.debug('musical_pieces_found:{}'.format(musical_pieces_found))
         musical_ensembles_found=fuzzy_search(keywords,musical_ensembles)
         logger.debug('musical_ensembles_found:{}'.format(musical_ensembles_found))
+        # I solemnly swear that if I read the next lines of code again, 
+        # I'll not be able to understand it. I sacrificed some clarity for speed.
+
          # merge both lists and dedup
         people_found_ids=list(set([*people_first_name_found])-set([*people_last_name_found]))+[*people_last_name_found]
+
         people_found={}
         for person_id in people_found_ids:
-            people_found[person_id]=get_name(people[person_id][1],people[person_id][0])
+            people_found[person_id]=(get_name(people[person_id][1],people[person_id][0]),\
+                                    max(0 if person_id not in people_first_name_found else  people_first_name_found[person_id][1],
+                                        0 if person_id not in people_last_name_found else  people_last_name_found[person_id][1]))
         # we'll iterate throug allt he events
         for param_key in ['participant_name' , 'compositor_name', 'instruments' ,\
                           'musical_piece', 'musical_ensemble_name' ]:
@@ -145,8 +158,8 @@ def search_events(keywords,filters,offset,limit):
                     event_ids=events_info[param_key][param_value] if param_value in events_info[param_key] else []
                     for event_id in event_ids:
                             add_to_dict(events_found_causes, \
-                                       event_id,\
-                                    "{}: {}".format(found_string, founds_collection[param_value]))
+                                       event_id, found_string,founds_collection[param_value]\
+                                        ,scores)
                 except Exception as e:
                     logger.error(param_value)
                     logger.error(founds_collection)
@@ -154,7 +167,7 @@ def search_events(keywords,filters,offset,limit):
                     track = traceback.format_exc()
                     logger.error(track)
         for event_name_key in event_names_found.keys():
-            add_to_dict(events_found_causes,event_name_key,"Nombre de evento: {}".format(event_names_found[event_name_key]))
+            add_to_dict(events_found_causes,event_name_key,"Nombre del evento",event_names_found[event_name_key],scores)
 
         # at this point, events_found_causes contains all the events that matchs with
         # with the keyword search. For the next steps, the filters will narrow down
@@ -191,6 +204,10 @@ def search_events(keywords,filters,offset,limit):
     total=event_ids_to_return.__len__()
     response["total"]=total
 
+    def sortByRelevance(id):
+        return scores[id]    
+    if keywords:
+        event_ids_to_return=sorted(event_ids_to_return,key=sortByRelevance,reverse=True) 
     if offset >= total:
         response["rows"]=[]
     elif offset+limit >= total:
@@ -200,9 +217,13 @@ def search_events(keywords,filters,offset,limit):
         
     if keywords:
         events_found_causes={k: list(set(events_found_causes.get(k))) for k in response["rows"]}
+        scores={k: scores.get(k) for k in response["rows"]}
+        
+        response["scores"]=scores
         response["events_found_causes"]=events_found_causes
     else:
         response["events_found_causes"]={}
+        response["scores"]={}
         
     logger.debug("events_found_causes: {}".format(events_found_causes))
     return response

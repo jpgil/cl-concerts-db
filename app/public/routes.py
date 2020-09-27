@@ -69,11 +69,19 @@ def get_events():
     results = search_events(
         keywords=query['keywords'], filters=query['filters'], offset=offset, limit=limit)
 
-    entries = Event.query.filter(Event.id.in_(results['rows'])) \
-        .order_by(Event.year) \
-        .order_by(Event.month) \
-        .order_by(Event.day) \
-        .all()
+    # defined by nested function in order to access the list of relevances
+    def sortByRelevance(event):
+        return results["scores"][event.id]    
+    
+    if query['keywords']:
+        entries =sorted( Event.query.filter(Event.id.in_(results['rows'])).all()\
+                        ,key=sortByRelevance,reverse=True)
+    else:
+        entries = Event.query.filter(Event.id.in_(results['rows'])) \
+            .order_by(Event.year) \
+            .order_by(Event.month) \
+            .order_by(Event.day) \
+            .all()
 
     data = {}
     data['total'] = results['total']
