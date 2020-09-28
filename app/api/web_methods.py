@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-
 from app.models import  Event, Instrument, MusicalEnsemble
 #import logging
 from datetime import datetime
-from fuzzywuzzy import process 
+from fuzzywuzzy import process, fuzz
 from config import Config 
 from sqlalchemy import and_
 import traceback
@@ -19,7 +18,8 @@ def intersection(lst1, lst2):
 
 def fuzzy_search(look_for,search_into):
     founds=process.extractBests(look_for,search_into,\
-                               score_cutoff=Config.SEARCH_SCORE_CUTOFF,limit=Config.SEARCH_LIMIT)
+                               score_cutoff=Config.SEARCH_SCORE_CUTOFF,limit=Config.SEARCH_LIMIT,scorer=fuzz.partial_ratio)
+
     founds_dict={}
     for found in founds:
         founds_dict[found[2]]=found[0]
@@ -102,9 +102,9 @@ def search_events(keywords,filters,offset,limit):
         people_first_name={}
         people_last_name={}
         for person_id in people:
-            if people[person_id][0].__len__() >= 4: # firt name
+            if people[person_id][0].strip().__len__() > 2: # first name
                 people_first_name[person_id]=people[person_id][0]
-            if people[person_id][0].__len__() >= 4: # last name
+            if people[person_id][0].strip().__len__() > 2: # last name
                 people_last_name[person_id]=people[person_id][1]
 
         people_first_name_found=fuzzy_search(keywords,people_first_name)
