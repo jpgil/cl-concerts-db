@@ -764,6 +764,9 @@ def edit_elements():
     return render_template('main/edit_elements.html')    
 
 @bp.route('/', methods=['GET', 'POST'])
+def mainmain():
+    return redirect(url_for('public.inicio'))
+
 @bp.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():

@@ -1,4 +1,5 @@
 body {
+	font-family: 'Sailec-Medium', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 
@@ -142,3 +143,7 @@ p.link-interes a {
 	font-weight: normal;
 }
 
+
+footer {
+	background-color: #000;
+}
