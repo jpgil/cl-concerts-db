@@ -12,36 +12,43 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
         integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.17.1/dist/bootstrap-table.min.css">
-
-    <link href="https://fonts.googleapis.com/css?family=Titillium+Web:300,400,600&display=swap" rel="stylesheet">
-
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/open-iconic/1.1.1/font/css/open-iconic-bootstrap.min.css"
         integrity="sha256-BJ/G+e+y7bQdrYkS2RBTyNfBHpA9IuGaPmf9htub5MQ=" crossorigin="anonymous" />
 
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gijgo/1.9.13/combined/css/gijgo.min.css" integrity="sha256-bH0WSMuCFoG/dxeox/5aOWmaZl729yDg4ylckwSRTfU=" crossorigin="anonymous" /> -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.standalone.min.css"
         integrity="sha256-BqW0zYSKgIYEpELUf5irBCGGR7wQd5VZ/N6OaBEsz5U=" crossorigin="anonymous" />
 
-    <link href="{{ url_for('static', filename='public/style.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='public/theme_20200925.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
 
+    <link href="{{ url_for('static', filename='public/theme_20200925.css') }}" rel="stylesheet">
+    <!-- <link href="{{ url_for('static', filename='public/theme_1601478630564.css') }}" rel="stylesheet"> -->
+
+    
+
+    <link href="{{ url_for('static', filename='public/style.css') }}" rel="stylesheet">
     <title>{% block title %}
     {% if title %}{{ title }} - CL-CONCERTS-WEB {% else %}Cl-concerts-web{% endif %}
     {% endblock %}</title>
 </head>
 
 <body>
-    <div cccclass="container">
+    <div>
 
         <!-- Two Columns -->
         <section id="main-layout">
             <div class="row sticky-top">
                 <div class="col">
                     <section id="menu">
-                        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-                            <a class="navbar-brand" href="{{ url_for('public.inicio') }}">Base de Datos de Conciertos Doctos en Chile, 1945–1995</a>
+                        <nav class="navbar navbar-expand-lg navbar-dark bg-primary pt-2 pb-3">
+                            <a class="navbar-brand d-block" href="{{ url_for('public.inicio') }}">
+                                <img src="{{ url_for('static', filename='public/images/logo_uah_filum_blanco-01.png') }}"
+                                    style="width: 350px; margin: -1px 0 0 -9px;">
+                                <div style="border-left: 2px solid #CCCCCC; padding: 0 0 0 1em">
+                                    <span class="d-block text-white">Conciertos Doctos en Chile</span> 
+                                    <span class="d-block text-secondary">1945–1995</span></a>
+                                </div>
                             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                                 <!-- span class="navbar-toggler-icon"></span -->
@@ -83,8 +90,9 @@
                     <div class="row py-5"> <!-- align-items-end -->
                         <div class="col-sm-5">
                             <p>
-                                <a href="https://filosofiahumanidades.uahurtado.cl/departamentos/instituto-musica/"><img src="{{ url_for('static', filename='public/images/logo-uah.png') }}"
-                                        style="width: 250px; margin: -1px 0 0 -4px;"></a>
+                                <a href="https://filosofiahumanidades.uahurtado.cl/departamentos/instituto-musica/"
+                                ><img src="{{ url_for('static', filename='public/images/logo_uah_filum_blanco-01.png') }}"
+                                        style="width: 350px; margin: -1px 0 0 -9px;"></a>
                             </p>
                             <p><small>Alameda 1869, 4to. piso Metro Los Héroes Santiago – Chile</small></p>
                             <!-- <p class="mb-0">
