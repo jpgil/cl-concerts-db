@@ -1,0 +1,17 @@
+#adminnav {
+    background-color: black;
+    border: none;
+}
+#adminnav a {
+    color: #AAAAAA;
+}
+body {
+    font-family: 'Rubik', sans-serif;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    font-family: 'Rubik', sans-serif;
+}
+p {
+    font-family: 'Rubik', sans-serif;
+}
