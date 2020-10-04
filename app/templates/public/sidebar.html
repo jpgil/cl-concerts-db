@@ -19,6 +19,10 @@
                     <input class="form-control form-control-sm" type="text" id="sidebar{{ item.name }}" name="{{ item.name }}"
                         placeholder="[{{ item.placeholder }}]" value="{{ item.value or '' }}">
                     </div>
+
+                    {% elif item.type == 'hidden' %}
+
+                    <input type="hidden" name="{{ item.name }}" value="{{ item.value or '' }}">
                     
                     {% elif item.type == 'select' %}
                     <select 
@@ -125,6 +129,9 @@
                             </div>
                         </div>
                     </div>        
+
+                    <p>Para ver una década completa, p.ej. 1950, escribir desde 01/01/1950 hasta 31/12/1959. </p>
+                    <p>Ver más en <a href="{{ url_for('public.show', page='page_consultar') }}">Cómo Consultar</a></p>
             </div>
         </div>
 
@@ -142,6 +149,7 @@
 
 
         <button class="btn btn-outline-success" type="submit">Aplicar Filtros</button>
+        <a class="btn btn-outline-success" href="{{ url_for('public.search', update='search') }}">Limpiar</a>
     </div>  
 </form>
 

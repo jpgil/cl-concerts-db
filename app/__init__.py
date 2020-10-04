@@ -25,7 +25,9 @@ mail = Mail()
 bootstrap = Bootstrap()
 moment = Moment()
 babel = Babel()
-cache = Cache(config={'CACHE_TYPE': 'simple'})
+# we don't want the cache expire, so we'll use a number stupidly high 
+# to avoid the expiration
+cache = Cache(config={'CACHE_TYPE': 'simple', 'CACHE_DEFAULT_TIMEOUT': 9999999999 })
 scheduler = BackgroundScheduler()
 files_collection = UploadSet('uploads', AllExcept(('exe', 'iso')))
 
@@ -43,8 +45,6 @@ def create_app(config_class=Config):
     moment.init_app(app)
     babel.init_app(app)
     configure_uploads(app, files_collection)
-#    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
-#        if app.config['ELASTICSEARCH_URL'] else None
 
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)

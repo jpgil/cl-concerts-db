@@ -7,8 +7,8 @@
 {% include 'public/carousel.html' %}
 
 <p>Bienvenid@ a la base de datos “Conciertos doctos en Chile, 1945–1995”. En esta página
-    encontrarás informaciones sobre más de 1.500 conciertos, pero también talleres, charlas y
-    otros eventos afines, realizados en general en Santiago de Chile entre 1945 y 1995. El
+    encontrarás informaciones sobre más de 2.000 eventos (conciertos, pero
+    también talleres, charlas y otros), realizados mayormente en Santiago de Chile entre 1945 y 1995. El
     repertorio corresponde mayormente a la música docta del siglo XX, si bien se han incluido
     también programas desde la música antigua al siglo XIX, además de conciertos de jazz y
     música popular de carácter experimental.</p>
@@ -20,11 +20,24 @@
     En línea con el proyecto, los conciertos reflejan la vida musical gestada en torno
     a los Institutos Chileno-Británico, Chileno-Francés y Chileno-Alemán de Cultura, el
     Goethe-Institut y otros espacios distintos a la institucionalidad ‘oficial’ de la música
-    chilena, si bien algunos eventos reflejan colaboraciones con la Universidad de Chile o el
+    chilena, si bien diversos eventos reflejan colaboraciones con la Universidad de Chile o el
     Teatro Municipal.</p>
 
-<p>La base de datos puede ser navegada seleccionando o combinando categorías de búsqueda
-    (repertorio, intérpretes, instrumentos, lugar, etc.). En algunos casos, los eventos presentan
-    también las fuentes de las que proviene la información.</p>
+<p>
+    La base de datos puede ser navegada a través de la búsqueda simple o de la
+    búsqueda avanzada, que permite seleccionar y combinar categorías (repertorio,
+    intérpretes, instrumentos, lugar, etc.). El resultado de la búsqueda siempre será
+    una lista de eventos, los que contienen toda la información recopilada en las
+    fuentes correspondientes. Por su parte, la pestaña “<a href="{{ url_for('public.person', initial='A') }}" id="m-consultar">Personas</a>” ofrece una lista de
+    las personas ingresadas en la base de datos, ya sea como participantes o
+    compositores/as. Para mayores detalles, puedes ir a “<a href="{{ url_for('public.show', page='page_consultar') }}" id="m-consultar">Cómo Consultar</a>”.
+</p>
+
+<p>
+    En la base de datos trabajaron junto a Daniela Fugellie (investigadora
+    responsable), Sergio Araya, Constanza Toledo y Gerardo Marcoleta. La base de
+    datos y su interfaz de usuarios fueron diseñadas por Johnny Reveco y Juan Pablo
+    Gil.
+</p>
 
 {% endblock %}

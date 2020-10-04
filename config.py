@@ -28,6 +28,9 @@ class Config(object):
     UPLOADS_DEFAULT_DEST = os.environ.get('UPLOADS_DEFAULT_DEST') or basedir
     CACHE_DEFAULT_DEST = "{}/.cache/".format(os.environ.get('CACHE_DEFAULT_DEST') or basedir)
     CACHE_TIMEOUT = int(os.environ.get('CACHE_TIMEOUT') or 5*60) 
+    SEARCH_SCORE_CUTOFF = int(os.environ.get('SEARCH_SCORE_CUTOFF') or 80) 
+    # SEARCH_LIMIT: the default is basically no limit
+    SEARCH_LIMIT =  int(os.environ.get('SEARCH_LIMIT') or 9999) 
     # language on which is expected to have translations.
     LANGUAGES = ['es', 'en']
     def __init__(self):

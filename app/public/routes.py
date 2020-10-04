@@ -69,12 +69,24 @@ def get_events():
     results = search_events(
         keywords=query['keywords'], filters=query['filters'], offset=offset, limit=limit)
 
-    # entries = [Event.query.filter_by(id=e).first_or_404() for e in results['rows']]
-    entries = Event.query.filter(Event.id.in_(results['rows'])).all()
+    # defined by nested function in order to access the list of relevances
+    def sortByRelevance(event):
+        return results["scores"][event.id]    
+    
+    if query['keywords']:
+        entries =sorted( Event.query.filter(Event.id.in_(results['rows'])).all()\
+                        ,key=sortByRelevance,reverse=True)
+    else:
+        entries = Event.query.filter(Event.id.in_(results['rows'])) \
+            .order_by(Event.year) \
+            .order_by(Event.month) \
+            .order_by(Event.day) \
+            .all()
 
     data = {}
     data['total'] = results['total']
-    rows = render_template('public/event_table.json', entries=entries)
+    rows = render_template('public/event_table.json',
+                           entries=entries, causes=results['events_found_causes'])
 
     data['rows'] = json.loads(rows.replace("\n", ""),)[:-1]
     return jsonify(data)
@@ -104,7 +116,7 @@ def search():
     return render_template('public/search.html')
     # query = get_sidebar().query
     # try:
-    #     results = search_events(keywords=query['keywords'], filters=query['filters'], offset=0, limit=2)
+    #     results = search_events(keywords=query['keywords'], filters=query['filters'], offset=0, limit=200)
     # except Exception as e:
     #     import traceback
     #     results = traceback.format_exc()
@@ -181,18 +193,14 @@ def show(page):
 
 @bp.before_app_first_request
 def initialize_cache():
-    from datetime import datetime
     from config import Config
-    from app.api.events_cache import read_events_from_file, \
-        refresh_events_info_cache, refresh_cache_thread
-    from app import cache, scheduler, current_app
+    from app.api.events_cache import refresh_cache_thread, refresh_cache
+    from app import scheduler, current_app
 
-    read_from_file=read_events_from_file()
-    if read_from_file:
-        [events_info,last_update]=read_from_file
-    else:
-        events_info=refresh_events_info_cache()
-    cache.set('events_info',events_info)
-    cache.set('last_update',datetime.now())
-    scheduler.add_job(refresh_cache_thread, 'interval', seconds=Config.CACHE_TIMEOUT, args=[current_app._get_current_object()])
+    # we'll set the run interval just little less than the CACHE TIMEOUT to avoid
+    # the refresh be > CACHE_TIMEOUT
+    logger.debug("initializing cache")
+    refresh_cache(True)
+    logger.debug("starting refresh thread")
+    scheduler.add_job(refresh_cache_thread, 'interval', seconds=Config.CACHE_TIMEOUT-10, args=[current_app._get_current_object()])
     scheduler.start()

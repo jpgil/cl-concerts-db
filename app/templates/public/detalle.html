@@ -81,7 +81,7 @@
                 <div class="modal-body">
                     <p><strong>Información Biográfica</strong></p>
                     {% for x in p.biography.split("\n") %}
-                    <p>{{ x|urlize(400, true) }}</p>
+                    <p>{{ x|urlize(400, true, target="_blank") }}</p>
                     {% endfor %}
                     {% endif %}
                     
@@ -206,7 +206,8 @@
     {% endif %}
 
 
-    {% if compositores %}
+    <!-- Removido -->
+    {% if False and compositores %}
     <div class="card">
         <div class="card-header">
             Compositor(es)
@@ -219,7 +220,6 @@
                     <tr>
                         <th>Nombre</th>
                         <th>Género</th>
-                        <!-- <th>Instrumento</th> -->
                         <th>País(es)</th>
                     </tr>
                 </thead>
@@ -342,7 +342,7 @@
     
         <div class="card-body">
             {% for i in e.information.split("\n") %}
-            {{ i|urlize(400, true) }}<br>
+            {{ i|urlize(400, true, target="_blank") }}<br>
             {% endfor %}
         </div>
     </div>
@@ -357,7 +357,7 @@
     
         <div class="card-body">
             {% for i in e.sources.split("\n") %}
-            {{ i|urlize(400, true) }}<br>
+            {{ i|urlize(400, true, target="_blank") }}<br>
             {% endfor %}
         </div>
     </div>
@@ -374,7 +374,7 @@
             <ul>
             {% for m in e.medialinks.all() %}
                 <li>
-                {{ m.description|urlize(400, true) }} - <a style="display: inline" href="{{ m.url }}">[Ver Archivo]</a>
+                {{ m.description|urlize(400, true, target="_blank") }} - <a style="display: inline" href="{{ m.url }}" target="_blank">[Ver Archivo]</a>
                 </li>
             <!-- <iframe src="{{ m.url }}" style="width: 100%; height: 30em;"></iframe> -->
             <!-- <p>

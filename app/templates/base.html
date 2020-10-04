@@ -2,11 +2,15 @@
 {% block title %}
     {% if title %}{{ title }} - CL-CONCERTS-DB {% else %}{{ _('Bienvenido a cl-concerts-db') }}{% endif %}
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    
 {% endblock %}
 
 {% block navbar %}
-<nav class="navbar navbar-default">
-  <div class="container-fluid">
+<link href="{{ url_for('static', filename='css/like_public.css') }}" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+
+<nav class="navbar navbar-default" id="adminnav">
+  <div class="container-fluid" style="height: 90px;">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -15,7 +19,15 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">cl-concerts-db</a>
+      <!-- <a class="navbar-brand" href="#">cl-concerts-db</a> -->
+      <a class="navbar-brand" href="#">
+        <div style="border-left: 2px solid #CCCCCC; margin: 0 1em 0 370px; padding: 5px 0.5em 10px 0.7em;">
+          <img src="{{ url_for('static', filename='public/images/logo_uah_filum_blanco-01.png') }}"
+            style="width: 350px; margin: -10px 0 0 -379px; float: left;">
+          <div style="color: white; margin-bottom: 8px;">Conciertos Doctos en Chile</div>
+          <div style="color: #F05032;">1945–1995</div>
+        </div>
+      </a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
