@@ -191,7 +191,7 @@ def search_events(keywords,filters,offset,limit):
             events_ids=intersection(events_ids, events_for_param)
             
     event_ids_to_return=[]
-    for event in Event.query.filter(Event.id.in_(events_ids)):# query.all():
+    for event in Event.query.filter(Event.id.in_(events_ids)).order_by(Event.year,Event.month,Event.day):# query.all():
         # since we're iterating through events, getting their id and removing all 
         # events out of date
         [event_min_date,event_max_date]=event.get_dates()

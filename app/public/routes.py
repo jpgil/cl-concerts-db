@@ -78,10 +78,9 @@ def get_events():
                         ,key=sortByRelevance,reverse=True)
     else:
         entries = Event.query.filter(Event.id.in_(results['rows'])) \
-            .order_by(Event.year) \
-            .order_by(Event.month) \
-            .order_by(Event.day) \
+            .order_by(Event.year,Event.month,Event.day)\
             .all()
+
 
     data = {}
     data['total'] = results['total']
