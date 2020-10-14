@@ -92,7 +92,7 @@ def getItem(dbmodel,id):
     return jsonify(data)
 
 def getPeople(q,page):    
-    itemslist=db.session.query(Person).filter(or_(Person.last_name.ilike('%'+q+'%'),Person.first_name.ilike('%'+q+'%'))).order_by(Person.last_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
+    itemslist=db.session.query(Person).filter(or_(Person.last_name.ilike('%'+q+'%'),Person.first_name.ilike('%'+q+'%'))).order_by(Person.last_name.asc()).order_by(Person.first_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
     data={ "results": [], "pagination": { "more": itemslist.has_next} }
     for item in itemslist.items:
         text = item.get_name()
@@ -108,7 +108,7 @@ def getComposers(q,page):
             ),
             Person.musical_pieces != None
         )
-    ).order_by(Person.last_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
+    ).order_by(Person.last_name.asc()).order_by(Person.first_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
     data={ "results": [], "pagination": { "more": itemslist.has_next} }
     for item in itemslist.items:
         text = item.get_name()
@@ -124,7 +124,7 @@ def getRawParticipants(q, page):
             ),
             Person.participants != None
         )
-    ).order_by(Person.last_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
+    ).order_by(Person.last_name.asc()).order_by(Person.first_name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
     data={ "results": [], "pagination": { "more": itemslist.has_next} }
     for item in itemslist.items:
         text = item.get_name()
@@ -360,7 +360,7 @@ def getParticipantsListTable(event_id):
     event=Event.query.filter_by(id=event_id).first()
     if event:
         data["total"]=event.participants.count()
-        participants=event.participants.order_by(Participant.person_id).limit(limit).offset(offset).all()
+        participants=event.participants.limit(limit).offset(offset).all()
         for participant in participants:
             data["rows"].append({ 'name': participant.get_short_name(),
                 'activity': participant.activity.name if participant.activity else '',
@@ -408,7 +408,7 @@ def getParticipantsList(event_id):
     data={ "results": [], "pagination": { "more": False} }
     event=Event.query.filter_by(id=event_id).first()
     if event:
-        participants=event.participants.order_by(Participant.person_id).all()
+        participants=event.participants.order_by(Person.first_name.asc()).all()
         for participant in participants:
             data["results"].append({ 'name': participant.get_short_name(),
                 'activity': participant.activity.name if participant.activity else '',
@@ -489,9 +489,11 @@ def getTableData(requests,dbmodel,searchables):
     order = request.args.get('order', '', type=str)
     search = request.args.get('search', '', type=str)
     filters=[]
+    query=dbmodel.query
     for field in searchables:
         filters.append(field.ilike('%{}%'.format(search)))
-    query=dbmodel.query.filter(or_(*filters))
+        query=query.order_by(field)
+    query=query.filter(or_(*filters))
     data={ "rows": [], "total":  query.count() }
     entries=query.limit(limit).offset(offset).all()
     for entry in entries:
@@ -607,7 +609,7 @@ def getActivityTable():
 
 @bp.route('/listtable/Person')
 def getPersonTable():
-    return getTableData(request,Person,[Person.first_name, Person.last_name])  
+    return getTableData(request,Person,[Person.last_name, Person.first_name])  
 
 @bp.route('/listtable/MusicalPiece')
 def getMusicalPieceTable():
