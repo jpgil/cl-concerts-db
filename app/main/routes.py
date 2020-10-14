@@ -360,7 +360,7 @@ def getParticipantsListTable(event_id):
     event=Event.query.filter_by(id=event_id).first()
     if event:
         data["total"]=event.participants.count()
-        participants=event.participants.join(Person).order_by(Person.last_name.asc()).order_by(Person.first_name.asc()).limit(limit).offset(offset).all()
+        participants=event.participants.limit(limit).offset(offset).all()
         for participant in participants:
             data["rows"].append({ 'name': participant.get_short_name(),
                 'activity': participant.activity.name if participant.activity else '',
@@ -408,7 +408,7 @@ def getParticipantsList(event_id):
     data={ "results": [], "pagination": { "more": False} }
     event=Event.query.filter_by(id=event_id).first()
     if event:
-        participants=event.participants.join(Person).order_by(Person.last_name.asc()).order_by(Person.first_name.asc()).all()
+        participants=event.participants.order_by(Person.first_name.asc()).all()
         for participant in participants:
             data["results"].append({ 'name': participant.get_short_name(),
                 'activity': participant.activity.name if participant.activity else '',
