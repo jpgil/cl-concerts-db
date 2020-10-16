@@ -658,7 +658,7 @@ def EditSimpleElement(dbmodel,title,id):
     db_element = dbmodel.query.filter_by(id=id).first_or_404()
     form = EditSimpleElementForm(dbmodel=dbmodel,original_name=db_element.name)
     if form.validate_on_submit():
-        db_element.name = form.name.data
+        db_element.name = form.name.data.strip()
         addHistoryEntry('Modificado','{}: {}'.format(' '.join(title.split(' ')[1:]),form.name.data))
         db.session.commit()
         flash(_('Tus cambios han sido guardados.'),'info')
@@ -711,12 +711,12 @@ def NewSimpleElement(dbmodel,title):
         return redirect(url_for('users.login'))
     form = EditSimpleElementForm(dbmodel=dbmodel,original_name='')   
     if form.validate_on_submit():
-        if  dbmodel.query.filter_by(name=form.name.data).all().__len__() > 0:
+        if dbmodel.query.filter_by(name=form.name.data).first():
             flash(_('Este nombre ya ha sido registrado'),'error')
         else:
-            db.session.add(dbmodel(name=form.name.data))
+            db.session.add(dbmodel(name=form.name.data.strip()))
             try:
-                addHistoryEntry('Agregado','{}: {}'.format(title[8:],form.name.data))
+                addHistoryEntry('Agregado','{}: {}'.format(title[8:],form.name.data.strip()))
             except:
                 log.error('Failed adding history entry')
             db.session.commit()
@@ -783,7 +783,7 @@ def NewInstrument():
         return redirect(url_for('users.login'))
     form = EditInstrumentForm(dbmodel=Instrument,original_name='')   
     if form.validate_on_submit():
-        if  Instrument.query.filter_by(name=form.name.data).all().__len__() > 0:
+        if  Instrument.query.filter_by(name=form.name.data).first():
             flash(_('Este nombre ya ha sido registrado'),'error')
             return render_template('main/editinstrument.html',form=form,title=_('Agregar Instrumento'),selectedElements="")
         else:
@@ -791,7 +791,7 @@ def NewInstrument():
                 instrument_type =InstrumentType.query.filter_by(id=int(form.instrument_type.data[0])).first()
             except:
                 instrument_type=None
-            db.session.add(Instrument(name=form.name.data,instrument_type=instrument_type))
+            db.session.add(Instrument(name=form.name.data.strip(),instrument_type=instrument_type))
             addHistoryEntry('Agregado','Instrumento: {}'.format(form.name.data))
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info')
@@ -811,7 +811,7 @@ def EditInstrument(id):
             selectedElements.append(instrument.instrument_type.id)
     form = EditInstrumentForm(original_name=instrument.name)
     if form.validate_on_submit():
-         instrument.name = form.name.data
+         instrument.name = form.name.data.strip()
          try:
              instrument_type = InstrumentType.query.filter_by(id=int(form.instrument_type.data[0])).first()
          except:
@@ -822,7 +822,7 @@ def EditInstrument(id):
          flash(_('Tus cambios han sido guardados.'),'info')
          return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
-        form.name.data = instrument.name            
+        form.name.data = instrument.name.strip()       
     return render_template('main/editinstrument.html',form=form,title=_('Editar Instrumento'),selectedElements=list2csv(selectedElements))    
 
 @bp.route('/new/musicalpiece', methods = ['GET','POST'])
@@ -835,7 +835,7 @@ def NewMusicalPiece():
     if form.validate_on_submit():
 #        composer = Person.query.filter_by(id=int(form.composer.data[0])).first_or_404()
         addHistoryEntry('Agregado','Obra Musical: {}'.format(form.name.data))
-        new_musical_piece=MusicalPiece(name=form.name.data,composition_year=form.composition_year.data,
+        new_musical_piece=MusicalPiece(name=form.name.data.strip(),composition_year=form.composition_year.data,\
                                        instrumental_lineup=form.instrumental_lineup.data,text=form.text.data)
         for instrument_id in form.instruments.data:
             try:
@@ -865,7 +865,7 @@ def NewMusicalEnsemble():
         return redirect(url_for('users.login'))
     form = EditMusicalEnsembleForm(dbmodel=MusicalEnsemble,original_name='')   
     if form.validate_on_submit():
-        if  MusicalEnsemble.query.filter_by(name=form.name.data).all().__len__() > 0:
+        if  MusicalEnsemble.query.filter_by(name=form.name.data).first():
             flash(_('Este nombre ya ha sido registrado'),'error')
             return render_template('main/newmusicalensemble.html',form=form,title=_('Agregar Agrupación Musical'),selectedElements="")
         else:
@@ -873,7 +873,7 @@ def NewMusicalEnsemble():
                 musical_ensemble_type =MusicalEnsembleType.query.filter_by(id=int(form.musical_ensemble_type.data[0])).first()
             except:
                 musical_ensemble_type=None
-            new_musical_ensemble=MusicalEnsemble(name=form.name.data,musical_ensemble_type=musical_ensemble_type,additional_info=form.additional_info.data)
+            new_musical_ensemble=MusicalEnsemble(name=form.name.data.strip(),musical_ensemble_type=musical_ensemble_type,additional_info=form.additional_info.data)
             db.session.add(new_musical_ensemble)
             addHistoryEntry('Agregado','Agrupación Musical: {}'.format(form.name.data))
             db.session.commit()
@@ -895,7 +895,7 @@ def EditMusicalEnsemble(id):
             selectedElements.append(musical_ensemble.musical_ensemble_type.id)
     form = EditMusicalEnsembleForm(original_name=musical_ensemble.name)
     if form.validate_on_submit():
-         musical_ensemble.name = form.name.data
+         musical_ensemble.name = form.name.data.strip()
          try:
              musical_ensemble_type = MusicalEnsembleType.query.filter_by(id=int(form.musical_ensemble_type.data[0])).first()
          except:
@@ -907,7 +907,7 @@ def EditMusicalEnsemble(id):
          flash(_('Tus cambios han sido guardados.'),'info')
          return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
-        form.name.data = musical_ensemble.name
+        form.name.data = musical_ensemble.name.strip()
         form.additional_info.data= musical_ensemble.additional_info
     return render_template('main/editmusicalensemble.html',form=form,title=_('Editar Agrupación Musical'),musical_ensemble_id=id,selectedElements=list2csv(selectedElements))    
 
@@ -928,7 +928,7 @@ def EditMusicalPiece(id):
     selectedInstruments=list2csv(instruments_list)
     form = EditMusicalPieceForm(original_name=musical_piece.name)
     if form.validate_on_submit():
-         musical_piece.name = form.name.data
+         musical_piece.name = form.name.data.strip()
          musical_piece.text=form.text.data
          musical_piece.instrumental_lineup=form.instrumental_lineup.data
          musical_piece.composers.clear()
@@ -953,7 +953,7 @@ def EditMusicalPiece(id):
          flash(_('Tus cambios han sido guardados.'),'info')
          return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
-        form.name.data = musical_piece.name  
+        form.name.data = musical_piece.name.strip()
         form.composition_year.data = musical_piece.composition_year
         form.text.data=musical_piece.text
         form.instrumental_lineup.data=musical_piece.instrumental_lineup      
@@ -968,7 +968,7 @@ def NewActivity():
         return redirect(url_for('users.login'))
     form = EditActivityForm(dbmodel=Instrument,original_name='')   
     if form.validate_on_submit():
-        if  Activity.query.filter_by(name=form.name.data).all().__len__() > 0:
+        if  Activity.query.filter_by(name=form.name.data).first():
             flash(_('Este nombre ya ha sido registrado'),'error')
             return render_template('main/editactivity.html',form=form,title=_('Agregar Actividad'),selectedElements="")
         else:
@@ -976,7 +976,7 @@ def NewActivity():
                 instrument = Instrument.query.filter_by(id=int(form.instrument.data[0])).first()
             except:
                 instrument = None
-            db.session.add(Activity(name=form.name.data,instrument=instrument))
+            db.session.add(Activity(name=form.name.data.strip(),instrument=instrument))
             addHistoryEntry('Agregado','Actividad: {}'.format(form.name.data))            
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info')
@@ -995,7 +995,7 @@ def EditActivity(id):
         selectedElements.append(original_activity.instrument.id)
     form = EditActivityForm(original_name=original_activity.name)
     if form.validate_on_submit():
-         original_activity.name = form.name.data
+         original_activity.name = form.name.data.strip()
          try:
              instrument = Instrument.query.filter_by(id=int(form.instrument.data[0])).first()
          except:
@@ -1006,7 +1006,7 @@ def EditActivity(id):
          flash(_('Tus cambios han sido guardados.'),'info')
          return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
-        form.name.data = original_activity.name
+        form.name.data = original_activity.name.strip()
     return render_template('main/editactivity.html',form=form,title=_('Editar Actividad'),selectedElements=list2csv(selectedElements))    
 
 
@@ -1019,12 +1019,12 @@ def NewLocation():
         return redirect(url_for('users.login'))
     form = EditLocationForm(dbmodel=Instrument,original_name='')   
     if form.validate_on_submit():
-        if  Location.query.filter_by(name=form.name.data).all().__len__() > 0:
+        if  Location.query.filter_by(name=form.name.data).first():
             flash(_('Este nombre ya ha sido registrado'),'error')
             return render_template('main/editlocation.html',form=form,title=_('Agregar Lugar'),selectedElements="")
         else:
             city = City.query.filter_by(id=int(form.city.data[0])).first_or_404()
-            db.session.add(Location(name=form.name.data,city=city,additional_info=form.additional_info.data,address=form.address.data))
+            db.session.add(Location(name=form.name.data.strip(),city=city,additional_info=form.additional_info.data,address=form.address.data))
             addHistoryEntry('Agregado','Lugar: {}'.format(form.name.data))
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info')
@@ -1042,7 +1042,7 @@ def EditLocation(id):
     selectedElements.append(original_location.city.id)
     form = EditLocationForm(original_name=original_location.name)
     if form.validate_on_submit():
-         original_location.name = form.name.data
+         original_location.name = form.name.data.strip()
          original_location.additional_info=form.additional_info.data
          original_location.address=form.address.data
          city = City.query.filter_by(id=int(form.city.data[0])).first_or_404()
@@ -1052,7 +1052,7 @@ def EditLocation(id):
          flash(_('Tus cambios han sido guardados.'),'info')
          return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
-        form.name.data = original_location.name
+        form.name.data = original_location.name.strip()
         form.additional_info.data = original_location.additional_info
         form.address.data = original_location.address
     return render_template('main/editlocation.html',form=form,title=_('Editar Lugar'),selectedElements=list2csv(selectedElements))    
@@ -1065,11 +1065,11 @@ def NewOrganization():
         return redirect(url_for('users.login'))
     form = EditOrganizationForm(dbmodel=Organization,original_name='')   
     if form.validate_on_submit():
-        if  Organization.query.filter_by(name=form.name.data).all().__len__() > 0:
+        if  Organization.query.filter_by(name=form.name.data).first():
             flash(_('Este nombre ya ha sido registrado'),'error')
             return render_template('main/editorganization.html',form=form,title=_('Agregar Organización'))
         else:
-            db.session.add(Organization(name=form.name.data,additional_info=form.additional_info.data))
+            db.session.add(Organization(name=form.name.data.strip(),additional_info=form.additional_info.data))
             addHistoryEntry('Agregado','Organización: {}'.format(form.name.data))
             db.session.commit()
             flash(_('Tus cambios han sido guardados.'),'info')
@@ -1085,14 +1085,14 @@ def EditOrganization(id):
     original_organization =Organization.query.filter_by(id=id).first_or_404()
     form = EditOrganizationForm(original_name=original_organization.name)
     if form.validate_on_submit():
-         original_organization.name = form.name.data
+         original_organization.name = form.name.data.strip()
          original_organization.additional_info=form.additional_info.data
          addHistoryEntry('Modificado','Organización: {}'.format(form.name.data))
          db.session.commit()
          flash(_('Tus cambios han sido guardados.'),'info')
          return redirect(url_for('main.index',user=current_user.first_name))
     elif request.method == 'GET':
-        form.name.data = original_organization.name
+        form.name.data = original_organization.name.strip()
         form.additional_info.data = original_organization.additional_info
     return render_template('main/editorganization.html',form=form,title=_('Editar Organización'))    
 
@@ -1105,7 +1105,7 @@ def NewPerson():
         return redirect(url_for('users.login'))
     form = EditPersonForm(original_person=None)   
     if form.validate_on_submit():
-        person = Person(first_name=form.first_name.data,last_name=form.last_name.data)
+        person = Person(first_name=form.first_name.data.strip(),last_name=form.last_name.data.strip())
         person.birth_year = form.birth_year.data
         person.death_year = form.death_year.data
         person.biography= form.biography.data
@@ -1132,8 +1132,8 @@ def EditPerson(id):
         selectedElements.append(nationality.id)
     selectedElementGender=str(person.gender.id)
     if form.validate_on_submit():
-         person.first_name = form.first_name.data
-         person.last_name = form.last_name.data
+         person.first_name = form.first_name.data.strip()
+         person.last_name = form.last_name.data.strip()
          person.birth_year = form.birth_year.data
          person.death_year = form.death_year.data
          person.biography= form.biography.data
@@ -1170,7 +1170,7 @@ def NewEvent():
 #        organization = Organization.query.filter_by(id=int(form.organization.data[0])).first_or_404()
         event_type = EventType.query.filter_by(id=int(form.event_type.data[0])).first_or_404()
         cycle = Cycle.query.filter_by(id=int(form.cycle.data[0])).first_or_404()
-        newevent=Event(name=form.name.data,
+        newevent=Event(name=form.name.data.strip(),
                              location=location,
                              event_type=event_type,
                              cycle=cycle,
@@ -1205,7 +1205,7 @@ def EditEvent(event_id):
         Location.query.filter_by(id=int(form.location.data[0])).first_or_404()
         EventType.query.filter_by(id=int(form.event_type.data[0])).first_or_404()
         Cycle.query.filter_by(id=int(form.cycle.data[0])).first_or_404()            
-        original_event.name=form.name.data
+        original_event.name=form.name.data.strip()
         original_event.location_id=form.location.data[0]
         original_event.event_type_id=form.event_type.data[0]
         original_event.cycle_id=form.cycle.data[0]
@@ -1222,7 +1222,7 @@ def EditEvent(event_id):
         flash(_('Tus cambios han sido guardados.'),'info')
         return redirect(url_for('main.EditEvent',event_id=event_id))
     else:
-        form.name.data=original_event.name
+        form.name.data=original_event.name.strip()
         form.event_day.data=original_event.day
         form.event_month.data=original_event.month
         form.event_year.data=original_event.year

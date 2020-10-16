@@ -23,7 +23,7 @@ class EditSimpleElementForm(FlaskForm):
     def validate_name(self,name):
         if(name.data != self.original_name):
             db_elem_instance = self.dbmodel.query.filter_by(name=name.data).first()
-            if db_elem_instance is not None:
+            if db_elem_instance and db_elem_instance.name == name.data:
                 raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
 
 
@@ -37,7 +37,7 @@ class EditInstrumentForm(FlaskForm):
     def validate_name(self,name):
         if(name.data != self.original_name):
             db_elem_instance = Instrument.query.filter_by(name=name.data).first()
-            if db_elem_instance is not None:
+            if db_elem_instance and db_elem_instance.name == name.data:
                 raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
 
 class EditMusicalEnsembleForm(FlaskForm):
@@ -54,7 +54,7 @@ class EditMusicalEnsembleForm(FlaskForm):
     def validate_name(self,name):
         if(name.data != self.original_name):
             db_elem_instance = MusicalEnsemble.query.filter_by(name=name.data).first()
-            if db_elem_instance is not None:
+            if db_elem_instance and db_elem_instance.name == name.data:
                 raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
                 
 class EditMusicalPieceForm(FlaskForm):
@@ -80,7 +80,7 @@ class EditActivityForm(FlaskForm):
     def validate_name(self,name):
         if(name.data != self.original_name):
             db_elem_instance = Activity.query.filter_by(name=name.data).first()
-            if db_elem_instance is not None:
+            if db_elem_instance and db_elem_instance.name == name.data:
                 raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))       
                 
 
@@ -105,7 +105,7 @@ class EditPersonForm(FlaskForm):
     def validate_name(self,name):
         if(self.first_name.data != self.original_first_name and self.last_name.data != self.original_last_name):
             db_elem_instance = Person.query.filter_by(first_name=self.first_name.data).filter_by(last_name=self.last_name.data).first()
-            if db_elem_instance is not None:
+            if db_elem_instance and db_elem_instance.first_name == first_name.data and db_elem_instance.last_name == last_name.data:
                 raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))
         if (self.first_name.data == '') and (self.last_name.data == ''):
             raise ValidationError(_('Debe ingresar al menos un nombre o apellido'))            
@@ -131,7 +131,7 @@ class EditLocationForm(FlaskForm):
     def validate_name(self,name):
         if(name.data != self.original_name):
             db_elem_instance = Location.query.filter_by(name=name.data).first()
-            if db_elem_instance is not None:
+            if db_elem_instance and  db_elem_instance.name == name.data:
                 raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
 
 class EditOrganizationForm(FlaskForm):
@@ -144,7 +144,7 @@ class EditOrganizationForm(FlaskForm):
     def validate_name(self,name):
         if(name.data != self.original_name):
             db_elem_instance = Organization.query.filter_by(name=name.data).first()
-            if db_elem_instance is not None:
+            if db_elem_instance and  db_elem_instance.name == name.data:
                 raise ValidationError(_('Este nombre ya está registrado, por favor, use uno diferente'))        
                 
 class EditEventForm(FlaskForm):
