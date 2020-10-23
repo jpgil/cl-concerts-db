@@ -19,6 +19,14 @@ p.link-interes a {
 	font-weight: normal;
 }
 
+#nombre-sitio {
+	position: absolute;
+	/* float: right; */
+	text-align: right;
+	width: 100%;
+	margin-top: 4em;
+	padding: 0 2.5em;
+}
 
 #main-content strong {
 	font-weight: bold;

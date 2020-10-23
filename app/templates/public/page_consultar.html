@@ -1,6 +1,6 @@
 {% extends 'public/layout_global.html' %}
 
-{% set title='Cómo consultar la Base de Datos' %}
+{% set title='Cómo consultar la base de datos' %}
 
 {% block content %}
 
@@ -19,12 +19,13 @@
     La base de datos permite realizar una búsqueda simple ingresando palabras
     clave. En este caso, el resultado de la búsqueda contiene una lista de todos los
     eventos que contienen las palabras claves que se buscaron, las que aparecen
-    destacadas bajo el título del evento.
+    destacadas bajo el título del evento. Esta búsqueda arrojará resultados por relevancia. 
+    Para resultados en orden cronológico, se sugiere usar los filtros de búsqueda.
 </p>
 <p>
     También es posible realizar una búsqueda avanzada seleccionando diversos filtros
     de búsqueda. El resultado de la búsqueda siempre será una lista de “eventos”
-    (conciertos, pero también conferencias, talleres u otros), la que podrá seguir
+    (conciertos, pero también conferencias, talleres u otros) ordenados cronológicamente, la que podrá seguir
     siendo filtrada con el uso de nuevas categorías. En caso de que los eventos estén
     incompletos en alguno de sus items (sin nombre, sin nombre de ciclo, sin lugar, sin
     repertorio, etc.) esto quiere decir que dichas informaciones no figuraban en las

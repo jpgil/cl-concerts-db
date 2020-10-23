@@ -46,8 +46,7 @@
                                 <div style="border-left: 2px solid #CCCCCC; margin: 0 0 0 370px; padding-left: 0.7em;">
                                     <img src="{{ url_for('static', filename='public/images/logo_uah_filum_blanco-01.png') }}"
                                         style="width: 350px; margin: -1px 0 0 -379px; float: left;">
-                                    <span class="d-block text-white">Conciertos Doctos en Chile</span> 
-                                    <span class="d-block text-secondary">1945–1995</span>
+                                    
                                 </div>
                             </a>
                             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -57,6 +56,10 @@
                             </button>                        
                             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                                 {% include 'public/menu.html' %}
+                            </div>
+                            <div id="nombre-sitio">
+                                <span class="text-white">Conciertos Doctos en Chile</span>
+                                <span class="text-secondary">1945–1995</span>
                             </div>
                         </nav>
                     </section>
