@@ -8,6 +8,8 @@ from app.public import bp
 from app.public import search as searchClDb
 from app.models import Event, Person
 from app.api.web_methods import search_events
+from pyuca import Collator 
+
 
 
 
@@ -136,7 +138,8 @@ def person(initial="A"):
         # personas = Person.query.filter(Person.last_name.ilike(initial + "%")).all()
         personas = Person.query.filter(or_(and_(Person.last_name == '', Person.first_name.ilike(
             initial + "%")), Person.last_name.ilike(initial + "%"))).all()
-        personas = sorted(personas, key=lambda e: e.get_name().upper() )
+        collator = Collator() 
+        personas = sorted(personas, key=lambda e:  collator.sort_key( e.get_name().upper() ) )
         return render_template('public/person_initial.html', initial=initial, personas=personas)
     except TemplateNotFound:
         abort(404)
@@ -169,9 +172,9 @@ def show_event(id):
             c.is_composer = True
             compositores.add(c)
             personas.add(c)
-
-    compositores = sorted(compositores, key=lambda e: e.get_name() )
-    participantes = sorted(participantes, key=lambda e: e.get_name() )
+    collator=Collator()
+    compositores = sorted(compositores, key=lambda e: collator.sort_key(e.get_name()))
+    participantes = sorted(participantes, key=lambda e: collator.sort_key(e.get_name()))
 
     return render_template(
         'public/detalle.html',
