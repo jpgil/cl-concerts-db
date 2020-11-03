@@ -373,6 +373,8 @@ class MusicalEnsemble(db.Model):
     participants = db.relationship('Participant', backref='musical_ensemble', lazy='dynamic') 
     def get_name(self):
         return "{}".format(self.name)
+    def get_short_name(self):
+        return "{}".format(self.name)
     def __repr__(self):
         return 'MusicalEnsemble(name="{}")'.format(self.name) 
       

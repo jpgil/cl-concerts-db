@@ -13,6 +13,7 @@ from app.models import *
 from app.main import bp
 from sqlalchemy import or_, and_
 from werkzeug.local import LocalProxy
+from pyuca import Collator 
 import os
 
 log = LocalProxy(lambda: current_app.logger)
@@ -408,12 +409,14 @@ def getParticipantsList(event_id):
     data={ "results": [], "pagination": { "more": False} }
     event=Event.query.filter_by(id=event_id).first()
     if event:
-        participants=event.participants.order_by(Person.first_name.asc()).all()
+        participants=event.participants.all()
+        collator = Collator() 
+        participants = sorted(participants, key=lambda e:  collator.sort_key( e.get_short_name() ) )
         for participant in participants:
             data["results"].append({ 'name': participant.get_short_name(),
                 'activity': participant.activity.name if participant.activity else '',
                 'id': participant.id, 
-                'text': '{} '.format(participant.get_name()) })
+                'text': '{} '.format(participant.get_short_name()) })
     return jsonify(data)
 
 @bp.route('/list/eventsofmember/<musical_ensemble_member_id>')
