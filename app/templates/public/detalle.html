@@ -374,7 +374,9 @@
             <ul>
             {% for m in e.medialinks.all() %}
                 <li>
-                {{ m.description|urlize(400, true, target="_blank") }} - <a style="display: inline" href="{{ m.url }}" target="_blank">[Ver Archivo]</a>
+                {{ m.description|urlize(400, true, target="_blank") }} - <a style="display: inline" 
+                href="{{ request.url_root }}_uploads/uploads/{{ m.filename }}" 
+                target="_blank">[Ver Archivo]</a>
                 </li>
             <!-- <iframe src="{{ m.url }}" style="width: 100%; height: 30em;"></iframe> -->
             <!-- <p>

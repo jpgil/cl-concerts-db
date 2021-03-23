@@ -189,7 +189,8 @@ def show_event(id):
         e=event,
         participantes=participantes,
         compositores=compositores,
-        personas=personas
+        personas=personas,
+        request=request
     )
 
 
