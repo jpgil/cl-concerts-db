@@ -255,7 +255,7 @@ class SideBarFilters:
 
     @property
     def keywords(self):
-        return self.prefill('keywords', 'text')
+        return self.prefill('keywords', '')
 
     @property 
     def evento(self):
