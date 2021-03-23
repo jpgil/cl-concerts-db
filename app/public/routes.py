@@ -1,6 +1,7 @@
 import sys
 import json
 import logging
+import ast
 from flask import Flask, render_template, jsonify, url_for, request, redirect, abort, g, session
 from jinja2 import TemplateNotFound
 from sqlalchemy import or_, and_
@@ -86,10 +87,17 @@ def get_events():
 
     data = {}
     data['total'] = results['total']
+    print(entries)
     rows = render_template('public/event_table.json',
                            entries=entries, causes=results['events_found_causes'])
-
-    data['rows'] = json.loads(rows.replace("\n", ""),)[:-1]
+    # data['rows'] = json.dumps( ast.literal_eval(rows) )
+    try:
+        data['rows'] = json.loads(rows.replace("\n", ""))[:-1]
+        # data['rows'] = json.dumps( ast.literal_eval(rows) )
+    except:
+        print('FAILED THIS ONE:')
+        # logger.debug( repr(rows) )
+        print(rows.replace("\n", ""))
     return jsonify(data)
     # data['rows'] = render_template('public/event_table.json', entries=entries)
     # return data
