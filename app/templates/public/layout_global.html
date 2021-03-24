@@ -47,7 +47,6 @@
                                 <div style="border-left: 2px solid #CCCCCC; margin: 0 0 0 370px; padding-left: 0.7em;">
                                     <img src="{{ url_for('static', filename='public/images/logo_uah_filum_blanco-01.png') }}"
                                         style="width: 350px; margin: -1px 0 0 -379px; float: left;">
-                                    
                                 </div>
                             </a>
                             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -274,6 +273,16 @@
         });
     }
 
+</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TJHQQQ95V9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-TJHQQQ95V9');
 </script>
 
 {% endblock %}
