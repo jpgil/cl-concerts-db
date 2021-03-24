@@ -1,0 +1,46 @@
+{% extends 'public/layout_global.html' %}
+
+{% set title='Cómo citar la base de datos' %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+
+<!-- <p class="text-right">
+<figure class="figure px-4 pt-4">
+    <img src="{{ url_for('static', filename='public/images/page-consultar.jpg') }}"
+        class="figure-img img-fluid rounded" alt="">
+    <figcaption class="figure-caption text-right"></figcaption>
+</figure>
+</p> -->
+
+<p>La base de datos “Conciertos doctos en Chile, 1945-1995” contiene informaciones de más
+de 2.000 eventos musicales, los que muchas veces proveen fuentes, tales como programas y
+reseñas de los eventos. Por lo mismo, la herramienta puede ser utilizada para recopilar
+informaciones sobre personas y eventos, pero constituye también un archivo digital de
+fuentes primarias. Mientras que el uso de la base de datos es gratuito, esperamos que su
+utilización en el marco de trabajos de investigación sea consignado en las publicaciones
+correspondientes.
+</p>
+
+<p>Recomendamos estos sistemas de citación.</p>
+
+<p>1) Para fuentes en particular:</p>
+
+<blockquote>
+[Nombre de fuente, lugar, año], consultada en: Base de datos “Conciertos doctos en Chile,
+1945-1995”. www.basedeconciertos.uahurtado.cl (fecha de consulta).
+</blockquote>
+
+<p>
+    2) Para búsquedas generales vinculadas a personas o eventos musicales:
+</p>
+
+<blockquote>
+    Los eventos/las informaciones correspondientes a [….] fueron consultados/as en:<br/>
+    Base de datos “Conciertos doctos en Chile, 1945-1995”.
+    www.basedeconciertos.uahurtado.cl (fecha de consulta).
+</blockquote>
+
+{% endblock %}

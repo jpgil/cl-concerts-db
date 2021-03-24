@@ -8,9 +8,17 @@ h1,h2,h3,h4,h5,h6 {
 p {
     font-family: 'Rubik', sans-serif;
 }
-h3 {
+h2, h3 {
 	margin-bottom: 1em;
 }
+
+blockquote {
+	margin: 1em; 
+	/* border: 1px solid #CCC;  */
+	padding: 1em;
+	font-family: 'Courier New', Courier, monospace;
+}
+
 p.link-interes {
 	font-weight: bold;
 }
