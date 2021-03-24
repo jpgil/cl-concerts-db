@@ -29,6 +29,7 @@ p.link-interes a {
 
 #nombre-sitio {
 	position: absolute;
+	top: 0;
 	/* float: right; */
 	text-align: right;
 	width: 100%;
