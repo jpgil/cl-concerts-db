@@ -6,7 +6,7 @@
 
 <h2>{{ title }}</h2>
 
-<p>
+<!-- <p>
     Diversos archivos virtuales y físicos dialogan con los conciertos aquí recopilados. En el marco del Fondecyt de
     Iniciación 11170844 se realizó la inventarización del Fondo Documental Anacrusa, donado por Eduardo Cáceres al
     Archivo de Música de la Biblioteca Nacional de Chile. Este archivo contiene partituras, grabaciones de audio y
@@ -15,18 +15,54 @@
 </p>
 
 <p>
-    <!-- <a class="text-success"
-        href="https://www.google.com/search?q=Fondo+Documental+Anacrusa&oq=Fondo+Documental+Anacrusa&aqs=chrome..69i57j33.787j0j7&sourceid=chrome&ie=UTF-8">Consultar
-        el Fondo Documental Anacrusa (este link aún no existe).</a> -->
     <a class="text-success" target="_blank"  href="{{ url_for('static', filename='public/GUIA_DE_FONDO_DOCUMENTAL_ANACRUSA.pdf') }}"
     target="_blank">Consultar la Guía del Fondo Documental Anacrusa</a>
-</p>
-
+</p> -->
+<h3>Fondo Documental Anacrusa</h3>
 
 <p>
+    Diversos documentos físicos y electrónicos dialogan con los conciertos aquí
+recopilados. En el marco del Fondecyt de Iniciación 11170844 se realizó la
+inventarización del Fondo Documental Anacrusa, donado por Eduardo Cáceres
+al Archivo de Música de la Biblioteca Nacional de Chile. Bajo la supervisión de
+Cecilia Astudillo, Jefa del Archivo de Música, Dianilexis Echevarría, Daniela Nieto
+y Constanza Toledo realizaron el inventario. Este archivo contiene partituras,
+grabaciones de audio y videos, fotografías, programas de concierto y documentos
+administrativos, además de una extensa colección de correspondencia vinculada a
+los festivales y conciertos de la Agrupación Musical Anacrusa. Agradecemos a
+Jorge Aliaga por su ayuda en la digitalización de archivos de audio.
+</p>
+
+<p>
+    Los siguientes documentos se pueden consultar a continuación:
+</p>
+
+<ul>
+    <li>
+        <a class="text-success" target="_blank"  href="{{ url_for('static', filename='public/GUIA_DE_FONDO_DOCUMENTAL_ANACRUSA.pdf') }}"
+    target="_blank">Guía del Fondo Documental Anacrusa</a> (PDF)
+    </li>
+    <li>
+        <a class="text-success" target="_blank"  href="{{ url_for('static', filename='public/Cuadro de clasificación definitivo de Anacrusa.pdf') }}"
+    target="_blank">Cuadro de clasificación del Fondo Documental Anacrusa</a> (PDF)
+    </li>
+    <li>
+        <a class="text-success" target="_blank"  href="{{ url_for('static', filename='public/Inventario Fondo Anacrusa.xlsb') }}"
+    target="_blank">Inventario del Fondo Documental Anacrusa</a> (Excel)
+    </li>
+</ul>
+
+<p>
+    Para mayores informaciones contactar a Cecilia Astudillo,
+<br /><a href="mailto:cecilia.astudillo@bibliotecanacional.gob.cl">cecilia.astudillo@bibliotecanacional.gob.cl</a>
+
+</p>
+
+<h3>Proyecto Tonus</h3>
+<p>
     Dentro de los programas de conciertos de la década de 1950, destacan los conciertos de música contemporánea del
-    grupo Tonus en los Institutos Chileno-Británico, Chileno-Alemán y Chileno-Francés de Cultura. El proyecto “Tonus-
-    Vanguardia de los años 50” ha puesto a disposición por primera vez grabaciones de obras de algunos de sus
+    grupo Tonus en los Institutos Chileno-Británico, Chileno-Alemán y Chileno-Francés de Cultura. El proyecto “<b>Tonus-
+    Vanguardia de los años 50</b>” ha puesto a disposición por primera vez grabaciones de obras de algunos de sus
     principales integrantes.
 </p>
 
@@ -34,7 +70,7 @@
     <a class="text-success" target="_blank" href="http://www.proyecto-tonus.com">http://www.proyecto-tonus.com</a>
 </p>
 
-
+<h3>Publicaciones vinculadas</h3>
 <p>
     Algunas publicaciones vinculadas a los ejes del proyecto se encuentran en la página de Daniela Fugellie en
     Academia.edu
