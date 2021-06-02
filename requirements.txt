@@ -72,7 +72,7 @@ SQLAlchemy==1.3.13
 SQLAlchemy-Utils==0.34.2
 traitlets==4.3.2
 tzlocal==2.1
-urllib3==1.25.8
+urllib3==1.26.5
 validators==0.14.0
 visitor==0.1.3
 wcwidth==0.1.7
