@@ -1,25 +1,28 @@
 <ul class="navbar-nav ml-auto">
-    <li class="nav-item active">
-        <a class="nav-link" href="{{ url_for('public.inicio') }}" id="m-inicio">Inicio</a>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="{{ url_for('public.show', page='page_about') }}" id="m-about" role="button"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Información</a>
+      <div class="dropdown-menu" aria-labelledby="m-about">
+        <a class="dropdown-item" href="{{ url_for('public.inicio') }}" id="m-inicio">Inicio</a>
+        <a class="dropdown-item" href="{{ url_for('public.show', page='page_about') }}">Acerca de</a>
+        <a class="dropdown-item" href="{{ url_for('public.show', page='page_consultar') }}" id="m-consultar">Cómo
+          Consultar</a>
+        <a class="dropdown-item" href="{{ url_for('public.show', page='page_citar') }}" id="m-citar">Cómo Citar</a>
+        <a class="dropdown-item" href="{{ url_for('public.show', page='page_enlaces') }}" id="m-enlaces">Enlaces de
+          Interés</a>
+      </div>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="{{ url_for('public.person', initial='A') }}" id="m-consultar">Personas</a>
+      <a class="nav-link" href="{{ url_for('public.search', update='search') }}" id="m-conciertos">Conciertos</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="{{ url_for('public.show', page='page_consultar') }}" id="m-consultar">Cómo Consultar</a>
+      <a class="nav-link" href="{{ url_for('public.biographies') }}" id="m-biografias">Biografías</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="{{ url_for('public.show', page='page_citar') }}" id="m-consultar">Cómo Citar</a>
+      <a class="nav-link" href="{{ url_for('public.person', initial='A') }}" id="m-personas">Participantes y Compositores</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('public.show', page='page_about') }}" id="m-about">Acerca de</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('public.show', page='page_enlaces') }}" id="m-enlaces">Enlaces de Interés</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('main.index') }}">Admin</a>
-    </li>
+
+
     
     <!--                   
                   <li class="nav-item dropdown">

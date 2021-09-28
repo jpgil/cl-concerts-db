@@ -58,7 +58,7 @@
                                 {% include 'public/menu.html' %}
                             </div>
                             <div id="nombre-sitio">
-                                <span class="text-white">Conciertos Doctos en Chile</span>
+                                <span class="text-white">Biografías y Conciertos Doctos en Chile</span>
                                 <span class="text-secondary">1945–1995</span>
                             </div>
                         </nav>
@@ -69,7 +69,11 @@
                 <div class="row">
                     <div class="col-xl-3">
                         <section id="side-bar" class="py-4">
-                            {% include 'public/sidebar.html' %}
+                            {% if sidebar %}
+                                {% include sidebar %}
+                            {% else %}
+                                {% include 'public/sidebar.html' %}
+                            {% endif %}
                         </section>
                     </div>
 
@@ -99,6 +103,9 @@
                                         style="width: 350px; margin: -1px 0 0 -9px;"></a>
                             </p>
                             <p><small>Alameda 1869, 4to. piso Metro Los Héroes Santiago – Chile</small></p>
+                            <p>
+                                <a style="color: white;" href="{{ url_for('main.index') }}">Admin</a>
+                            </p>
                             <!-- <p class="mb-0">
                                 <a class="text-light" href="https://filosofiahumanidades.uahurtado.cl/">Facultad de Filosofía y Humanidades</a>
                             </p>
@@ -122,17 +129,6 @@
                             <p>Daniela Fugellie 
                                 <br />
                                 <a style="color: white;" href="mailto:dfugellie@uahurtado.cl">dfugellie@uahurtado.cl</a></p>
-                            <form class="mt-0" style="display: none; width: 12em; float: right;">
-                                <div class="form-group">
-                                    <input type="email" class="form-control form-control-sm" name="email" id="inputEmail3"
-                                        placeholder="Tu email">
-                                </div>
-                                <div class="form-group">
-                                    <textarea class="form-control form-control-sm" name="consulta" placeholder="Envíanos tu consulta"
-                                        id="exampleFormControlTextarea1" rows="3"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-outline-success mb-2">Enviar Consulta</button>
-                            </form>
                         </div>
 
 

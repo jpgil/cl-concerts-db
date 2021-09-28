@@ -202,6 +202,22 @@ def show(page):
     except TemplateNotFound:
         abort(404)
 
+
+
+
+# 2021-09-28: Routes for biographies below.
+@bp.route('/biographies')
+def biographies():
+    return render_template('public/biographies.html')
+
+# 2021-09-28: Routes for biographies below.
+@bp.route('/bio/<id>')
+def bio_id(id):
+    return render_template('public/bio_id.html')
+
+
+
+
 @bp.before_app_first_request
 def initialize_cache():
     from config import Config
@@ -215,3 +231,5 @@ def initialize_cache():
     logger.debug("starting refresh thread")
     scheduler.add_job(refresh_cache_thread, 'interval', seconds=Config.CACHE_TIMEOUT-10, args=[current_app._get_current_object()])
     scheduler.start()
+
+
