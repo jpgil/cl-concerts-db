@@ -1,18 +1,17 @@
-# English translations for PROJECT.
-# Copyright (C) 2018 ORGANIZATION
+# Translations template for PROJECT.
+# Copyright (C) 2022 ORGANIZATION
 # This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2022-01-04 17:10-0300\n"
-"PO-Revision-Date: 2018-05-09 07:20-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: en\n"
-"Language-Team: en <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -171,7 +170,7 @@ msgstr ""
 #: app/templates/main/showlist.html:24 app/users/forms.py:23
 #: app/users/forms.py:51 app/users/forms.py:61
 msgid "Nombre"
-msgstr "Name"
+msgstr ""
 
 #: app/main/forms.py:18 app/main/forms.py:33 app/main/forms.py:50
 #: app/main/forms.py:67 app/main/forms.py:76 app/main/forms.py:95
@@ -249,7 +248,7 @@ msgstr ""
 #: app/main/forms.py:89 app/users/forms.py:24 app/users/forms.py:52
 #: app/users/forms.py:62
 msgid "Apellido"
-msgstr "Last Name"
+msgstr ""
 
 #: app/main/forms.py:90 app/main/routes.py:51 app/templates/base.html:51
 #: app/templates/main/edit_elements.html:9
@@ -333,9 +332,8 @@ msgstr ""
 
 #: app/main/forms.py:166 app/templates/main/editevent.html:145
 #: app/templates/main/editevent.html:159 app/templates/main/editevent.html:180
-#, fuzzy
 msgid "Obra"
-msgstr "Name"
+msgstr ""
 
 #: app/main/forms.py:167 app/templates/main/editevent.html:146
 msgid "Estreno"
@@ -561,7 +559,7 @@ msgstr ""
 
 #: app/templates/base.html:3
 msgid "Bienvenido a cl-concerts-db"
-msgstr "Welcome to cl-concerts-db"
+msgstr ""
 
 #: app/templates/base.html:41 app/templates/users/users.html:4
 #: app/users/routes.py:19
@@ -728,9 +726,8 @@ msgid "Hola "
 msgstr ""
 
 #: app/templates/main/index.html:6
-#, fuzzy
 msgid "Bienvenid@ a cl-concerts-db"
-msgstr "Welcome to cl-concerts-db"
+msgstr ""
 
 #: app/templates/main/index.html:8
 msgid "Últimas actualizaciones"
@@ -749,14 +746,12 @@ msgid "Entrar"
 msgstr ""
 
 #: app/templates/users/login.html:12
-#, fuzzy
 msgid "Olvidé mi contraseña"
-msgstr "Password"
+msgstr ""
 
 #: app/templates/users/register.html:5
-#, fuzzy
 msgid "Registro"
-msgstr "Sign Up"
+msgstr ""
 
 #: app/templates/users/reset_password.html:5
 msgid "Reset Your Password"
@@ -796,7 +791,7 @@ msgstr ""
 
 #: app/users/email.py:9
 msgid "[cl-concerts-db] Resetear Contraseña"
-msgstr "[cl-concerts-db] Reset Password"
+msgstr ""
 
 #: app/users/forms.py:12 app/users/forms.py:53
 msgid "e-mail"
@@ -804,11 +799,11 @@ msgstr ""
 
 #: app/users/forms.py:13 app/users/forms.py:26 app/users/forms.py:44
 msgid "Contraseña"
-msgstr "Password"
+msgstr ""
 
 #: app/users/forms.py:14
 msgid "Recuérdame"
-msgstr "Remember me"
+msgstr ""
 
 #: app/users/forms.py:15
 msgid "Log in"
@@ -816,40 +811,40 @@ msgstr ""
 
 #: app/users/forms.py:25 app/users/forms.py:39 app/users/forms.py:63
 msgid "Email"
-msgstr "E-mail"
+msgstr ""
 
 #: app/users/forms.py:28 app/users/forms.py:46 app/users/forms.py:56
 #: app/users/forms.py:67
 msgid "Repetir Contraseña"
-msgstr "Repeat Password"
+msgstr ""
 
 #: app/users/forms.py:31
 msgid "Registrase"
-msgstr "Sign Up"
+msgstr ""
 
 #: app/users/forms.py:35
 msgid "Por favor, use un e-mail diferente."
-msgstr "Please, use a different e-mail"
+msgstr ""
 
 #: app/users/forms.py:40 app/users/forms.py:48
 msgid "Requerir reset de contraseña"
-msgstr "Request password reset"
+msgstr ""
 
 #: app/users/forms.py:54 app/users/forms.py:65
 msgid "Contraseña (dejar en blanco para mantener)"
-msgstr "Password (leave blank to keep previous password)"
+msgstr ""
 
 #: app/users/forms.py:57 app/users/forms.py:68
 msgid "Guardar Cambios"
-msgstr "Save Changes"
+msgstr ""
 
 #: app/users/forms.py:76
 msgid "E-mail ya registrado, por favor, use un e-mail diferente."
-msgstr "E-mail already registered, please, use a different e-mail."
+msgstr ""
 
 #: app/users/routes.py:40
 msgid "e-mail o contraseña incorrecta"
-msgstr "wrong e-mail or password"
+msgstr ""
 
 #: app/users/routes.py:47
 msgid "Entre aquí"
@@ -878,94 +873,4 @@ msgstr ""
 #: app/users/routes.py:152
 msgid "Editar Usuario"
 msgstr ""
-
-#~ msgid "Por favor, loguearse para ver esta página."
-#~ msgstr "Please, login in order to see this page"
-
-#~ msgid "%(username)s said %(when)s"
-#~ msgstr "%(username)s dijo %(when)s"
-
-#~ msgid "Translate"
-#~ msgstr "Traducir"
-
-#~ msgid "Home"
-#~ msgstr "Home"
-
-#~ msgid "Explore"
-#~ msgstr "Explorar"
-
-#~ msgid "Profile"
-#~ msgstr ""
-
-#~ msgid "Error: Could not contact server."
-#~ msgstr ""
-
-#~ msgid "Edit Profile"
-#~ msgstr ""
-
-#~ msgid "Hi, %(username)s!"
-#~ msgstr ""
-
-#~ msgid "Newer posts"
-#~ msgstr ""
-
-#~ msgid "Older posts"
-#~ msgstr ""
-
-#~ msgid "User"
-#~ msgstr ""
-
-#~ msgid "Last seen on"
-#~ msgstr ""
-
-#~ msgid "%(count)d followers"
-#~ msgstr ""
-
-#~ msgid "%(count)d following"
-#~ msgstr ""
-
-#~ msgid "Edit your profile"
-#~ msgstr ""
-
-#~ msgid "Follow"
-#~ msgstr ""
-
-#~ msgid "Unfollow"
-#~ msgstr ""
-
-#~ msgid "Not encontrada"
-#~ msgstr ""
-
-#~ msgid "e-mail"
-#~ msgstr ""
-
-#~ msgid "Recuérdame"
-#~ msgstr "Remember me"
-
-#~ msgid "Log in"
-#~ msgstr ""
-
-#~ msgid "Apellido"
-#~ msgstr "Last Name"
-
-#~ msgid "Email"
-#~ msgstr ""
-
-#~ msgid "Repetir Contraseña"
-#~ msgstr "Repeat Password"
-
-#~ msgid "Requerir reseteo de contraseña"
-#~ msgstr "Request password reset"
-
-#~ msgid "Invalid username or password"
-#~ msgstr ""
-
-#~ msgid "Congratulations, you are now a registered user!"
-#~ msgstr ""
-
-#~ msgid "Check your email for the instructions to reset your password"
-#~ msgstr ""
-
-#~ msgid "Your password has been reset."
-#~ msgstr ""
 

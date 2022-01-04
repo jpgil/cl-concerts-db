@@ -32,7 +32,11 @@ class Config(object):
     # SEARCH_LIMIT: the default is basically no limit
     SEARCH_LIMIT =  int(os.environ.get('SEARCH_LIMIT') or 9999) 
     # language on which is expected to have translations.
-    LANGUAGES = ['es', 'en']
+    LANGUAGES = {
+        'es': 'Spanish', 
+        'en': 'English'
+    }
+
     def __init__(self):
        print(os.path.join(basedir, '.env'))    
 #       print("Using SQLALCHEMY_DATABASE_URI=%s",SQLALCHEMY_DATABASE_URI)
