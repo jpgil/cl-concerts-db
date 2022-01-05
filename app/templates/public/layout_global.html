@@ -58,7 +58,7 @@
                                 {% include 'public/menu.html' %}
                             </div>
                             <div id="nombre-sitio">
-                                <span class="text-white">Biografías y Conciertos Doctos en Chile</span>
+                                <span class="text-white">{{_('Biografías y Conciertos Doctos en Chile')}}</span>
                                 <span class="text-secondary">1945–1995</span>
                             </div>
                         </nav>
@@ -102,7 +102,7 @@
                                 ><img src="{{ url_for('static', filename='public/images/logo_uah_filum_blanco-01.png') }}"
                                         style="width: 350px; margin: -1px 0 0 -9px;"></a>
                             </p>
-                            <p><small>Alameda 1869, 4to. piso Metro Los Héroes Santiago – Chile</small></p>
+                            <p><small>{{_('Alameda 1869, 4to. piso Metro Los Héroes Santiago – Chile')}}</small></p>
                             <p>
                                 <a style="color: white;" href="{{ url_for('main.index') }}">Admin</a>
                             </p>
@@ -125,7 +125,7 @@
                         
                         <div class="col-sm pt-0" style="text-align: right;">
                         
-                            <p>Mayores informaciones: </p>
+                            <p>{{_('Mayores informaciones:')}} </p>
                             <p>Daniela Fugellie 
                                 <br />
                                 <a style="color: white;" href="mailto:dfugellie@uahurtado.cl">dfugellie@uahurtado.cl</a></p>
@@ -181,7 +181,7 @@
             $('[data-toggle="tooltip"]').tooltip()
         });
         $.fn.datepicker.dates['en'] = {
-            days: ["Domingo", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+            days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
             daysShort: ["Dom", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
             daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
             months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Deciembre"],

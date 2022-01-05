@@ -1,11 +1,11 @@
 {% extends 'public/layout_global.html' %}
 
-{% set title='Resultados de la búsqueda' %}
+{% set title=_('Resultados de la búsqueda') %}
 
 {% block content %}
 <h2>{{ title }}</h2>
 
-<p>Los resultados que se muestran a continuación pueden ser refinados con los filtros de búsqueda disponibles a la izquierda de esta página.</p>
+<p>{{_('Los resultados que se muestran a continuación pueden ser refinados con los filtros de búsqueda disponibles a la izquierda de esta página.')}}</p>
 
 <table 
     class="table table-striped" 
@@ -24,9 +24,9 @@
 >
     <thead>
         <tr>
-            <th scope="col" data-field='title'>Evento</th>
-            <th scope="col" data-field='place'>Lugar</th>
-            <th scope="col" data-field='date'>Fecha</th>
+            <th scope="col" data-field='title'>{{_('Evento')}}</th>
+            <th scope="col" data-field='place'>{{_('Lugar')}}</th>
+            <th scope="col" data-field='date'>{{_('Fecha')}}</th>
         </tr>
     </thead>
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-01-04 17:10-0300\n"
+"POT-Creation-Date: 2022-01-04 21:53-0300\n"
 "PO-Revision-Date: 2022-01-04 16:54-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.9.1\n"
 
-#: app/__init__.py:24
+#: app/__init__.py:23
 msgid "Por favor, loguearse para ver esta página."
 msgstr ""
 
@@ -168,7 +168,8 @@ msgstr ""
 #: app/main/forms.py:138 app/templates/main/editevent.html:134
 #: app/templates/main/editevent.html:181
 #: app/templates/main/editmusicalensemble.html:64
-#: app/templates/main/showlist.html:24 app/users/forms.py:23
+#: app/templates/main/showlist.html:24 app/templates/public/detalle.html:163
+#: app/templates/public/detalle.html:221 app/users/forms.py:23
 #: app/users/forms.py:51 app/users/forms.py:61
 msgid "Nombre"
 msgstr ""
@@ -205,10 +206,12 @@ msgstr ""
 #: app/templates/main/editevent.html:182
 #: app/templates/main/editmusicalensemble.html:44
 #: app/templates/main/editmusicalensemble.html:65
+#: app/templates/public/detalle.html:165
 msgid "Actividad"
 msgstr ""
 
 #: app/main/forms.py:49 app/main/forms.py:126 app/main/forms.py:139
+#: app/templates/public/detalle.html:340
 msgid "Información Adicional"
 msgstr ""
 
@@ -269,7 +272,8 @@ msgstr ""
 msgid "Sexo"
 msgstr ""
 
-#: app/main/forms.py:94
+#: app/main/forms.py:94 app/templates/public/detalle.html:82
+#: app/templates/public/person_initial.html:98
 msgid "Información Biográfica"
 msgstr ""
 
@@ -298,7 +302,7 @@ msgid "Organizadores"
 msgstr ""
 
 #: app/main/forms.py:153 app/templates/main/editevent.html:47
-#: app/templates/main/newevent.html:36
+#: app/templates/main/newevent.html:36 app/templates/public/search.html:28
 msgid "Lugar"
 msgstr ""
 
@@ -310,11 +314,11 @@ msgstr ""
 msgid "El díá debe corresponder a un número entre 1 y 31"
 msgstr ""
 
-#: app/main/forms.py:157
+#: app/main/forms.py:157 app/templates/public/detalle.html:355
 msgid "Fuentes"
 msgstr ""
 
-#: app/main/forms.py:158
+#: app/main/forms.py:158 app/templates/public/menu.html:4
 msgid "Información"
 msgstr ""
 
@@ -562,9 +566,17 @@ msgstr ""
 msgid "Bienvenido a cl-concerts-db"
 msgstr ""
 
+#: app/templates/base.html:32
+msgid "Conciertos Doctos en Chile"
+msgstr ""
+
 #: app/templates/base.html:41 app/templates/users/users.html:4
 #: app/users/routes.py:19
 msgid "Usuarios"
+msgstr ""
+
+#: app/templates/base.html:47 app/templates/main/edit_elements.html:5
+msgid "Editar Elementos"
 msgstr ""
 
 #: app/templates/base.html:71 app/templates/main/history.html:4
@@ -583,6 +595,10 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
+#: app/templates/base.html:87
+msgid "Sitio Público"
+msgstr ""
+
 #: app/templates/errors/404.html:4
 msgid "Página no encontrada"
 msgstr ""
@@ -599,10 +615,6 @@ msgstr ""
 msgid "El administrador ha sido notificado. ¡Sentimos el inconveniente!"
 msgstr ""
 
-#: app/templates/main/edit_elements.html:5
-msgid "Editar Elementos"
-msgstr ""
-
 #: app/templates/main/edit_elements.html:17
 msgid "Tipos de Evento"
 msgstr ""
@@ -612,10 +624,12 @@ msgid "Información General"
 msgstr ""
 
 #: app/templates/main/editevent.html:17 app/templates/main/editevent.html:98
+#: app/templates/public/sidebar.html:147
 msgid "Participantes"
 msgstr ""
 
 #: app/templates/main/editevent.html:18 app/templates/main/editevent.html:143
+#: app/templates/public/detalle.html:255 app/templates/public/sidebar.html:151
 msgid "Repertorio"
 msgstr ""
 
@@ -694,7 +708,8 @@ msgstr ""
 msgid "Archivos"
 msgstr ""
 
-#: app/templates/main/editevent.html:217
+#: app/templates/main/editevent.html:217 app/templates/public/sidebar.html:54
+#: app/templates/public/sidebar_inicio.html:46
 msgid "Tipo"
 msgstr ""
 
@@ -740,6 +755,404 @@ msgstr ""
 
 #: app/templates/main/showlist.html:25
 msgid "X"
+msgstr ""
+
+#: app/templates/public/bio_id.html:3
+msgid "Biografía de Stein, Hanns"
+msgstr ""
+
+#: app/templates/public/biographies.html:3 app/templates/public/menu.html:19
+msgid "Biografías"
+msgstr ""
+
+#: app/templates/public/biographies.html:11
+msgid ""
+"Introducción para las biografías, textos sobre el proyecto FONDART, "
+"alcance, más información"
+msgstr ""
+
+#: app/templates/public/carousel.html:6
+msgid "Biografías y Conciertos Doctos en Chile, 1945–1995"
+msgstr ""
+
+#: app/templates/public/carousel.html:8
+msgid "VERSION 3 -- Con biografías"
+msgstr ""
+
+#: app/templates/public/carousel.html:11
+msgid "Base de datos a partir de reseñas y programas de concierto"
+msgstr ""
+
+#: app/templates/public/detalle.html:37
+msgid "Información del Evento"
+msgstr ""
+
+#: app/templates/public/detalle.html:53 app/templates/public/detalle.html:109
+#: app/templates/public/person_initial.html:69
+msgid "Nombre:"
+msgstr ""
+
+#: app/templates/public/detalle.html:57
+#: app/templates/public/person_initial.html:73
+msgid "Apellido:"
+msgstr ""
+
+#: app/templates/public/detalle.html:61
+#: app/templates/public/person_initial.html:77
+msgid "Género:"
+msgstr ""
+
+#: app/templates/public/detalle.html:65
+#: app/templates/public/person_initial.html:81
+msgid "Nacimiento:"
+msgstr ""
+
+#: app/templates/public/detalle.html:69
+#: app/templates/public/person_initial.html:85
+msgid "Muerte:"
+msgstr ""
+
+#: app/templates/public/detalle.html:73
+#: app/templates/public/person_initial.html:89
+msgid "País(es):"
+msgstr ""
+
+#: app/templates/public/detalle.html:91
+msgid "Cerrar"
+msgstr ""
+
+#: app/templates/public/detalle.html:93 app/templates/public/detalle.html:97
+#: app/templates/public/person_initial.html:110
+#: app/templates/public/person_initial.html:114
+msgid ""
+"Eventos asociados a esta\n"
+"                        persona"
+msgstr ""
+
+#: app/templates/public/detalle.html:113
+msgid "Ciclo:"
+msgstr ""
+
+#: app/templates/public/detalle.html:117
+msgid "Tipo de Evento:"
+msgstr ""
+
+#: app/templates/public/detalle.html:121
+msgid "Fecha:"
+msgstr ""
+
+#: app/templates/public/detalle.html:126
+msgid "Organizador(es):"
+msgstr ""
+
+#: app/templates/public/detalle.html:140
+msgid "Ciudad:"
+msgstr ""
+
+#: app/templates/public/detalle.html:144
+msgid "Locación:"
+msgstr ""
+
+#: app/templates/public/detalle.html:155
+msgid "Participante(s)"
+msgstr ""
+
+#: app/templates/public/detalle.html:164 app/templates/public/detalle.html:222
+msgid "Género"
+msgstr ""
+
+#: app/templates/public/detalle.html:167 app/templates/public/detalle.html:223
+msgid "País(es)"
+msgstr ""
+
+#: app/templates/public/detalle.html:213
+msgid "Compositor(es)"
+msgstr ""
+
+#: app/templates/public/detalle.html:298
+msgid "ESTRENO:"
+msgstr ""
+
+#: app/templates/public/detalle.html:303
+msgid "Instrumentos:"
+msgstr ""
+
+#: app/templates/public/detalle.html:320
+msgid "[Agrupación]"
+msgstr ""
+
+#: app/templates/public/detalle.html:370
+msgid "Información Gráfica"
+msgstr ""
+
+#: app/templates/public/detalle.html:379
+msgid "[Ver Archivo]"
+msgstr ""
+
+#: app/templates/public/detalle.html:393
+msgid "Volver a la búsqueda"
+msgstr ""
+
+#: app/templates/public/inicio.html:3
+msgid "Base de Datos de Conciertos en Chile"
+msgstr ""
+
+#: app/templates/public/layout_global.html:61
+msgid "Biografías y Conciertos Doctos en Chile"
+msgstr ""
+
+#: app/templates/public/layout_global.html:105
+msgid "Alameda 1869, 4to. piso Metro Los Héroes Santiago – Chile"
+msgstr ""
+
+#: app/templates/public/layout_global.html:128
+msgid "Mayores informaciones:"
+msgstr ""
+
+#: app/templates/public/menu.html:6
+msgid "Inicio"
+msgstr ""
+
+#: app/templates/public/menu.html:7 app/templates/public/sidebar_about.html:7
+msgid "Acerca de"
+msgstr ""
+
+#: app/templates/public/menu.html:8
+msgid ""
+"Cómo\n"
+"          Consultar"
+msgstr ""
+
+#: app/templates/public/menu.html:10 app/templates/public/sidebar_about.html:17
+#: app/templates/public/sidebar_inicio.html:108
+msgid "Cómo Citar"
+msgstr ""
+
+#: app/templates/public/menu.html:11
+msgid ""
+"Enlaces de\n"
+"          Interés"
+msgstr ""
+
+#: app/templates/public/menu.html:16
+msgid "Conciertos"
+msgstr ""
+
+#: app/templates/public/menu.html:22
+msgid "Participantes y Compositores"
+msgstr ""
+
+#: app/templates/public/page_about.html:3
+msgid "Acerca de la base de datos"
+msgstr ""
+
+#: app/templates/public/page_about.html:39
+msgid "Mayores informaciones: Daniela Fugellie"
+msgstr ""
+
+#: app/templates/public/page_citar.html:3
+msgid "Cómo citar la base de datos"
+msgstr ""
+
+#: app/templates/public/page_consultar.html:3
+msgid "Cómo consultar la base de datos"
+msgstr ""
+
+#: app/templates/public/page_enlaces.html:3
+#: app/templates/public/sidebar_about.html:22
+#: app/templates/public/sidebar_inicio.html:110
+msgid "Enlaces de Interés"
+msgstr ""
+
+#: app/templates/public/person_initial.html:3
+msgid "Catálogo de Participantes y Compositores"
+msgstr ""
+
+#: app/templates/public/person_initial.html:40
+msgid "personas con inicial"
+msgstr ""
+
+#: app/templates/public/search.html:3
+msgid "Resultados de la búsqueda"
+msgstr ""
+
+#: app/templates/public/search.html:8
+msgid ""
+"Los resultados que se muestran a continuación pueden ser refinados con "
+"los filtros de búsqueda disponibles a la izquierda de esta página."
+msgstr ""
+
+#: app/templates/public/search.html:27
+msgid "Evento"
+msgstr ""
+
+#: app/templates/public/search.html:29
+msgid "Fecha"
+msgstr ""
+
+#: app/templates/public/sidebar.html:54
+#: app/templates/public/sidebar_inicio.html:46
+msgid "no soportado"
+msgstr ""
+
+#: app/templates/public/sidebar.html:71 app/templates/public/sidebar.html:95
+msgid "Click para ayuda"
+msgstr ""
+
+#: app/templates/public/sidebar.html:75
+msgid "Acerca de la Búsqueda Rápida"
+msgstr ""
+
+#: app/templates/public/sidebar.html:76
+#: app/templates/public/sidebar_inicio.html:64
+msgid ""
+"En este cuadro Ud. puede ingresar una o más palabras clave. La búsqueda \n"
+"                contendrá resultados con cualquiera de estas palabras "
+"clave (equivalente a OR lógico).\n"
+"                Esta búsqueda arrojará resultados por relevancia. Para "
+"resultados cronológicos \n"
+"                recomendamos usar los Filtros de Búsqueda."
+msgstr ""
+
+#: app/templates/public/sidebar.html:80
+msgid "Búsqueda Rápida"
+msgstr ""
+
+#: app/templates/public/sidebar.html:87
+#: app/templates/public/sidebar_inicio.html:75
+#: app/templates/public/sidebar_inicio.html:76
+msgid "[palabras clave]"
+msgstr ""
+
+#: app/templates/public/sidebar.html:89
+#: app/templates/public/sidebar_inicio.html:78
+msgid "Buscar"
+msgstr ""
+
+#: app/templates/public/sidebar.html:97
+msgid "Cómo usar los filtros de búsqueda"
+msgstr ""
+
+#: app/templates/public/sidebar.html:98
+msgid ""
+"Los campos del filtro de búsqueda sirven para restingir resultados, \n"
+"                por ejemplo si Ud. selecciona Lugar = Santiago y "
+"Compositor/a = Alfonso Leng, los \n"
+"                resultados contendrán sólo aquellos eventos con Alfonso "
+"Leng y Santiago simultáneamente.\n"
+"                Esta búsqueda arrojará resultados en orden cronológico."
+msgstr ""
+
+#: app/templates/public/sidebar.html:102
+msgid "Filtros de Búsqueda"
+msgstr ""
+
+#: app/templates/public/sidebar.html:111
+msgid "Fechas"
+msgstr ""
+
+#: app/templates/public/sidebar.html:118
+msgid "Desde"
+msgstr ""
+
+#: app/templates/public/sidebar.html:129
+msgid "Hasta"
+msgstr ""
+
+#: app/templates/public/sidebar.html:138
+msgid ""
+"Para ver una década completa, p.ej. 1950, escribir desde 01/01/1950 hasta"
+" 31/12/1959"
+msgstr ""
+
+#: app/templates/public/sidebar.html:139
+msgid "Ver más en"
+msgstr ""
+
+#: app/templates/public/sidebar.html:139
+#: app/templates/public/sidebar_about.html:12
+#: app/templates/public/sidebar_inicio.html:107
+msgid "Cómo Consultar"
+msgstr ""
+
+#: app/templates/public/sidebar.html:143
+msgid "Información del evento"
+msgstr ""
+
+#: app/templates/public/sidebar.html:145
+msgid "Lugar del evento"
+msgstr ""
+
+#: app/templates/public/sidebar.html:149
+msgid "Compositores"
+msgstr ""
+
+#: app/templates/public/sidebar.html:153
+msgid "Agrupaciones"
+msgstr ""
+
+#: app/templates/public/sidebar.html:156
+msgid "Aplicar Filtros"
+msgstr ""
+
+#: app/templates/public/sidebar.html:157
+msgid "Limpiar"
+msgstr ""
+
+#: app/templates/public/sidebar_about.html:4
+msgid "Sobre el Proyecto"
+msgstr ""
+
+#: app/templates/public/sidebar_about.html:8
+msgid "Proyecto Fondecyt de Iniciación 11170844"
+msgstr ""
+
+#: app/templates/public/sidebar_about.html:13
+msgid "Búsquedas ingresando palabras clave o filtros avanzados"
+msgstr ""
+
+#: app/templates/public/sidebar_about.html:18
+msgid "Citaciones para fuentes en particular y búsquedas generales"
+msgstr ""
+
+#: app/templates/public/sidebar_about.html:23
+msgid ""
+"Diversos documentos físicos y electrónicos dialogan con los conciertos "
+"aquí recopilados"
+msgstr ""
+
+#: app/templates/public/sidebar_bio.html:4
+msgid "Texto respecto a las biografías"
+msgstr ""
+
+#: app/templates/public/sidebar_inicio.html:68
+msgid "Buscar Conciertos"
+msgstr ""
+
+#: app/templates/public/sidebar_inicio.html:79
+msgid "Ver filtros"
+msgstr ""
+
+#: app/templates/public/sidebar_inicio.html:86
+msgid "Buscar Biografías"
+msgstr ""
+
+#: app/templates/public/sidebar_inicio.html:89
+msgid ""
+"Desde 2022 contamos con biografías de varios de los compositores chilenos"
+" mostrados en este sitio."
+msgstr ""
+
+#: app/templates/public/sidebar_inicio.html:91
+msgid "Acceder"
+msgstr ""
+
+#: app/templates/public/sidebar_inicio.html:102
+msgid "Más Información"
+msgstr ""
+
+#: app/templates/public/sidebar_inicio.html:106
+msgid "Acerca del proyecto"
 msgstr ""
 
 #: app/templates/users/login.html:5
@@ -876,5 +1289,17 @@ msgid "Editar Usuario"
 msgstr ""
 
 #~ msgid "Email"
+#~ msgstr ""
+
+#~ msgid "evento"
+#~ msgstr "FUNCIONA"
+
+#~ msgid ""
+#~ "Introducción para las biografías, textos "
+#~ "sobre el proyecto FONDART, alcance, más"
+#~ " información"
+#~ msgstr ""
+
+#~ msgid "Datos Personales"
 #~ msgstr ""
 
