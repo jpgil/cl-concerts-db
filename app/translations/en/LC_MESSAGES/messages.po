@@ -989,7 +989,7 @@ msgid ""
 "Los resultados que se muestran a continuación pueden ser refinados con "
 "los filtros de búsqueda disponibles a la izquierda de esta página."
 msgstr ""
-"The following results can be refined with the search filters avalibale at"
+"The following results can be refined with the search filters available at"
 " the left side of this page."
 
 #: app/templates/public/search.html:27

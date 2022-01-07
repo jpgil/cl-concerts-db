@@ -4,6 +4,9 @@ from dotenv import load_dotenv
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '.env'))
+
+currentlang='es'
+
 class Config(object):
     # will be used for generating hashes for codification. Use any prase here    
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'a-real-secret-one'

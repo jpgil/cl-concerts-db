@@ -1,7 +1,7 @@
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import os
-from flask import Flask, request, current_app
+from flask import Flask, request, current_app, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
@@ -93,11 +93,17 @@ def create_app(config_class=Config):
     app.register_blueprint(public_bp, url_prefix='/public')
     return app
 
-
+import sys #We must append the root path to PYTHONPATH, so we can import config.py from get_locale at babel.localeselector
+sys.path.append('../')
 
 @babel.localeselector
 def get_locale():
-    return 'en'
-    #return request.accept_languages.best_match(current_app.config["LANGUAGES"].keys())
+
+    import config
+
+    if request.args.get('language'): # If this function receives a language parameter, it changes the session language to that of the parameter
+        session['language'] = request.args.get('language')
+        config.currentlang = request.args.get('language')
+    return config.currentlang # The function returns the language stored in congig.py as "currentlang"
 
 from app import models
