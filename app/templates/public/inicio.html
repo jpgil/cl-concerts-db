@@ -1,44 +1,38 @@
 {% extends 'public/layout_global.html' %}
 
-{% set title=_('Base de Datos de Conciertos en Chile') %}
+{% set title=_('Intérpretes y Conciertos Doctos en Chile') %}
 {% set sidebar='public/sidebar_inicio.html' %}
 
 {% block content %}
 
 {% include 'public/carousel.html' %}
 
-<p>Bienvenid@ a la base de datos “Conciertos doctos en Chile, 1945–1995”. En esta página
-    encontrarás informaciones sobre más de 2.000 eventos (conciertos, pero
-    también talleres, charlas y otros), realizados mayormente en Santiago de Chile entre 1945 y 1995. El
-    repertorio corresponde mayormente a la música docta del siglo XX, si bien se han incluido
-    también programas desde la música antigua al siglo XIX, además de conciertos de jazz y
-    música popular de carácter experimental.</p>
+<p>{{_('Bienvenid@ a “Intérpretes y Conciertos Doctos en Chile”. 
+    En esta página encontrarás una base de datos de conciertos y 
+    otros eventos musicales realizados en Chile, mayormente a partir 
+    de 1945, además de biografías de diversos intérpretes de música 
+    docta chilena de los siglos XX y XXI.')}}</p>
 
-<p>Los datos provienen de programas de concierto, reseñas de prensa y de revistas musicales,
-    recopilados en el marco del proyecto Fondecyt de Iniciación 11170844 “Espacios
-    alternativos de la música contemporánea en Chile, 1945–1995”, desarrollado entre el 2017
-    y el 2020. En la base de datos trabajaron Sergio Araya, Gerardo Marcoleta y Constanza Toledo.
-    En línea con el proyecto, los conciertos reflejan la vida musical gestada en torno
-    a los Institutos Chileno-Británico, Chileno-Francés y Chileno-Alemán de Cultura, el
-    Goethe-Institut y otros espacios distintos a la institucionalidad ‘oficial’ de la música
-    chilena, si bien diversos eventos reflejan colaboraciones con la Universidad de Chile o el
-    Teatro Municipal.</p>
+<p>{{_('En la sección de Conciertos se presentan informaciones sobre más de 2.000 eventos 
+    (conciertos, pero también talleres, charlas y otros), realizados mayormente en Santiago 
+    de Chile entre 1945 y 1995. El repertorio corresponde mayormente a la música docta del 
+    siglo XX, si bien se han incluido también programas desde la música antigua al siglo XIX, 
+    de jazz y música popular. La base de datos se nutre de informaciones provenientes de 
+    programas de concierto, reseñas de prensa y revistas musicales y puede ser navegada a 
+    través de la búsqueda simple o de la búsqueda avanzada, que permite seleccionar y combinar 
+    categorías (repertorio, intérpretes, instrumentos, lugar, etc.).')}}</p>
 
 <p>
-    La base de datos puede ser navegada a través de la búsqueda simple o de la
-    búsqueda avanzada, que permite seleccionar y combinar categorías (repertorio,
-    intérpretes, instrumentos, lugar, etc.). El resultado de la búsqueda siempre será
-    una lista de eventos, los que contienen toda la información recopilada en las
-    fuentes correspondientes. Por su parte, la pestaña “<a href="{{ url_for('public.person', initial='A') }}" id="m-consultar">Personas</a>” ofrece una lista de
-    las personas ingresadas en la base de datos, ya sea como participantes o
-    compositores/as. Para mayores detalles, puedes ir a “<a href="{{ url_for('public.show', page='page_consultar') }}" id="m-consultar">Cómo Consultar</a>”.
+    {{_('En la sección de Biografías encontrarás biografías de intérpretes de música chilena 
+    del siglo XX, redactadas a partir de nuestra investigación realizada en archivos, 
+    entrevistas con los intérpretes y sus familiares. Por último, la lista de Participantes 
+    y Compositores presenta todas las personas ingresadas en esta base de datos y remite a 
+    los eventos o biografías en las que se mencionan. ')}}
 </p>
 
 <p>
-    En la base de datos trabajaron junto a Daniela Fugellie (investigadora
-    responsable), Sergio Araya, Constanza Toledo y Gerardo Marcoleta. La base de
-    datos y su interfaz de usuarios fueron diseñadas por Johnny Reveco y Juan Pablo
-    Gil.
+    {{_('¿No encontraste lo que buscabas? ¿Crees que otros eventos o personas debieran figurar 
+    en este página y quieres colaborar con nosotros? No dudes en escribirnos a dfugellie@uahurtado.cl.')}}
 </p>
 
 {% endblock %}

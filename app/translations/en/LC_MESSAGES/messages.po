@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-01-04 21:53-0300\n"
+"POT-Creation-Date: 2022-01-08 12:45-0300\n"
 "PO-Revision-Date: 2018-05-09 07:20-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -318,7 +318,7 @@ msgstr "Day must be a number between 1 and 31"
 msgid "Fuentes"
 msgstr "Source(s)"
 
-#: app/main/forms.py:158 app/templates/public/menu.html:4
+#: app/main/forms.py:158 app/templates/public/menu.html:6
 msgid "Información"
 msgstr "Information"
 
@@ -761,7 +761,7 @@ msgstr ""
 msgid "Biografía de Stein, Hanns"
 msgstr "Biography of Stein, Hanns"
 
-#: app/templates/public/biographies.html:3 app/templates/public/menu.html:19
+#: app/templates/public/biographies.html:3 app/templates/public/menu.html:21
 msgid "Biografías"
 msgstr "Biographies"
 
@@ -773,17 +773,22 @@ msgstr ""
 "Introduction for biographies, texts about the FONDART project, reach, "
 "more information"
 
-#: app/templates/public/carousel.html:6
-msgid "Biografías y Conciertos Doctos en Chile, 1945–1995"
-msgstr "Biographies and Art Music Concerts in Chile, 1945-1995"
+#: app/templates/public/carousel.html:6 app/templates/public/inicio.html:3
+#: app/templates/public/layout_global.html:61
+msgid "Intérpretes y Conciertos Doctos en Chile"
+msgstr "Performers and Art Music Concerts in Chile"
 
 #: app/templates/public/carousel.html:8
 msgid "VERSION 3 -- Con biografías"
 msgstr "VERSION 3 -- With biographies"
 
 #: app/templates/public/carousel.html:11
-msgid "Base de datos a partir de reseñas y programas de concierto"
-msgstr "Database originated from reviews and concert programs"
+msgid ""
+"Base de datos de eventos, biografías de intérpretes y agrupaciones de los"
+" siglos XX y XXI"
+msgstr ""
+"Database with events, performer biographies and musical ensembles from "
+"the 20th and 21st centuries."
 
 #: app/templates/public/detalle.html:37
 msgid "Información del Evento"
@@ -897,13 +902,58 @@ msgstr "[View File]"
 msgid "Volver a la búsqueda"
 msgstr "Return to search"
 
-#: app/templates/public/inicio.html:3
-msgid "Base de Datos de Conciertos en Chile"
-msgstr "Database of Concerts in Chile"
+#: app/templates/public/inicio.html:10
+msgid ""
+"Bienvenid@ a “Intérpretes y Conciertos Doctos en Chile”. \n"
+"    En esta página encontrarás una base de datos de conciertos y \n"
+"    otros eventos musicales realizados en Chile, mayormente a partir \n"
+"    de 1945, además de biografías de diversos intérpretes de música \n"
+"    docta chilena de los siglos XX y XXI."
+msgstr ""
 
-#: app/templates/public/layout_global.html:61
-msgid "Biografías y Conciertos Doctos en Chile"
-msgstr "Biographies and Art Music Concerts in Chile"
+#: app/templates/public/inicio.html:16
+msgid ""
+"En la sección de Conciertos se presentan informaciones sobre más de 2.000"
+" eventos \n"
+"    (conciertos, pero también talleres, charlas y otros), realizados "
+"mayormente en Santiago \n"
+"    de Chile entre 1945 y 1995. El repertorio corresponde mayormente a la"
+" música docta del \n"
+"    siglo XX, si bien se han incluido también programas desde la música "
+"antigua al siglo XIX, \n"
+"    de jazz y música popular. La base de datos se nutre de informaciones "
+"provenientes de \n"
+"    programas de concierto, reseñas de prensa y revistas musicales y "
+"puede ser navegada a \n"
+"    través de la búsqueda simple o de la búsqueda avanzada, que permite "
+"seleccionar y combinar \n"
+"    categorías (repertorio, intérpretes, instrumentos, lugar, etc.)."
+msgstr ""
+
+#: app/templates/public/inicio.html:26
+msgid ""
+"En la sección de Biografías encontrarás biografías de intérpretes de "
+"música chilena \n"
+"    del siglo XX, redactadas a partir de nuestra investigación realizada "
+"en archivos, \n"
+"    entrevistas con los intérpretes y sus familiares. Por último, la "
+"lista de Participantes \n"
+"    y Compositores presenta todas las personas ingresadas en esta base de"
+" datos y remite a \n"
+"    los eventos o biografías en las que se mencionan. "
+msgstr ""
+
+#: app/templates/public/inicio.html:34
+msgid ""
+"¿No encontraste lo que buscabas? ¿Crees que otros eventos o personas "
+"debieran figurar \n"
+"    en este página y quieres colaborar con nosotros? No dudes en "
+"escribirnos a dfugellie@uahurtado.cl."
+msgstr ""
+"Didn't find what you were loking for? Do you think other people or events"
+" should be \n"
+"    in this site and want to collaborate with us? You can get in contact "
+"with us at dfugellie@uahurtado.cl."
 
 #: app/templates/public/layout_global.html:105
 msgid "Alameda 1869, 4to. piso Metro Los Héroes Santiago – Chile"
@@ -913,15 +963,15 @@ msgstr "Alameda st. 1869, 4th Floor. Los Heroes Subway Station, Santiago - Chile
 msgid "Mayores informaciones:"
 msgstr "More information:"
 
-#: app/templates/public/menu.html:6
+#: app/templates/public/menu.html:8
 msgid "Inicio"
 msgstr "Home"
 
-#: app/templates/public/menu.html:7 app/templates/public/sidebar_about.html:7
+#: app/templates/public/menu.html:9 app/templates/public/sidebar_about.html:7
 msgid "Acerca de"
 msgstr "About"
 
-#: app/templates/public/menu.html:8
+#: app/templates/public/menu.html:10
 msgid ""
 "Cómo\n"
 "          Consultar"
@@ -929,12 +979,12 @@ msgstr ""
 "How\n"
 "          To Search"
 
-#: app/templates/public/menu.html:10 app/templates/public/sidebar_about.html:17
+#: app/templates/public/menu.html:12 app/templates/public/sidebar_about.html:17
 #: app/templates/public/sidebar_inicio.html:108
 msgid "Cómo Citar"
 msgstr "How to Quote"
 
-#: app/templates/public/menu.html:11
+#: app/templates/public/menu.html:13
 msgid ""
 "Enlaces de\n"
 "          Interés"
@@ -942,25 +992,137 @@ msgstr ""
 "Relevant\n"
 "          Links"
 
-#: app/templates/public/menu.html:16
+#: app/templates/public/menu.html:18
 msgid "Conciertos"
 msgstr "Concerts"
 
-#: app/templates/public/menu.html:22
+#: app/templates/public/menu.html:24
 msgid "Participantes y Compositores"
 msgstr "Participants and Composers"
+
+#: app/templates/public/menu.html:27
+msgid "English"
+msgstr ""
+
+#: app/templates/public/menu.html:30
+msgid "Español"
+msgstr ""
 
 #: app/templates/public/page_about.html:3
 msgid "Acerca de la base de datos"
 msgstr "About the database"
 
-#: app/templates/public/page_about.html:39
+#: app/templates/public/page_about.html:19
+msgid ""
+"Esta base de datos surge a partir de dos proyectos de la investigadora "
+"responsable \n"
+"    Daniela Fugellie: el proyecto Fondecyt de Iniciación 11170844 "
+"“Espacios alternativos \n"
+"    de la música contemporánea en Chile, 1945–1995” (2017–2020) y el "
+"proyecto Fondo de la \n"
+"    Música, Línea de investigación 583750 “Biografías de intérpretes "
+"chilenos de música \n"
+"    docta, 1945-1995. Investigación y difusión de su aporte a la vida "
+"musical chilena” (2021/22). \n"
+"    \n"
+"    En el marco del primer proyecto surgió la base de datos de conciertos"
+" de música docta \n"
+"    (1945-1995), la cual se complementó ofreciendo biografías de "
+"intérpretes y agrupaciones \n"
+"    de música docta a partir del segundo proyecto.\n"
+"\n"
+"    En estos proyectos trabajaron Gerardo Marcoleta (2017-2019), Sergio "
+"Araya (2017-2021) y\n"
+"    Constanza Toledo (2020-2021). La base de datos y su interfaz de "
+"usuarios fueron diseñadas \n"
+"    por Johnny Reveco y Juan Pablo Gil."
+msgstr ""
+
+#: app/templates/public/page_about.html:34
 msgid "Mayores informaciones: Daniela Fugellie"
 msgstr "More information: Daniela Fugellie"
 
 #: app/templates/public/page_citar.html:3
 msgid "Cómo citar la base de datos"
 msgstr "How to quote the database"
+
+#: app/templates/public/page_citar.html:19
+msgid ""
+"La base de datos “Intérpretes y Conciertos Doctos en Chile” contiene "
+"informaciones de \n"
+"    más de 2.000 eventos musicales y más de 50 biografías de intérpretes "
+"y agrupaciones, \n"
+"    los que muchas veces proveen fuentes, tales como programas y reseñas "
+"de los eventos. \n"
+"    Por lo mismo, la herramienta puede ser utilizada para recopilar "
+"informaciones sobre \n"
+"    personas y eventos, pero constituye también una colección digital de "
+"fuentes primarias. \n"
+"    Mientras que su uso es gratuito, esperamos que su utilización en el "
+"marco de trabajos \n"
+"    de investigación sea consignada en las publicaciones correspondientes."
+msgstr ""
+
+#: app/templates/public/page_citar.html:28
+msgid "Recomendamos estos sistemas de citación."
+msgstr "We recommend these quoting systems."
+
+#: app/templates/public/page_citar.html:30
+msgid "1) Para fuentes en particular:"
+msgstr "1) For sources in particular:"
+
+#: app/templates/public/page_citar.html:33
+msgid ""
+"[Nombre de fuente, lugar, año], consultada en: Base de datos “Intérpretes"
+" \n"
+"y Conciertos doctos en Chile”. https://basedeconciertos.uahurtado.cl/ "
+"(fecha de consulta)."
+msgstr ""
+"[Name of source, location, year], extracted from: Database “Intérpretes \n"
+"y Conciertos doctos en Chile”. https://basedeconciertos.uahurtado.cl/ "
+"(database query date)."
+
+#: app/templates/public/page_citar.html:38
+msgid "2) Para búsquedas generales vinculadas a personas o eventos musicales:"
+msgstr "2) For general searches linked to people or musical events:"
+
+#: app/templates/public/page_citar.html:42
+msgid ""
+"Los eventos/las informaciones correspondientes a [….] fueron "
+"consultados/as en:"
+msgstr "The events/information corresponding to [….] were queried in:"
+
+#: app/templates/public/page_citar.html:43
+#: app/templates/public/page_citar.html:53
+msgid "Base de datos “Intérpretes y Conciertos doctos en Chile”."
+msgstr "Database “Performers and Art Music concerts in Chile”."
+
+#: app/templates/public/page_citar.html:44
+#: app/templates/public/page_citar.html:54
+msgid "https://basedeconciertos.uahurtado.cl/ (fecha de consulta)."
+msgstr "https://basedeconciertos.uahurtado.cl/ (query date)."
+
+#: app/templates/public/page_citar.html:48
+msgid "3) Para biografías de personas o agrupaciones:"
+msgstr "3) For biographies of people or musical ensembles:"
+
+#: app/templates/public/page_citar.html:52
+msgid "Autor/a, “Nombre de la persona o agrupación”, consultada en:"
+msgstr "Author, “Name of person or musical ensamble”, queried in:"
+
+#: app/templates/public/page_citar.html:58
+msgid "Ejemplo:"
+msgstr "Example:"
+
+#: app/templates/public/page_citar.html:62
+msgid ""
+"Constanza Toledo, “María Iris Radrigán”, consultada en:  \n"
+"    Base de datos “Intérpretes y Conciertos Doctos en Chile”. \n"
+"    https://basedeconciertos.uahurtado.cl/ (fecha de consulta)."
+msgstr ""
+"Constanza Toledo, “María Iris Radrigán”, queried in:  \n"
+"    Database “Performers and Art Music concerts in Chile”. \n"
+"    https://basedeconciertos.uahurtado.cl/ (database query date)."
 
 #: app/templates/public/page_consultar.html:3
 msgid "Cómo consultar la base de datos"
@@ -1171,7 +1333,7 @@ msgstr ""
 
 #: app/templates/public/sidebar_inicio.html:91
 msgid "Acceder"
-msgstr "Login"
+msgstr "Enter"
 
 #: app/templates/public/sidebar_inicio.html:102
 msgid "Más Información"
@@ -1406,4 +1568,13 @@ msgstr "Edit User"
 
 #~ msgid "Datos Personales"
 #~ msgstr "Personal Details"
+
+#~ msgid "Biografías y Conciertos Doctos en Chile, 1945–1995"
+#~ msgstr "Biographies and Art Music Concerts in Chile, 1945-1995"
+
+#~ msgid "Base de datos a partir de reseñas y programas de concierto"
+#~ msgstr "Database originated from reviews and concert programs"
+
+#~ msgid "Biografías y Conciertos Doctos en Chile"
+#~ msgstr "Biographies and Art Music Concerts in Chile"
 
