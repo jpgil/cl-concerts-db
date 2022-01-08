@@ -1,6 +1,6 @@
 {% extends 'public/layout_global.html' %}
 
-{% set title='Cómo citar la base de datos' %}
+{% set title=_('Cómo citar la base de datos') %}
 {% set sidebar='public/sidebar_about.html' %}
 
 {% block content %}
@@ -16,32 +16,52 @@
 </figure>
 </p> -->
 
-<p>La base de datos “Conciertos doctos en Chile, 1945-1995” contiene informaciones de más
-de 2.000 eventos musicales, los que muchas veces proveen fuentes, tales como programas y
-reseñas de los eventos. Por lo mismo, la herramienta puede ser utilizada para recopilar
-informaciones sobre personas y eventos, pero constituye también un archivo digital de
-fuentes primarias. Mientras que el uso de la base de datos es gratuito, esperamos que su
-utilización en el marco de trabajos de investigación sea consignado en las publicaciones
-correspondientes.
+<p>{{_('La base de datos “Intérpretes y Conciertos Doctos en Chile” contiene informaciones de 
+    más de 2.000 eventos musicales y más de 50 biografías de intérpretes y agrupaciones, 
+    los que muchas veces proveen fuentes, tales como programas y reseñas de los eventos. 
+    Por lo mismo, la herramienta puede ser utilizada para recopilar informaciones sobre 
+    personas y eventos, pero constituye también una colección digital de fuentes primarias. 
+    Mientras que su uso es gratuito, esperamos que su utilización en el marco de trabajos 
+    de investigación sea consignada en las publicaciones correspondientes.')}}
 </p>
 
-<p>Recomendamos estos sistemas de citación.</p>
+<p>{{_('Recomendamos estos sistemas de citación.')}}</p>
 
-<p>1) Para fuentes en particular:</p>
+<p>{{_('1) Para fuentes en particular:')}}</p>
 
 <blockquote>
-[Nombre de fuente, lugar, año], consultada en: Base de datos “Conciertos doctos en Chile,
-1945-1995”. https://basedeconciertos.uahurtado.cl/ (fecha de consulta).
+{{_('[Nombre de fuente, lugar, año], consultada en: Base de datos “Intérpretes 
+y Conciertos doctos en Chile”. https://basedeconciertos.uahurtado.cl/ (fecha de consulta).')}}
 </blockquote>
 
 <p>
-    2) Para búsquedas generales vinculadas a personas o eventos musicales:
+    {{_('2) Para búsquedas generales vinculadas a personas o eventos musicales:')}}
 </p>
 
 <blockquote>
-    Los eventos/las informaciones correspondientes a [….] fueron consultados/as en:<br/>
-    Base de datos “Conciertos doctos en Chile, 1945-1995”.
-    https://basedeconciertos.uahurtado.cl/ (fecha de consulta).
+    {{_('Los eventos/las informaciones correspondientes a [….] fueron consultados/as en:')}}<br/>
+    {{_('Base de datos “Intérpretes y Conciertos doctos en Chile”.')}}
+    {{_('https://basedeconciertos.uahurtado.cl/ (fecha de consulta).')}}
+</blockquote>
+
+<p>
+    {{_('3) Para biografías de personas o agrupaciones:')}}'
+</p>
+
+<blockquote>
+    {{_('Autor/a, “Nombre de la persona o agrupación”, consultada en:')}}<br/>
+    {{_('Base de datos “Intérpretes y Conciertos doctos en Chile”.')}}
+    {{_('https://basedeconciertos.uahurtado.cl/ (fecha de consulta).')}}
+</blockquote>
+
+<p>
+    {{_('Ejemplo:')}}
+</p>
+
+<blockquote>
+    {{_('Constanza Toledo, “María Iris Radrigán”, consultada en:  
+    Base de datos “Intérpretes y Conciertos Doctos en Chile”. 
+    https://basedeconciertos.uahurtado.cl/ (fecha de consulta).')}}
 </blockquote>
 
 {% endblock %}

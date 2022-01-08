@@ -34,7 +34,7 @@
 %}
 {%- endmacro %}
 
-<h2>Información del Evento</h2>
+<h2>{{_('Información del Evento')}}</h2>
 
 <section id="results">
 
@@ -50,27 +50,27 @@
                     <table class="table">
                         <tbody>
                             <tr class="lead">
-                                <th>Nombre:</th>
+                                <th>{{_('Nombre:')}}</th>
                                 <td>{{ p.first_name }}</td>
                             </tr>
                             <tr class="lead">
-                                <th>Apellido:</th>
+                                <th>{{_('Apellido:')}}</th>
                                 <td>{{ p.last_name }}</td>
                             </tr>
                             <tr>
-                                <th>Género:</th>
+                                <th>{{_('Género:')}}</th>
                                 <td>{{ p.gender and p.gender.name or "?" }}</td>
                             </tr>
                             <tr>
-                                <th>Nacimiento:</th>
+                                <th>{{_('Nacimiento:')}}</th>
                                 <td>{{ p.birth_year or "" }}</td>
                             </tr>
                             <tr>
-                                <th>Muerte:</th>
+                                <th>{{_('Muerte:')}}</th>
                                 <td>{{ p.death_year or "" }}</td>
                             </tr>
                             <tr>
-                                <th>País(es):</th>
+                                <th>{{_('País(es):')}}</th>
                                 <td>{{ p.nationalities|map(attribute='name')|join(', ') }}</td>
                             </tr>
                         </tbody>
@@ -79,7 +79,7 @@
                     {% if p.biography %}
                 </div>
                 <div class="modal-body">
-                    <p><strong>Información Biográfica</strong></p>
+                    <p><strong>{{_('Información Biográfica')}}</strong></p>
                     {% for x in p.biography.split("\n") %}
                     <p>{{ x|urlize(400, true, target="_blank") }}</p>
                     {% endfor %}
@@ -88,14 +88,14 @@
     
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{_('Cerrar')}}</button>
                     {% if p.is_composer %}
-                    <a role="button" href="{{ url_for('public.search', update='search', compositor_name=p.id) }}" class="btn btn-primary">Eventos asociados a esta
-                        persona</a>
+                    <a role="button" href="{{ url_for('public.search', update='search', compositor_name=p.id) }}" class="btn btn-primary">{{_('Eventos asociados a esta
+                        persona')}}</a>
                     {% else %}
                     <a role="button" href="{{ url_for('public.search', update='search', participant_name=p.id) }}"
-                        class="btn btn-primary">Eventos asociados a esta
-                        persona</a>
+                        class="btn btn-primary">{{_('Eventos asociados a esta
+                        persona')}}</a>
                     {% endif %}
                 </div>
             </div>
@@ -106,24 +106,24 @@
     <table class="table">
         <tbody>
             <tr class="lead">
-                <th>Nombre:</th>
+                <th>{{_('Nombre:')}}</th>
                 <td>{{ e.name or "(no especificado)" }}</td>
             </tr>
             <tr>
-                <th>Ciclo:</th>
+                <th>{{_('Ciclo:')}}</th>
                 <td>{{ e.cycle.name or "(no especificado)"  }}</td>
             </tr>
             <tr>
-                <th>Tipo de Evento:</th>
+                <th>{{_('Tipo de Evento:')}}</th>
                 <td>{{ e.event_type.name }}</td>
             </tr>
             <tr>
-                <th>Fecha:</th>
+                <th>{{_('Fecha:')}}</th>
                 <td>{{ fecha(e) }}</td>
             </tr>
 
             <tr>
-                <th>Organizador(es):</th>
+                <th>{{_('Organizador(es):')}}</th>
                 <td>
                     <!-- {{ e.organizations|map(attribute='name')|join('<br>') }} -->
                     <ul>
@@ -137,11 +137,11 @@
             </tr>
 
             <tr>
-                <th>Ciudad:</th>
+                <th>{{_('Ciudad:')}}</th>
                 <td>{{ e.location.city.name }}</td>
             </tr>
             <tr>
-                <th>Locación:</th>
+                <th>{{_('Locación:')}}</th>
                 <td>{{ e.location.name }}</td>
             </tr>
 
@@ -152,7 +152,7 @@
     {% if participantes %}
     <div class="card">
         <div class="card-header">
-            Participante(s)
+            {{_('Participante(s)')}}
         </div>
 
         <div class="card-body">
@@ -160,11 +160,11 @@
             <table class="table participantes">
                 <thead>
                     <tr>
-                        <th>Nombre</th>
-                        <th>Género</th>
-                        <th>Actividad</th>
+                        <th>{{_('Nombre')}}</th>
+                        <th>{{_('Género')}}</th>
+                        <th>{{_('Actividad')}}</th>
                         <!-- <th>Instrumento</th> -->
-                        <th>País(es)</th>
+                        <th>{{_('País(es)')}}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -210,7 +210,7 @@
     {% if False and compositores %}
     <div class="card">
         <div class="card-header">
-            Compositor(es)
+            {{_('Compositor(es)')}}
         </div>
 
         <div class="card-body">
@@ -218,9 +218,9 @@
             <table class="table participantes">
                 <thead>
                     <tr>
-                        <th>Nombre</th>
-                        <th>Género</th>
-                        <th>País(es)</th>
+                        <th>{{_('Nombre')}}</th>
+                        <th>{{_('Género')}}</th>
+                        <th>{{_('País(es)')}}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -252,7 +252,7 @@
     {% if e.performances.all() %}
     <div class="card">
         <div class="card-header">
-            Repertorio
+            {{_('Repertorio')}}
         </div>
 
         <div class="card-body">
@@ -295,12 +295,12 @@
                                 </li>
                                 {% if p.premiere_type.name != "No" %}
                                 <li>
-                                    <em>ESTRENO: {{ p.premiere_type.name }}</em>
+                                    <em>{{_('ESTRENO:')}}' {{ p.premiere_type.name }}</em>
                                 </li>
                                 {% endif %}
                                 {% if p.musical_piece.instruments %}
                                 <li>
-                                    Instrumentos: {{ p.musical_piece.instruments|map(attribute='name')|join(' - ') }}
+                                    {{_('Instrumentos:')}}' {{ p.musical_piece.instruments|map(attribute='name')|join(' - ') }}
                                 </li>
                                 {% endif %}
                             </ul>
@@ -317,7 +317,7 @@
                                         {{ i.get_short_name() }}
                                     {% endif %}
                                     {% if i.musical_ensemble %}
-                                        [Agrupación] {{ i.musical_ensemble.name }}
+                                    {{_('[Agrupación]')}}' {{ i.musical_ensemble.name }}
                                     {% endif %}
 
                                 </li>
@@ -337,7 +337,7 @@
     {% if e.information %}
     <div class="card">
         <div class="card-header">
-            Información Adicional
+            {{_('Información Adicional')}}
         </div>
     
         <div class="card-body">
@@ -352,7 +352,7 @@
     {% if e.sources %}
     <div class="card">
         <div class="card-header">
-            Fuentes
+            {{_('Fuentes')}}
         </div>
     
         <div class="card-body">
@@ -367,7 +367,7 @@
     {% if e.medialinks.all() %}
     <div class="card">
         <div class="card-header">
-            Información Gráfica
+            {{_('Información Gráfica')}}
         </div>
     
         <div class="card-body">
@@ -376,7 +376,7 @@
                 <li>
                 {{ m.description|urlize(400, true, target="_blank") }} - <a style="display: inline" 
                 href="{{ request.url_root }}_uploads/uploads/{{ m.filename }}" 
-                target="_blank">[Ver Archivo]</a>
+                target="_blank">{{_('[Ver Archivo]')}}</a>
                 </li>
             <!-- <iframe src="{{ m.url }}" style="width: 100%; height: 30em;"></iframe> -->
             <!-- <p>
@@ -390,7 +390,7 @@
     {% endif %}
 
 
-    <a class="btn btn-primary mt-5" href="{{ url_for('public.search') }}">Volver a la búsqueda</a>
+    <a class="btn btn-primary mt-5" href="{{ url_for('public.search') }}">{{_('Volver a la búsqueda')}}</a>
 
 </section>
 

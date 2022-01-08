@@ -4,6 +4,9 @@ from dotenv import load_dotenv
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '.env'))
+
+currentlang='es'
+
 class Config(object):
     # will be used for generating hashes for codification. Use any prase here    
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'a-real-secret-one'
@@ -32,7 +35,11 @@ class Config(object):
     # SEARCH_LIMIT: the default is basically no limit
     SEARCH_LIMIT =  int(os.environ.get('SEARCH_LIMIT') or 9999) 
     # language on which is expected to have translations.
-    LANGUAGES = ['es', 'en']
+    LANGUAGES = {
+        'es': 'Spanish', 
+        'en': 'English'
+    }
+
     def __init__(self):
        print(os.path.join(basedir, '.env'))    
 #       print("Using SQLALCHEMY_DATABASE_URI=%s",SQLALCHEMY_DATABASE_URI)

@@ -51,7 +51,7 @@
                             </select>
                         </div>
                     {% else %}
-                    Tipo {{ item.type }} no soportado
+                    {{_('Tipo')}} {{ item.type }} {{_('no soportado')}}
                     {% endif %}
                 </div>
                 {% endfor %}
@@ -68,38 +68,38 @@
     <div class="container">
         <div class="form-group">
             <label class="text-success" for="keyword" 
-                data-trigger="hover" data-delay="500" data-toggle="tooltip" title="Click para ayuda"
+                data-trigger="hover" data-delay="500" data-toggle="tooltip" title="{{_('Click para ayuda')}}"
                 >
 
             <a href="#" role="button" class="text-success" 
-                data-toggle="popover" title="Acerca de la Búsqueda Rápida"
-                data-content='En este cuadro Ud. puede ingresar una o más palabras clave. La búsqueda 
+                data-toggle="popover" title="{{_('Acerca de la Búsqueda Rápida')}}"
+                data-content='{{_('En este cuadro Ud. puede ingresar una o más palabras clave. La búsqueda 
                 contendrá resultados con cualquiera de estas palabras clave (equivalente a OR lógico).
                 Esta búsqueda arrojará resultados por relevancia. Para resultados cronológicos 
-                recomendamos usar los Filtros de Búsqueda.'>
-                <strong>Búsqueda Rápida</strong>
+                recomendamos usar los Filtros de Búsqueda.')}}'>
+                <strong>{{_('Búsqueda Rápida')}}</strong>
             </a>
 
                         </label>
 
 
             <input class="form-control" type="search" name="keywords" id="keywords" value="{{ filters.keywords }}"
-                placeholder="[palabras clave]" data-trigger="hover" data-delay="500" data-toggle="tooltip" title="[palabras clave]" />
+                placeholder="{{_('[palabras clave]')}}" data-trigger="hover" data-delay="500" data-toggle="tooltip" title="{{_('[palabras clave]')}}" />
         </div>
-        <button class="btn btn-outline-success" type="submit">Buscar</button>
+        <button class="btn btn-outline-success" type="submit">{{_('Buscar')}}</button>
     </div>
 
 
 
     <div class="container">
-        <p class="text-success" data-trigger="hover" data-delay="500" data-toggle="tooltip" title="Click para ayuda">
+        <p class="text-success" data-trigger="hover" data-delay="500" data-toggle="tooltip" title="{{_('Click para ayuda')}}">
             
-            <a class="text-success" href="#" role="button" data-toggle="popover" title="Cómo usar los filtros de búsqueda"
-                data-content='Los campos del filtro de búsqueda sirven para restingir resultados, 
+            <a class="text-success" href="#" role="button" data-toggle="popover" title="{{_('Cómo usar los filtros de búsqueda')}}"
+                data-content='{{_('Los campos del filtro de búsqueda sirven para restingir resultados, 
                 por ejemplo si Ud. selecciona Lugar = Santiago y Compositor/a = Alfonso Leng, los 
                 resultados contendrán sólo aquellos eventos con Alfonso Leng y Santiago simultáneamente.
-                Esta búsqueda arrojará resultados en orden cronológico.'>
-                <strong>Filtros de Búsqueda</strong>
+                Esta búsqueda arrojará resultados en orden cronológico.')}}'>
+                <strong>{{_('Filtros de Búsqueda')}}</strong>
             </a>
         </p>
 
@@ -108,14 +108,14 @@
             <div class="filtro-header">
                 <a class="" data-toggle="collapse" href="#boxid0" role="button" aria-expanded="false"
                     aria-controls="collapseExample">
-                    Fechas
+                    {{_('Fechas')}}
                 </a>
             </div>
             <div class="filtro-body collapse {% if filters.fecha['show'] %}show{% endif %}" id="boxid0">
 
 
                     <div class="form-group">
-                        <label for="start_date">Desde</label>
+                        <label for="start_date">{{_('Desde')}}</label>
                         <div class="input-group date" data-provide="datepicker">
                             <input name="start_date" type="text" class="form-control" value="{{ filters.fecha['start_date'] }}">
                             <div class="input-group-addon">
@@ -126,7 +126,7 @@
                     
                     
                     <div class="form-group">
-                        <label for="end_date">Hasta</label>
+                        <label for="end_date">{{_('Hasta')}}</label>
                         <div class="input-group date" data-provide="datepicker">
                             <input name="end_date" type="text" class="form-control" value="{{ filters.fecha['end_date'] }}">
                             <div class="input-group-addon">
@@ -135,26 +135,26 @@
                         </div>
                     </div>        
 
-                    <p>Para ver una década completa, p.ej. 1950, escribir desde 01/01/1950 hasta 31/12/1959. </p>
-                    <p>Ver más en <a href="{{ url_for('public.show', page='page_consultar') }}">Cómo Consultar</a></p>
+                    <p>{{_('Para ver una década completa, p.ej. 1950, escribir desde 01/01/1950 hasta 31/12/1959')}}. </p>
+                    <p>{{_('Ver más en')}} <a href="{{ url_for('public.show', page='page_consultar') }}">{{_('Cómo Consultar')}}</a></p>
             </div>
         </div>
 
-        {{ render_box(filters.evento, 'Información del evento') }}
+        {{ render_box(filters.evento, _('Información del evento')) }}
 
-        {{ render_box(filters.lugar, 'Lugar del evento') }}
+        {{ render_box(filters.lugar, _('Lugar del evento')) }}
 
-        {{ render_box(filters.participantes, 'Participantes') }}
+        {{ render_box(filters.participantes, _('Participantes')) }}
 
-        {{ render_box(filters.compositores, 'Compositores') }}
+        {{ render_box(filters.compositores, _('Compositores')) }}
 
-        {{ render_box(filters.repertorio, 'Repertorio') }}
+        {{ render_box(filters.repertorio, _('Repertorio')) }}
 
-        {{ render_box(filters.agrupaciones, 'Agrupaciones') }}
+        {{ render_box(filters.agrupaciones, _('Agrupaciones')) }}
 
 
-        <button class="btn btn-outline-success" type="submit">Aplicar Filtros</button>
-        <a class="btn btn-outline-success" href="{{ url_for('public.search', update='search') }}">Limpiar</a>
+        <button class="btn btn-outline-success" type="submit">{{_('Aplicar Filtros')}}</button>
+        <a class="btn btn-outline-success" href="{{ url_for('public.search', update='search') }}">{{_('Limpiar')}}</a>
     </div>  
 </form>
 
