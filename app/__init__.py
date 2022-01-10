@@ -93,17 +93,13 @@ def create_app(config_class=Config):
     app.register_blueprint(public_bp, url_prefix='/public')
     return app
 
-import sys #We must append the root path to PYTHONPATH, so we can import config.py from get_locale at babel.localeselector
-sys.path.append('../')
+
 
 @babel.localeselector
 def get_locale():
-
-    import config
-
     if request.args.get('language'): # If this function receives a language parameter, it changes the session language to that of the parameter
         session['language'] = request.args.get('language')
-        config.currentlang = request.args.get('language')
-    return config.currentlang # The function returns the language stored in congig.py as "currentlang"
+
+    return session['language'] # The function returns the language stored in config.py as "defaultlang"
 
 from app import models
