@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-01-08 12:45-0300\n"
+"POT-Creation-Date: 2022-01-08 15:40-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.7.0\n"
 
 #: app/__init__.py:23
 msgid "Por favor, loguearse para ver esta página."
@@ -147,7 +147,7 @@ msgid "(mostrando los primeros "
 msgstr ""
 
 #: app/api/api_methods.py:358
-msgid "<h4>¿Está seguro que desea continuar?</h4>"
+msgid "¿Está seguro que desea continuar?"
 msgstr ""
 
 #: app/api/api_methods.py:361
@@ -155,7 +155,7 @@ msgid "Este elemento está siendo usando en los siguientes objetos:\n"
 msgstr ""
 
 #: app/api/api_methods.py:367
-msgid "<h4>Por favor, elimine esas dependencias antes de continuar</h4>"
+msgid "Por favor, elimine esas dependencias antes de continuar"
 msgstr ""
 
 #: app/api/api_methods.py:372

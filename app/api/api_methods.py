@@ -355,7 +355,7 @@ def delete_check_element(model,id):
                 table_name=getStringForModel(soft_dep.__repr__().split('(')[0])
                 element_name=soft_dep.get_name()
                 message_soft_deps+='{}: {}<br>'.format(table_name,element_name)
-            message_soft_deps+='\n'+_('<h4>¿Está seguro que desea continuar?</h4>')+'\n'
+            message_soft_deps+='\n'+'<h4>'+_('¿Está seguro que desea continuar?')+'</h4>'+'\n'
         message_hard_deps=None
         if hard_deps:
             message_hard_deps=_('Este elemento está siendo usando en los siguientes objetos:\n')
@@ -364,7 +364,7 @@ def delete_check_element(model,id):
                 table_name=getStringForModel(hard_dep.__repr__().split('(')[0])
                 element_name=hard_dep.get_name()
                 message_hard_deps+='{}: {}<br>'.format(table_name,element_name)
-            message_hard_deps+='<hr>'+_('<h4>Por favor, elimine esas dependencias antes de continuar</h4>')+'\n'            
+            message_hard_deps+='<hr>'+'<h4>'+_('Por favor, elimine esas dependencias antes de continuar')+'</h4>'+'\n'            
         response = jsonify({ 'soft_deps': message_soft_deps, 'hard_deps': message_hard_deps} )
         response.status_code = 200
         return response
