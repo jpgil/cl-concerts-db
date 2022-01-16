@@ -1,3 +1,4 @@
+from distutils.command.config import config
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import os
@@ -98,8 +99,11 @@ import config
 @babel.localeselector
 def get_locale():
 
+    logger = logging.getLogger('werkzeug')
+    
     if request.args.get('language'): # If this function receives a language parameter, it changes the session language to that of the parameter
         session['language'] = request.args.get('language')
+        logger.info(f"Changed language to {session['language']}")
 
     try:
         language = session['language']
