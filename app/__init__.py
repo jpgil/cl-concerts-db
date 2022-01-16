@@ -93,13 +93,21 @@ def create_app(config_class=Config):
     app.register_blueprint(public_bp, url_prefix='/public')
     return app
 
-
+import config
 
 @babel.localeselector
 def get_locale():
+
     if request.args.get('language'): # If this function receives a language parameter, it changes the session language to that of the parameter
         session['language'] = request.args.get('language')
 
-    return session['language'] # The function returns the language stored in config.py as "defaultlang"
+    try:
+        language = session['language']
+    except KeyError:
+        language = None
+    if language is not None:
+        return language
+
+    return config.defaultlang # If language is not provided as arg to this function, it returns the language stored in config as defaultlang
 
 from app import models
