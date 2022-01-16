@@ -441,7 +441,7 @@ def getMusicalEnsembleMemberList(musical_ensemble_id):
         for member in members:
             data["results"].append({ 
                 'name': member.person.get_name(),
-                'activity': member.activity.name if participant.activity else '',
+                'activity': member.activity.name if member.activity else '',
                 'id': member.id, 
                 'text': '{} ({})'.format(member.person.get_name(),member.activity.name if member.activity else '') })
     return jsonify(data)
