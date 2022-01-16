@@ -1,3 +1,4 @@
+from distutils.command.config import config
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import os
@@ -97,9 +98,16 @@ def create_app(config_class=Config):
 
 @babel.localeselector
 def get_locale():
+    logger = logging.getLogger('werkzeug')
     if request.args.get('language'): # If this function receives a language parameter, it changes the session language to that of the parameter
         session['language'] = request.args.get('language')
+        logger.info(f"Changed language to {session['language']}")
 
+    if 'language' not in session.keys():
+        session['language'] = Config.DEFAULT_LANGUAGE
+        logger.info(f"DEFAULT Lang={Config.DEFAULT_LANGUAGE} loaded from CONFIG, because nothing was set before")
+
+    logger.info(f"LANGUAGE FOR THIS REQUEST: {session['language']}")
     return session['language'] # The function returns the language stored in config.py as "defaultlang"
 
 from app import models
