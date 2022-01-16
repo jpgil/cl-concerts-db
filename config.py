@@ -39,7 +39,7 @@ class Config(object):
         'es': 'Spanish', 
         'en': 'English'
     }
-    #DEFAULT_LANGUAGE = defaultlang
+    DEFAULT_LANGUAGE = defaultlang
 
     def __init__(self):
        print(os.path.join(basedir, '.env'))    
