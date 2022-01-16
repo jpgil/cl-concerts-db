@@ -10,8 +10,12 @@ cd cl-concerts-db/
 virtualenv venv  
 source venv/bin/activate  
 pip install -r requirements.txt
+
+#Enable the translations
+pybabel compile -d app/translations
 ```
 
+Details on translations available at [README_TRADUCCIONES.md](README_TRADUCCIONES.md)
 
 There are 2 methods for installing the database:
 - Preparing an empty DB ready to be filled with data: this method allows to use any sql database just changing the connection string, however is **not recommended** for testing since you'll have no data to play with
