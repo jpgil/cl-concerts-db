@@ -16,19 +16,13 @@
 </figure>
 </p>
 
-<p>{{_('Esta base de datos surge a partir de dos proyectos de la investigadora responsable 
-    Daniela Fugellie: el proyecto Fondecyt de Iniciación 11170844 “Espacios alternativos 
-    de la música contemporánea en Chile, 1945–1995” (2017–2020) y el proyecto Fondo de la 
-    Música, Línea de investigación 583750 “Biografías de intérpretes chilenos de música 
-    docta, 1945-1995. Investigación y difusión de su aporte a la vida musical chilena” (2021/22). 
-    
-    En el marco del primer proyecto surgió la base de datos de conciertos de música docta 
-    (1945-1995), la cual se complementó ofreciendo biografías de intérpretes y agrupaciones 
-    de música docta a partir del segundo proyecto.
+<p>{% for line in _('Esta base de datos surge a partir de dos proyectos de la investigadora responsable Daniela Fugellie: el proyecto Fondecyt de Iniciación 11170844 “Espacios alternativos de la música contemporánea en Chile, 1945–1995” (2017–2020) y el proyecto Fondo de la Música, Línea de investigación 583750 “Biografías de intérpretes chilenos de música docta, 1945-1995. Investigación y difusión de su aporte a la vida musical chilena” (2021/22).
 
-    En estos proyectos trabajaron Gerardo Marcoleta (2017-2019), Sergio Araya (2017-2021) y
-    Constanza Toledo (2020-2021). La base de datos y su interfaz de usuarios fueron diseñadas 
-    por Johnny Reveco y Juan Pablo Gil.')}}'
+En el marco del primer proyecto surgió la base de datos de conciertos de música docta (1945-1995), la cual se complementó ofreciendo biografías de intérpretes y agrupaciones de música docta a partir del segundo proyecto.
+
+En estos proyectos trabajaron Gerardo Marcoleta (2017-2019), Sergio Araya (2017-2021) y Constanza Toledo (2020-2021). La base de datos y su interfaz de usuarios fueron diseñadas por Johnny Reveco y Juan Pablo Gil.').splitlines() %}
+{{line}}<br>
+{% endfor %}
     </p>
 
 <p>{{_('Mayores informaciones: Daniela Fugellie')}}, <a href="mail">dfugellie@uahurtado.cl</a>.</p>.
