@@ -5,7 +5,7 @@ Plataforma para almacenar y consultar una lista de conciertos de música docta e
 Se requiere Python 3.7 o superior
 
 ```
-git clone https://github.com/epikt/cl-concerts-db.git  
+git clone https://github.com/jpgil/cl-concerts-db.git  
 cd cl-concerts-db/
 python3 -m venv venv  
 source venv/bin/activate  
