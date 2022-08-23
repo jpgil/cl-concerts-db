@@ -1,17 +1,36 @@
-# cl-concerts-db
-Plataforma para almacenar y consultar una lista de conciertos de música docta en Chile
+#README for developers
 
-## Installation 
-*Make sure your virtualenv is set for python3*
+Last updated by juanpablogil@gmail.com
 
+## Run a local copy
+After clone the repo, select the branch of your preference and run
 ```
-git clone https://github.com/epikt/cl-concerts-db.git  
-cd cl-concerts-db/
-virtualenv venv  
-source venv/bin/activate  
-pip install -r requirements.txt
+FLASK_ENV=development flask run --port 5001
 ```
 
+## Translations
+The website was translated using Babel 2.9.1
+
+### Modify the templates
+Add the special tokens in ```app/templates``` directory, for example, in ```app/templates/public/page_about.html``` it says:
+```
+_('Acerca de la base de datos')
+```
+
+There is a corresponding entry in ```app/translations/en/messages.po```:
+```
+#: app/templates/public/page_about.html:3
+msgid "Acerca de la base de datos"
+msgstr "About the database"
+```
+
+When adding new translation blocks, remember to regenerate the ```.po``` files by running 
+```
+pybabel compile -d app/translations
+```
+
+More information in https://babel.pocoo.org/
+## Database
 
 There are 2 methods for installing the database:
 - Preparing an empty DB ready to be filled with data: this method allows to use any sql database just changing the connection string, however is **not recommended** for testing since you'll have no data to play with
