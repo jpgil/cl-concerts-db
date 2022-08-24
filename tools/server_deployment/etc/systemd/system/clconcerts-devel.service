@@ -1,0 +1,19 @@
+[Unit]
+Description=clconcerts-devel flask
+After=network.target
+After=systemd-user-sessions.service
+After=network-online.target
+
+[Service]
+User=clconcert2
+Type=simple
+WorkingDirectory=/home/clconcert2/devel/cl-concerts-db/
+ExecStart=/home/clconcert2/devel/cl-concerts-db/venv/bin/gunicorn -b 0.0.0.0:5099 -w 4  --timeout 300 --reload cl-concerts-db:app
+TimeoutSec=30
+Restart=on-failure
+RestartSec=15
+StartLimitInterval=350
+StartLimitBurst=10
+
+[Install]
+WantedBy=multi-user.target
