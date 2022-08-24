@@ -2,7 +2,7 @@
 Plataforma para almacenar y consultar una lista de conciertos de música docta en Chile
 
 ## Instalación
-Se requiere Python 3.7 o superior
+Se requiere Python 3.6 o superior
 
 ```
 git clone https://github.com/jpgil/cl-concerts-db.git  
