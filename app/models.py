@@ -372,6 +372,8 @@ class MusicalEnsemble(db.Model):
     members = db.relationship('MusicalEnsembleMember', backref='musical_ensemble', lazy='dynamic') 
     musical_ensemble_type_id = db.Column(db.Integer, db.ForeignKey('musical_ensemble_type.id'))    
     participants = db.relationship('Participant', backref='musical_ensemble', lazy='dynamic') 
+    bio_musical_ensemble = db.relationship('BioMusicalEnsemble', backref='musical_ensemble', lazy='dynamic', cascade="delete, merge, save-update")
+
     def get_name(self):
         return "{}".format(self.name)
     def get_short_name(self):
@@ -411,7 +413,7 @@ class BioPerson(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     person_id = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=False)  
 
-    # Investigacion
+    # Investigadores del cl-concert-db
     investigacion_autores = db.Column(db.String(800))
     investigacion_fecha = db.Column(db.String(80))
     investigacion_notas = db.Column(db.Text)
@@ -442,4 +444,51 @@ class BioPerson(db.Model):
         return "{}".format(self.person.get_name()) if self.person else "ERROR -- person_id is Null"
 
     def __repr__(self):
-        return 'BioPerson(person_id="{}",name="{}")'.format(self.person.id, self.person.get_name())
+        # return 'BioPerson(person_id="{}",name="{}")'.format(self.person.id, self.person.get_name())
+        return 'BioPerson(person_id="{}",name="{}",bio="{}")'.format(
+            self.person.id, 
+            self.person.get_name(),
+            self.biografia[:40]
+            )
+
+class BioMusicalEnsemble(db.Model):
+    """
+    Class for Biografias: Ensamble
+    Added in the context of CL3(2022) by jpgil
+    Requirements in https://github.com/jpgil/cl-concerts-db/issues/22 
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    musical_ensemble_id = db.Column(db.Integer, db.ForeignKey('musical_ensemble.id'), nullable=False)
+
+    # Investigadores del cl-concert-db
+    investigacion_autores = db.Column(db.String(800))
+    investigacion_fecha = db.Column(db.String(80))
+    investigacion_notas = db.Column(db.Text)
+
+    # Datos ensamble
+    nombre_completo = db.Column(db.String(400))
+    fundacion = db.Column(db.String(800))
+    termino = db.Column(db.String(800))
+    integrantes = db.Column(db.String(2000))
+    tipo_ensamble = db.Column(db.String(200))
+    repertorio = db.Column(db.Text)
+    premios = db.Column(db.Text)
+    publicaciones = db.Column(db.Text)
+
+    # Biografia
+    biografia = db.Column(db.Text)
+    bibliografia = db.Column(db.Text)
+    archivos = db.Column(db.Text)
+    discografia = db.Column(db.Text)
+    links = db.Column(db.Text)
+    otros = db.Column(db.Text)
+
+    def get_name(self):
+        return "{}".format(self.musical_ensemble.get_name()) if self.musical_ensemble else "ERROR -- musical_ensemble_id is Null"
+
+    def __repr__(self):
+        return 'BioMusicalEnsemble(musical_ensemble_id="{}",name="{}",bio="{}")'.format(
+            self.musical_ensemble.id, 
+            self.musical_ensemble.get_name(),
+            self.biografia[:40]
+            )
