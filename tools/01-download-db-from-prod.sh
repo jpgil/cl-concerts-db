@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Magic! If first parameter is LOCAL, don't download
+if [[ "$1" == "LOCAL" ]]; then LOCAL="false"; else LOCAL="true"; fi
+
+
+
+
 NAME=$(basename $(git rev-parse --show-toplevel))
 echo "Downloading production DB of $NAME"
 
@@ -17,21 +23,26 @@ if [ ! -e venv ]; then
     exit
 fi
 
-echo '--> Check SSH keys...'
-if ! ssh $SSHUSER@$SSHHOST -o PasswordAuthentication=no -p 22222 exit; then
-    echo
-    echo "Please send the contents of id_rsa.pub to admin of $NAME:"
-    echo 
-    cat ~/.ssh/id_rsa.pub 
-    exit
-fi
+if $($LOCAL); then 
+
+    echo '--> Check SSH keys...'
+    if ! ssh $SSHUSER@$SSHHOST -o PasswordAuthentication=no -p 22222 exit; then
+        echo
+        echo "Please send the contents of id_rsa.pub to admin of $NAME:"
+        echo 
+        cat ~/.ssh/id_rsa.pub 
+        exit
+    fi
 
 
-echo '--> Download last snapshot...'
-LASTDB=$(ssh $SSHUSER@$SSHHOST -p 22222 "ls -tr1 --color=auto sql_backups| tail -n 1")
-if ! rsync -a --progress -e 'ssh -p 22222' $SSHUSER@$SSHHOST:./sql_backups/$LASTDB backup; then
-    echo "A problem has occurred... "
-    exit
+    echo '--> Download last snapshot...'
+    LASTDB=$(ssh $SSHUSER@$SSHHOST -p 22222 "ls -tr1 --color=auto sql_backups| tail -n 1")
+    if ! rsync -a --progress -e 'ssh -p 22222' $SSHUSER@$SSHHOST:./sql_backups/$LASTDB backup; then
+        echo "A problem has occurred... "
+        exit
+    fi
+else
+    LASTDB=$(ls -tr1 --color=auto backup| tail -n 1 )
 fi
 
 
