@@ -203,7 +203,7 @@ class MediaLink(db.Model):
     mime_type = db.Column(db.String(80))
     filename = db.Column(db.String(200))
     url = db.Column(db.String(512))
-    description = db.Column(db.String(150))
+    description = db.Column(db.String(2000))
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))   
     def get_name(self):
         return self.filename
