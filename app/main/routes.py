@@ -86,7 +86,7 @@ def viewHistory():
 @login_required
 def viewBiografias():
     model = 'BioPerson'
-    return render_template('main/showbios.html',model1='BioPerson')
+    return render_template('main/showbios.html',model1='BioPerson', model2='BioMusicalEnsemble')
 
 
 def getItemList(dbmodel,q,page):    
@@ -639,6 +639,10 @@ def getBioPersonTable():
     # Tricky!!! need to do a join + query
     return getTableData(request,BioPerson,[Person.last_name, Person.first_name], joins=Person)  
 
+@bp.route('/listtable/BioMusicalEnsemble')
+def getBioMusicalEnsembleTable():
+    # Tricky!!! need to do a join + query
+    return getTableData(request,BioMusicalEnsemble,[MusicalEnsemble.name], joins=MusicalEnsemble)  
    
 @bp.route('/list/performances/<event_id>')
 def getPerformancesList(event_id):
@@ -1270,4 +1274,16 @@ def NewBioPerson():
 @bp.route('/edit/bioperson/<id>', methods = ['GET','POST'])
 @login_required
 def EditBioPerson(id):
+    pass
+
+@bp.route('/new/biomusicalensemble', methods = ['GET','POST'])
+@login_required
+def NewBioMusicalEnsemble():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
+        return redirect(url_for('users.login'))
+
+@bp.route('/edit/biomusicalensemble/<id>', methods = ['GET','POST'])
+@login_required
+def EditBioMusicalEnsemble(id):
     pass

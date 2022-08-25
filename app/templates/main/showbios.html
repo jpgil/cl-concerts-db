@@ -4,6 +4,10 @@
 
     <h1>{{ _('Biografías') }}</h1>
 
+    <p>
+    En esta página se muestran las biografías extendidas tanto para Personas como para Agrupaciones Musicales. 
+    Borrar una de estas biografías no borrará a la persona de o agrupación a la que se refiere.
+    </p>
     <h2>Personas</h2>
 
     <a href="{{ url_for('main.New{}'.format(model1)) }}" class="btn btn-primary" role="button"> {{ _('Nueva Biografía de Persona')}}</a>
@@ -25,11 +29,28 @@
             <tr>
                 <th data-field="editlink" data-width=10></th>
                 <th data-field="name">{{ _("Nombre") }} </th>
-                <th data-field="deletelink">{{ _("X") }} </th>
+                <th data-field="deletelink">{{ _("Eliminar") }} </th>
             </tr>
         </thead>
     </table>
 
+    <h2>Agrupaciones</h2>
+    
+    <a href="{{ url_for('main.New{}'.format(model2)) }}" class="btn btn-primary" role="button"> {{ _('Nueva Biografía de
+        Agrupaciones')}}</a>
+    <table id="show-list-table-2" data-toggle="table" data-sort-name="datetime" data-sort-order="desc"
+        data-sort-stable="true" data-search="true" data-trim-on-search="false" data-show-footer="false"
+        data-only-info-pagination="false" data-side-pagination="server" data-pagination="true" data-page-size="15"
+        data-page-list="[15, 50, 100, 200]" data-url="{{url_for('main.get{}Table'.format(model2))}}">
+        <thead>
+            <tr>
+                <th data-field="editlink" data-width=10></th>
+                <th data-field="name">{{ _("Nombre") }} </th>
+                <th data-field="deletelink">{{ _("Eliminar") }} </th>
+            </tr>
+        </thead>
+    </table>
+        
 {% endblock %}
 {% block scripts %}
  {{ super() }}
