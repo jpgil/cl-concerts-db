@@ -189,6 +189,7 @@ class Person(db.Model):
                     secondary=nationality,
                     backref='people')    
     memberships = db.relationship('MusicalEnsembleMember', backref = 'person', lazy='dynamic')
+    bio_person = db.relationship('BioPerson', backref='person', lazy='dynamic', cascade="delete, merge, save-update")
     def __repr__(self):
         return 'Person(first_name="{}",last_name="{}")'.format(self.first_name,self.last_name)
     def get_name(self):
@@ -398,3 +399,47 @@ class MusicalEnsembleMember(db.Model):
             str_repr+="(activity={}) ".format(self.activity.name)
         str_repr+="musical_ensemble='{}'".format(self.musical_ensemble.name)
         return str_repr
+
+
+
+class BioPerson(db.Model):
+    """
+    Class for Biografias: Persona
+    Added in the context of CL3(2022) by jpgil
+    Requirements in https://github.com/jpgil/cl-concerts-db/issues/22 
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    person_id = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=False)  
+
+    # Investigacion
+    investigacion_autores = db.Column(db.String(800))
+    investigacion_fecha = db.Column(db.String(80))
+    investigacion_notas = db.Column(db.Text)
+
+    # Datos personales
+    nombre_completo = db.Column(db.String(400))
+    nacimiento = db.Column(db.String(800))
+    # fallecimiento = db.Column(db.String(800))
+    familia = db.Column(db.Text)
+    profesion = db.Column(db.String(400))
+    instrumento = db.Column(db.String(2000))
+    estudios_formales = db.Column(db.Text)
+    estudios_informales = db.Column(db.Text)
+    trabajo = db.Column(db.Text)
+    ensambles = db.Column(db.Text)
+    premios = db.Column(db.Text)
+    publicaciones = db.Column(db.Text)
+
+    # Biografia
+    biografia = db.Column(db.Text)
+    bibliografia = db.Column(db.Text)
+    archivos = db.Column(db.Text)
+    discografia = db.Column(db.Text)
+    links = db.Column(db.Text)
+    otros = db.Column(db.Text)
+
+    def get_name(self):
+        return "{}".format(self.person.get_name()) if self.person else "ERROR -- person_id is Null"
+
+    def __repr__(self):
+        return 'BioPerson(person_id="{}",name="{}")'.format(self.person.id, self.person.get_name())
