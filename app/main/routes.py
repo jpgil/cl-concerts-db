@@ -65,7 +65,9 @@ def getStringForModel(model):
                     'MusicalEnsemble'     :  _('Agrupaciones Musicales'),
                     'MusicalEnsembleType' :  _('Tipo de Agrupaciones Musicales'),
                     'Performance'     : _('Participación'),
-                    'MusicalEnsembleMember' : _('Miembro de Agrupación Musical')                    
+                    'MusicalEnsembleMember' : _('Miembro de Agrupación Musical'),
+                    'BioPerson'       : _('Biografía de Personas'),
+                    'BioMusicalEnsemble'       : _('Biografía de Agrupación Musical'),
                     }    
     return string4model[model]
 
@@ -79,6 +81,13 @@ def viewElement(model):
 @login_required
 def viewHistory():
     return render_template('main/history.html')
+
+@bp.route('/view/biografias')
+@login_required
+def viewBiografias():
+    model = 'BioPerson'
+    return render_template('main/showbios.html',model1='BioPerson')
+
 
 def getItemList(dbmodel,q,page):    
     itemslist=db.session.query(dbmodel).filter(dbmodel.name.ilike('%'+q+'%')).order_by(dbmodel.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
@@ -483,7 +492,7 @@ def getHistoryTable():
                               "description" : entry.description })
     return jsonify(data)    
 
-def getTableData(requests,dbmodel,searchables):
+def getTableData(requests,dbmodel,searchables, joins=None):
     edit_button_string='<a href="{}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
     delete_button_string='<a onclick="checkDeleteElement(\'{}\',\'{}\')" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>'
 
@@ -492,7 +501,14 @@ def getTableData(requests,dbmodel,searchables):
     order = request.args.get('order', '', type=str)
     search = request.args.get('search', '', type=str)
     filters=[]
-    query=dbmodel.query
+
+    # Dirty trick to filter by relationship attribute
+    # Seen in https://stackoverflow.com/questions/16589208/attributeerror-while-querying-neither-instrumentedattribute-object-nor-compa
+    if joins:
+        query = dbmodel.query.join(joins)
+    else:
+        query = dbmodel.query
+
     for field in searchables:
         filters.append(field.ilike('%{}%'.format(search)))
         query=query.order_by(field)
@@ -617,7 +633,12 @@ def getPersonTable():
 @bp.route('/listtable/MusicalPiece')
 def getMusicalPieceTable():
     return getMusicalPieceTableData(request)
-    
+
+@bp.route('/listtable/BioPerson')
+def getBioPersonTable():
+    # Tricky!!! need to do a join + query
+    return getTableData(request,BioPerson,[Person.last_name, Person.first_name], joins=Person)  
+
    
 @bp.route('/list/performances/<event_id>')
 def getPerformancesList(event_id):
@@ -1239,3 +1260,14 @@ def EditEvent(event_id):
 
 
 
+@bp.route('/new/bioperson', methods = ['GET','POST'])
+@login_required
+def NewBioPerson():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
+        return redirect(url_for('users.login'))
+
+@bp.route('/edit/bioperson/<id>', methods = ['GET','POST'])
+@login_required
+def EditBioPerson(id):
+    pass

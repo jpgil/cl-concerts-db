@@ -66,14 +66,15 @@
               <li><a href="{{ url_for('main.viewElement',model=element)}}"> {{ model_mapping[element] }} </a></li>
           {% endfor %}
               <li role="separator" class="divider"></li>
-              <li><a href="{{ url_for('main.viewElement',model='Event')}}"          > {{ _('Eventos') }}               </a></li>            
+              <li><a href="{{ url_for('main.viewElement',model='Event')}}"> {{ _('Eventos') }} </a></li>            
+              <li><a href="{{ url_for('main.viewBiografias')}}"> {{ _('Biografías') }} </a></li>
           </ul>
-                <li><a href="{{ url_for('main.viewHistory')}}"       > {{ _('Historial') }}             </a></li>
+        <!-- </li> -->
         </li>
-        </li>
+        <li><a href="{{ url_for('main.viewHistory')}}"> {{ _('Historial') }} </a></li>
         <li>
             {% if not current_user.is_anonymous %}           
-                        <a href="{{ url_for('users.edit_profile') }}">{{ _('Editar Perfil') }}</a>           
+                <a href="{{ url_for('users.edit_profile') }}">{{ _('Editar Perfil') }}</a>           
             {% endif %}
         </li>
         <li>
