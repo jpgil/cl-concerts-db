@@ -1270,11 +1270,35 @@ def NewBioPerson():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return redirect(url_for('users.login'))
+    
+
 
 @bp.route('/edit/bioperson/<id>', methods = ['GET','POST'])
 @login_required
 def EditBioPerson(id):
-    pass
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
+
+    original_data=BioPerson.query.filter_by(id=id).first_or_404()
+    form = EditBioPersonForm(dbmodel=BioPerson,original_data=original_data)   
+
+    if form.validate_on_submit():
+        original_data.biografia=form.biografia.data
+
+        addHistoryEntry('Modificado','BioPerson: {}'.format(original_data.get_name()))
+        db.session.commit()
+        flash(_('Biografía actalizada'),'info')
+        return redirect(url_for('main.EditBioPerson',id=id))
+
+    else:
+        form.biografia.data = original_data.biografia
+
+        return render_template('main/editbioperson.html', form=form, title=_('Editar Biografía de Persona'))
+
+
+
+
+
 
 @bp.route('/new/biomusicalensemble', methods = ['GET','POST'])
 @login_required

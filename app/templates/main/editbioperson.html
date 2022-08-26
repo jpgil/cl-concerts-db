@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+<style type="text/css">
+	.event-tabs{
+		margin: 20px;
+	}
+</style>	
+    <h1>{{ title }}</h1>
+    <form action="" method="post">
+    {{ form.hidden_tag() }}
+    
+    <div class="event-tabs">
+      <ul class="nav nav-tabs" id="myTab">
+            <li><a data-toggle="tab" href="#sectionGeneralInfo">{{ _("Información General") }}</a></li>
+            <li><a data-toggle="tab" href="#sectionParticipants">{{ _("otro")}} </a></li>
+            <li><a data-toggle="tab" href="#sectionRepertoire">{{ _("otro")}} </a></li>
+            <li><a data-toggle="tab" href="#sectionMedia">{{ _("Media")}} </a></li>           
+     </ul>
+     <div class="tab-content">
+
+        <div id="sectionGeneralInfo" class="tab-pane fade in active">
+            <div><h2>{{ _("Biografía") }} </h2></div>
+            {{ form.biografia.label }} <br>
+            {{ form.biografia(cols="55", rows="10")|safe }} <br>
+
+            {% for error in form.biografia.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+
+
+            
+            <br>
+            {{ form.submit() }} 
+        </div>
+        
+        <div id="sectionParticipants" class="tab-pane fade">
+        
+otro
+        </div>
+        <div id="sectionRepertoire" class="tab-pane fade">
+        
+otro
+             
+        </div>
+       </form>
+
+
+
+        <div id="sectionMedia" class="tab-pane fade"><br>
+
+            otro pa las fotos y audios
+            
+        </div>
+
+    </div>
+ 
+<hr >
+<a href="{{ url_for('main.viewBiografias')}}"> {{ _('Volver al listado de') }} {{ _('Biografías') }} </a>
+
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+    <link href="{{ url_for('static', filename = 'css/lib/select2.min.css') }}" rel="stylesheet" />
+    <script src="{{ url_for('static', filename = 'js/lib/select2.min.js') }}"></script>  
+    <script type = "text/javascript"  src = "{{ url_for('static', filename = 'js/flash_message.js') }}" ></script>
+    <script type = "text/javascript"  src = "{{ url_for('static', filename = 'js/dd_select2.js') }}" ></script>
+    <script src="{{url_for('static', filename='js/events.js')}}"></script>
+{% endblock %}

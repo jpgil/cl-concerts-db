@@ -176,3 +176,12 @@ class EditEventForm(FlaskForm):
         if original_event:
             self.original_name=original_event.name
 
+class EditBioPersonForm(FlaskForm):
+    biografia=TextAreaField(_('Biografía'))
+    submit = SubmitField(_l('Guardar'))
+
+    def __init__(self,original_data,*args, **kwargs):
+        super(EditBioPersonForm, self).__init__(*args, **kwargs)
+        self.original_data=None
+        if original_data:
+            self.original_data=original_data
