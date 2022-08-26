@@ -177,7 +177,43 @@ class EditEventForm(FlaskForm):
             self.original_name=original_event.name
 
 class EditBioPersonForm(FlaskForm):
-    biografia=TextAreaField(_('Biografía'))
+    # Investigadores del cl-concert-db
+    investigacion_autores = TextAreaField(validators=[Optional()])
+    investigacion_fecha = TextAreaField(validators=[Optional()])
+    investigacion_notas = TextAreaField(validators=[Optional()])
+
+    # # Datos ensamble
+    # nombre_completo = TextAreaField(validators=[Optional()])
+    # fundacion = TextAreaField(validators=[Optional()])
+    # termino = TextAreaField(validators=[Optional()])
+    # integrantes = TextAreaField(validators=[Optional()])
+    # tipo_ensamble = TextAreaField(validators=[Optional()])
+    # repertorio = TextAreaField(validators=[Optional()])
+    # premios = TextAreaField(validators=[Optional()])
+    # publicaciones = TextAreaField(validators=[Optional()])
+
+   # Datos personales
+    # nombre_completo = db.Column(db.String(400))
+    # nacimiento = db.Column(db.String(800))
+    # fallecimiento = db.Column(db.String(800))
+    familia =TextAreaField(validators=[Optional()]) 
+    profesion = TextAreaField(validators=[Optional()])
+    instrumento = TextAreaField(validators=[Optional()])
+    estudios_formales = TextAreaField(validators=[Optional()])
+    estudios_informales = TextAreaField(validators=[Optional()])
+    trabajo = TextAreaField(validators=[Optional()])
+    ensambles = TextAreaField(validators=[Optional()])
+    premios = TextAreaField(validators=[Optional()])
+    publicaciones = TextAreaField(validators=[Optional()])
+
+    # Biografia
+    biografia = TextAreaField(validators=[Optional()])
+    bibliografia = TextAreaField(validators=[Optional()])
+    archivos = TextAreaField(validators=[Optional()])
+    discografia = TextAreaField(validators=[Optional()])
+    links = TextAreaField(validators=[Optional()])
+    otros = TextAreaField(validators=[Optional()])
+
     submit = SubmitField(_l('Guardar'))
 
     def __init__(self,original_data,*args, **kwargs):

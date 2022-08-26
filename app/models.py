@@ -419,8 +419,8 @@ class BioPerson(db.Model):
     investigacion_notas = db.Column(db.Text)
 
     # Datos personales
-    nombre_completo = db.Column(db.String(400))
-    nacimiento = db.Column(db.String(800))
+    # nombre_completo = db.Column(db.String(400))
+    # nacimiento = db.Column(db.String(800))
     # fallecimiento = db.Column(db.String(800))
     familia = db.Column(db.Text)
     profesion = db.Column(db.String(400))

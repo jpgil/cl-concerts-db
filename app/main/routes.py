@@ -1284,7 +1284,9 @@ def EditBioPerson(id):
     form = EditBioPersonForm(dbmodel=BioPerson,original_data=original_data)
 
     if form.validate_on_submit():
-        original_data.biografia=form.biografia.data
+        form.populate_obj(original_data)
+        
+            # original_data.__dict__[x]=form[x].data
 
         addHistoryEntry('Modificado','BioPerson: {}'.format(original_data.get_name()))
         db.session.commit()
@@ -1292,7 +1294,8 @@ def EditBioPerson(id):
         return redirect(url_for('main.EditBioPerson',id=id))
 
     else:
-        form.biografia.data = original_data.biografia
+        for x in ['trabajo', 'links', 'otros', 'ensambles', 'premios', 'familia', 'profesion', 'publicaciones', 'instrumento', 'biografia', 'estudios_formales', 'bibliografia', 'investigacion_autores', 'estudios_informales', 'investigacion_fecha', 'archivos', 'investigacion_notas', 'discografia']:
+            form[x].data = original_data.__dict__[x]
 
         return render_template('main/editbioperson.html', form=form, obj=original_data, 
         title=_('Editar Biografía de ') + original_data.person.get_name() )
