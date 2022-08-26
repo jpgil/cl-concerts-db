@@ -8,53 +8,120 @@
 	}
 </style>	
     <h1>{{ title }}</h1>
-    <form action="" method="post">
-    {{ form.hidden_tag() }}
-    
-    <div class="event-tabs">
-      <ul class="nav nav-tabs" id="myTab">
-            <li><a data-toggle="tab" href="#sectionGeneralInfo">{{ _("Información General") }}</a></li>
-            <li><a data-toggle="tab" href="#sectionParticipants">{{ _("otro")}} </a></li>
-            <li><a data-toggle="tab" href="#sectionRepertoire">{{ _("otro")}} </a></li>
-            <li><a data-toggle="tab" href="#sectionMedia">{{ _("Media")}} </a></li>           
-     </ul>
-     <div class="tab-content">
 
-        <div id="sectionGeneralInfo" class="tab-pane fade in active">
-            <div><h2>{{ _("Biografía") }} </h2></div>
-            {{ form.biografia.label }} <br>
-            {{ form.biografia(cols="55", rows="10")|safe }} <br>
 
-            {% for error in form.biografia.errors %}
-                <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
+    <p>
+        Para modificar la información de la persona, debe ir a
+        <a href="{{ url_for('main.EditPerson', id=obj.person.id) }}">Editar persona "{{ obj.person.get_name() }}"</a>.
+        Abandonará esta página y cualquier cambio que no haya guardado.
+    </p>
 
+
+    <div class="container ">
+        <div class="row">
+
+            <div class="col-md-8">
+
+        <form action="" method="post">
+        
+            <div class="event-tabs">
+                <ul class="nav nav-tabs" id="myTab">
+                    <li><a data-toggle="tab" href="#sectionPersonales">{{ _("Datos") }}</a></li>
+                    <li><a data-toggle="tab" href="#sectionBiograficos">{{ _("Biografía")}} </a></li>
+                    <li><a data-toggle="tab" href="#sectionInvestigadores">{{ _("Investigadores")}} </a></li>
+                    <li><a data-toggle="tab" href="#sectionMedia">{{ _("Media")}} </a></li>
+                </ul>
+        
+        
+                <div class="tab-content">
+        
+        
+                    <div id="sectionPersonales" class="tab-pane fade in active">
+                        <h2>{{ _("Datos") }} </h2>
+        
+                    </div>
+        
+                    <div id="sectionBiograficos" class="tab-pane fade">
+        
+                        <h2>{{ _("Biografía") }} </h2>
+
+                        {{ form.biografia.label }} <br>
+                        {{ form.biografia(cols="55", rows="10")|safe }} <br>
+        
+                        {% for error in form.biografia.errors %}
+                        <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+        
+        
+        
+                        <br>
+                        {{ form.submit() }}
+                    </div>
+        
+                    <div id="sectionInvestigadores" class="tab-pane fade">
+                        <h2>{{ _("Investigadores") }} </h2>
+
+                    </div>
+        
+        
+                    <div id="sectionMedia" class="tab-pane fade">
+                        <h2>{{ _("Media") }} </h2>
+        
+                        <p>Not yet ready</p>
+                    </div>
+        
+                </div>
+            </div>
+        
+        </form>
+
+
+            </div>
+
+            <div class="col-md-4">
+            
+                <p style="margin-bottom: 80px"></p>
+                <h2>Persona</h2>
+                <table class="table ">
+                    <tr>
+                        <th class="col-2">Nombre:</th>
+                        <td>{{obj.person.first_name}}</td>
+                    </tr>
+                    <tr>
+                        <th>Apellido Nombre:</th>
+                        <td>{{obj.person.last_name}}</td>
+                    </tr>
+                    <tr>
+                        <th>Nacimiento:</th>
+                        <td>{{obj.person.birth_year}}</td>
+                    </tr>
+                    <tr>
+                        <th>Muerte:</th>
+                        <td>{{obj.person.death_year}}</td>
+                    </tr>
+                    <tr>
+                        <th>Genero:</th>
+                        <td>{{obj.person.gender.get_name()}}</td>
+                    </tr>
+                    <tr>
+                        <th>Biografía:</th>
+                        <td>{{obj.person.biography}}</td>
+                    </tr>
+                </table>
+            
+                <a href="{{ url_for('main.EditPerson', id=obj.person.id) }}">Ir a Editar</a>.
 
             
-            <br>
-            {{ form.submit() }} 
-        </div>
-        
-        <div id="sectionParticipants" class="tab-pane fade">
-        
-otro
-        </div>
-        <div id="sectionRepertoire" class="tab-pane fade">
-        
-otro
-             
-        </div>
-       </form>
-
-
-
-        <div id="sectionMedia" class="tab-pane fade"><br>
-
-            otro pa las fotos y audios
             
-        </div>
+            </div>
 
+        </div>
     </div>
+
+
+
+
+
  
 <hr >
 <a href="{{ url_for('main.viewBiografias')}}"> {{ _('Volver al listado de') }} {{ _('Biografías') }} </a>

@@ -1280,7 +1280,8 @@ def EditBioPerson(id):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
 
     original_data=BioPerson.query.filter_by(id=id).first_or_404()
-    form = EditBioPersonForm(dbmodel=BioPerson,original_data=original_data)   
+    # parent = original_data.person
+    form = EditBioPersonForm(dbmodel=BioPerson,original_data=original_data)
 
     if form.validate_on_submit():
         original_data.biografia=form.biografia.data
@@ -1293,7 +1294,8 @@ def EditBioPerson(id):
     else:
         form.biografia.data = original_data.biografia
 
-        return render_template('main/editbioperson.html', form=form, title=_('Editar Biografía de Persona'))
+        return render_template('main/editbioperson.html', form=form, obj=original_data, 
+        title=_('Editar Biografía de ') + original_data.person.get_name() )
 
 
 
