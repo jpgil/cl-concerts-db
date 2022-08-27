@@ -9,7 +9,9 @@
     Borrar una de estas biografías no borrará a la persona o agrupación a la que se refiere.
     </p>
     <h2>Personas</h2>
-    <p>Para crear una nueva biografía de persona, debe ir a <a href="{{ url_for('main.viewElement',model='Person')}}">Listado de Personas</a> -> Editar -> Crear Biografía Extendida.</p>
+    <p>Para agregar biografía extendida a una persona, ir a <a
+            href="{{ url_for('main.viewElement',model='Person')}}">Listado de Personas</a> -> Editar -> Crear Biografía
+        Extendida.</p>
 
     <table id="show-list-table-1"
         data-toggle="table"
@@ -35,6 +37,9 @@
     </table>
 
     <h2>Agrupaciones</h2>
+    <p>Para agregar biografía extendida a una agrupación, ir a <a
+            href="{{ url_for('main.viewElement',model='MusicalEnsemble')}}">Listado de Agrupaciones</a> -> Editar -> Crear Biografía
+        Extendida.</p>
 
     <table id="show-list-table-2" data-toggle="table" data-sort-name="datetime" data-sort-order="desc"
         data-sort-stable="true" data-search="true" data-trim-on-search="false" data-show-footer="false"

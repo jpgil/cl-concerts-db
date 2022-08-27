@@ -937,7 +937,12 @@ def EditMusicalEnsemble(id):
     elif request.method == 'GET':
         form.name.data = musical_ensemble.name.strip()
         form.additional_info.data= musical_ensemble.additional_info
-    return render_template('main/editmusicalensemble.html',form=form,title=_('Editar Agrupación Musical'),musical_ensemble_id=id,selectedElements=list2csv(selectedElements))    
+    return render_template('main/editmusicalensemble.html',
+    form=form,
+    title=_('Editar Agrupación Musical'),
+    musical_ensemble=musical_ensemble,
+    musical_ensemble_id=id,
+    selectedElements=list2csv(selectedElements))    
 
 @bp.route('/edit/musicalpiece/<id>', methods = ['GET','POST'])
 @login_required
@@ -1282,7 +1287,7 @@ def NewBioPerson(person_id):
         db.session.add(bio)
         db.session.commit()
 
-        addHistoryEntry('Creado','Biografia Extendida: {}'.format(perico.get_name()))
+        addHistoryEntry('Creado','Bio Extendida de Persona: {}'.format(perico.get_name()))
         flash(_('Biografia Extendida creada. Por favor completala.'),'info')
         return redirect(url_for('main.EditBioPerson',id=bio.id))
 
@@ -1320,14 +1325,58 @@ def EditBioPerson(id):
 
 
 
-@bp.route('/new/biomusicalensemble', methods = ['GET','POST'])
+@bp.route('/new/biomusicalensemble/<musical_ensemble_id>', methods = ['GET','POST'])
 @login_required
-def NewBioMusicalEnsemble():
+def NewBioMusicalEnsemble(musical_ensemble_id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return redirect(url_for('users.login'))
+    
+    ensemble = MusicalEnsemble.query.filter_by(id=musical_ensemble_id).first_or_404()
+    if ensemble.has_bio():
+        flash(_(ensemble.get_name() + ' ya tiene biografia. Mal ahí.'),'error')
+        return redirect(url_for('users.login'))
+
+    else:
+        bio = BioMusicalEnsemble()
+        bio.musical_ensemble_id = musical_ensemble_id
+        db.session.add(bio)
+        db.session.commit()
+
+        addHistoryEntry('Creado','Bio Extendida de Agrupacion: {}'.format(ensemble.get_name()))
+        flash(_('Biografia Extendida creada. Por favor completala.'),'info')
+        return redirect(url_for('main.EditBioMusicalEnsemble',id=bio.id))
+
 
 @bp.route('/edit/biomusicalensemble/<id>', methods = ['GET','POST'])
 @login_required
 def EditBioMusicalEnsemble(id):
-    pass
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
+
+    original_data=BioMusicalEnsemble.query.filter_by(id=id).first_or_404()
+    # parent = original_data.person
+    form = EditBioMusicalEnsembleForm(dbmodel=BioMusicalEnsemble,original_data=original_data)
+
+    if form.validate_on_submit():
+        form.populate_obj(original_data)
+        
+            # original_data.__dict__[x]=form[x].data
+
+        addHistoryEntry('Modificado','BioMusicalEnsemble: {}'.format(original_data.get_name()))
+        db.session.commit()
+        flash(_('Biografía actualizada'),'info')
+        # return redirect(url_for('main.EditBioPerson',id=id))
+        return redirect(url_for('main.viewBiografias'))
+
+    else:
+        # for x in ['trabajo', 'links', 'otros', 'ensambles', 'premios', 'familia', 'profesion', 'publicaciones', 'instrumento', 'biografia', 'estudios_formales', 'bibliografia', 'investigacion_autores', 'estudios_informales', 'investigacion_fecha', 'archivos', 'investigacion_notas', 'discografia']:
+        #     form[x].data = original_data.__dict__[x]
+        for x in original_data.__dict__.keys():
+            try:
+                form[x].data = original_data.__dict__[x]
+            except:
+                pass
+
+        return render_template('main/editbiomusicalensemble.html', form=form, obj=original_data, 
+        title=_('Editar Biografía de ') + original_data.musical_ensemble.get_name() )

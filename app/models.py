@@ -383,6 +383,10 @@ class MusicalEnsemble(db.Model):
         return "{}".format(self.name)
     def get_short_name(self):
         return "{}".format(self.name)
+    def has_bio(self):
+        return self.bio_musical_ensemble.count() == 1
+    def get_bio(self):
+        return self.bio_musical_ensemble.first()        
     def __repr__(self):
         return 'MusicalEnsemble(name="{}")'.format(self.name) 
       
@@ -471,11 +475,11 @@ class BioMusicalEnsemble(db.Model):
     investigacion_notas = db.Column(db.Text)
 
     # Datos ensamble
-    nombre_completo = db.Column(db.String(400))
+    # nombre_completo = db.Column(db.String(400))
     fundacion = db.Column(db.String(800))
     termino = db.Column(db.String(800))
     integrantes = db.Column(db.String(2000))
-    tipo_ensamble = db.Column(db.String(200))
+    # tipo_ensamble = db.Column(db.String(200))
     repertorio = db.Column(db.Text)
     premios = db.Column(db.Text)
     publicaciones = db.Column(db.Text)
