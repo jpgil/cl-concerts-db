@@ -1144,7 +1144,7 @@ def NewPerson():
         addHistoryEntry('Agregado','Persona: {} {}'.format(form.first_name.data,form.last_name.data))
         db.session.commit()
         flash(_('Tus cambios han sido guardados.'),'info')
-        return redirect(url_for('main.index',user=current_user.first_name))
+        return redirect(url_for('main.EditPerson',id=person.id))
     return render_template('main/editperson.html',form=form,title=_('Agregar Persona'),selectedElements="")
 
 @bp.route('/edit/person/<id>', methods = ['GET','POST'])
@@ -1172,14 +1172,14 @@ def EditPerson(id):
          addHistoryEntry('Modificado','Persona: {} {}'.format(form.first_name.data,form.last_name.data))
          db.session.commit()
          flash(_('Tus cambios han sido guardados.'),'info')
-         return redirect(url_for('main.index',user=current_user.first_name))
+         return redirect(url_for('main.EditPerson',id=id))
     elif request.method == 'GET':
          form.first_name.data = person.first_name
          form.last_name.data = person.last_name
          form.birth_year.data = person.birth_year
          form.death_year.data = person.death_year
          form.biography.data = person.biography
-    return render_template('main/editperson.html',form=form,title=_('Editar Persona'),selectedElements=list2csv(selectedElements),selectedElementGender=selectedElementGender)    
+    return render_template('main/editperson.html',person=person, form=form,title=_('Editar Persona'),selectedElements=list2csv(selectedElements),selectedElementGender=selectedElementGender)    
 
 
 @bp.route('/new/event', methods = ['GET','POST'])
@@ -1264,14 +1264,27 @@ def EditEvent(event_id):
 
 
 
-@bp.route('/new/bioperson', methods = ['GET','POST'])
+@bp.route('/new/bioperson/<person_id>', methods = ['GET','POST'])
 @login_required
-def NewBioPerson():
+def NewBioPerson(person_id):
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
         return redirect(url_for('users.login'))
     
+    perico = Person.query.filter_by(id=person_id).first_or_404()
+    if perico.has_bio():
+        flash(_(perico.get_name() + ' ya tiene biografia. Mal ahí.'),'error')
+        return redirect(url_for('users.login'))
 
+    else:
+        bio = BioPerson()
+        bio.person_id = person_id
+        db.session.add(bio)
+        db.session.commit()
+
+        addHistoryEntry('Creado','Biografia Extendida: {}'.format(perico.get_name()))
+        flash(_('Biografia Extendida creada. Por favor completala.'),'info')
+        return redirect(url_for('main.EditBioPerson',id=bio.id))
 
 @bp.route('/edit/bioperson/<id>', methods = ['GET','POST'])
 @login_required
@@ -1290,8 +1303,10 @@ def EditBioPerson(id):
 
         addHistoryEntry('Modificado','BioPerson: {}'.format(original_data.get_name()))
         db.session.commit()
-        flash(_('Biografía actalizada'),'info')
-        return redirect(url_for('main.EditBioPerson',id=id))
+        flash(_('Biografía actualizada'),'info')
+        # return redirect(url_for('main.EditBioPerson',id=id))
+        return redirect(url_for('main.viewBiografias'))
+        
 
     else:
         for x in ['trabajo', 'links', 'otros', 'ensambles', 'premios', 'familia', 'profesion', 'publicaciones', 'instrumento', 'biografia', 'estudios_formales', 'bibliografia', 'investigacion_autores', 'estudios_informales', 'investigacion_fecha', 'archivos', 'investigacion_notas', 'discografia']:

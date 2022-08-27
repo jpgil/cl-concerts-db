@@ -91,7 +91,7 @@ class EditPersonForm(FlaskForm):
     birth_year=IntegerField(_('Año de Nacimiento'),validators=[Optional()])
     death_year=IntegerField(_('Año de Muerte'),validators=[Optional()])
     gender= NonValidatingSelectMultipleField(label=_("Sexo"),choices=[],validators=[DataRequired()])
-    biography=TextAreaField(_('Información Biográfica'))
+    biography=TextAreaField(_('Mini Biografía'))
     submit = SubmitField(_l('Guardar'))
     def __init__(self, original_person ,*args, **kwargs):
         super(EditPersonForm, self).__init__(*args, **kwargs)
@@ -207,7 +207,7 @@ class EditBioPersonForm(FlaskForm):
     publicaciones = TextAreaField(validators=[Optional()])
 
     # Biografia
-    biografia = TextAreaField(validators=[Optional()])
+    biografia = TextAreaField(validators=[DataRequired()])
     bibliografia = TextAreaField(validators=[Optional()])
     archivos = TextAreaField(validators=[Optional()])
     discografia = TextAreaField(validators=[Optional()])

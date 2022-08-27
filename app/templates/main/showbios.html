@@ -6,11 +6,11 @@
 
     <p>
     En esta página se muestran las biografías extendidas tanto para Personas como para Agrupaciones Musicales. 
-    Borrar una de estas biografías no borrará a la persona de o agrupación a la que se refiere.
+    Borrar una de estas biografías no borrará a la persona o agrupación a la que se refiere.
     </p>
     <h2>Personas</h2>
+    <p>Para crear una nueva biografía de persona, debe ir a <a href="{{ url_for('main.viewElement',model='Person')}}">Listado de Personas</a> -> Editar -> Crear Biografía Extendida.</p>
 
-    <a href="{{ url_for('main.New{}'.format(model1)) }}" class="btn btn-primary" role="button"> {{ _('Nueva Biografía de Persona')}}</a>
     <table id="show-list-table-1"
         data-toggle="table"
         data-sort-name="datetime" 
@@ -35,9 +35,7 @@
     </table>
 
     <h2>Agrupaciones</h2>
-    
-    <a href="{{ url_for('main.New{}'.format(model2)) }}" class="btn btn-primary" role="button"> {{ _('Nueva Biografía de
-        Agrupaciones')}}</a>
+
     <table id="show-list-table-2" data-toggle="table" data-sort-name="datetime" data-sort-order="desc"
         data-sort-stable="true" data-search="true" data-trim-on-search="false" data-show-footer="false"
         data-only-info-pagination="false" data-side-pagination="server" data-pagination="true" data-page-size="15"

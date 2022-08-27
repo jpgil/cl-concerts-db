@@ -1,3 +1,43 @@
+{% macro form_field(field) -%}
+{% set with_label = kwargs.pop('with_label', False) %}
+{% set placeholder = '' %}
+{% if not with_label %}
+{% set placeholder = field.label.text %}
+{% endif %}
+<div class="control-group {% if field.errors %}error{% endif %}">
+    {% if with_label %}
+    <label for="{{ field.id }}" class="control-label">
+        {{ field.label.text }}{% if field.flags.required %} *{% endif %}:
+    </label>
+    {% endif %}
+    <div class="controls">
+        {% set class_ = kwargs.pop('class_', '') %}
+        {% if field.flags.required %}
+        {% set class_ = class_ + ' required' %}
+        {% endif %}
+        {% if field.type == 'BooleanField' %}
+        <label class="checkbox">
+            {{ field(class_=class_, **kwargs) }}
+            {{ field.label.text|safe }}
+        </label>
+        {% else %}
+        {% if field.type in ('TextField', 'TextAreaField', 'PasswordField') %}
+        {% set class_ = class_ + ' input-xlarge' %}
+        {% elif field.type == 'FileField' %}
+        {% set class_ = class_ + ' input-file' %}
+        {% endif %}
+        {{ field(class_=class_, placeholder=placeholder, **kwargs) }}
+        {% endif %}
+        {% if field.errors %}
+        <span class="error help-inline">{{ field.errors|join(', ') }}</span>
+        {% endif %}
+        {% if field.description %}
+        <p class="help-block">{{ field.description|safe }}</p>
+        {% endif %}
+    </div>
+</div>
+{%- endmacro %}
+
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
@@ -27,18 +67,90 @@
             <form action="" method="post">
             {{ form.hidden_tag() }}
 
-            <ul class="nav nav-tabs" id="myTab">
+                <ul class="nav nav-tabs" id="myTab">
+                    <li><a data-toggle="tab" href="#sectionBiograficos">{{ _("Biografía Extendida")}} </a></li>
                     <li><a data-toggle="tab" href="#sectionPersonales">{{ _("Datos") }}</a></li>
-                    <li><a data-toggle="tab" href="#sectionBiograficos">{{ _("Biografía")}} </a></li>
                     <li><a data-toggle="tab" href="#sectionInvestigadores">{{ _("Investigadores")}} </a></li>
                     <li><a data-toggle="tab" href="#sectionMedia">{{ _("Media")}} </a></li>
                 </ul>
         
         
                 <div class="tab-content">
+
+                    
+                    <div id="sectionBiograficos" class="tab-pane fade in active">
+                    
+                        <h2>{{ _("Biografía Extendida") }} </h2>
+                    
+                    
+                        <table class="table">
+                            <tr>
+                                <th>Biografía (*)<br>
+                                    <small>Campo requerido</small>
+                                </th>
+                                <td>{{ form.biografia(cols="55", rows="6")|safe }}<br>
+                    
+                                    {% for error in form.biografia.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Bibliografía</th>
+                                <td>{{ form.bibliografia(cols="55", rows="6")|safe }}<br>
+                    
+                                    {% for error in form.bibliografia.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Archivos</th>
+                                <td>{{ form.archivos(cols="55", rows="6")|safe }}<br>
+                    
+                                    {% for error in form.archivos.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Discografía</th>
+                                <td>{{ form.discografia(cols="55", rows="6")|safe }}<br>
+                    
+                                    {% for error in form.discografia.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Enlaces</th>
+                                <td>{{ form.links(cols="55", rows="6")|safe }}<br>
+                    
+                                    {% for error in form.links.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Otros</th>
+                                <td>{{ form.otros(cols="55", rows="6")|safe }}<br>
+                    
+                                    {% for error in form.otros.errors %}
+                                    <span style="color: red;">[{{ error }}]</span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                        </table>
+                    
+                    
+                    
+                        <br>
+                        {{ form.submit() }}
+                    </div>
+
+
         
-        
-                    <div id="sectionPersonales" class="tab-pane fade in active">
+                    <div id="sectionPersonales" class="tab-pane fade">
                         <h2>{{ _("Datos") }} </h2>
                         <table class="table">
                             <tr>
@@ -120,73 +232,9 @@
                         {{ form.submit() }}
         
                     </div>
-        
-                    <div id="sectionBiograficos" class="tab-pane fade">
-        
-                        <h2>{{ _("Biografía") }} </h2>
-                        <table class="table">
-                            <tr>
-                                <th>Biografía</th>
-                                <td>{{ form.biografia(cols="55", rows="6")|safe }}<br>
-                            
-                                    {% for error in form.biografia.errors %}
-                                    <span style="color: red;">[{{ error }}]</span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Bibliografía</th>
-                                <td>{{ form.bibliografia(cols="55", rows="6")|safe }}<br>
-                            
-                                    {% for error in form.bibliografia.errors %}
-                                    <span style="color: red;">[{{ error }}]</span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Archivos</th>
-                                <td>{{ form.archivos(cols="55", rows="6")|safe }}<br>
-                            
-                                    {% for error in form.archivos.errors %}
-                                    <span style="color: red;">[{{ error }}]</span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Discografía</th>
-                                <td>{{ form.discografia(cols="55", rows="6")|safe }}<br>
-                            
-                                    {% for error in form.discografia.errors %}
-                                    <span style="color: red;">[{{ error }}]</span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Enlaces</th>
-                                <td>{{ form.links(cols="55", rows="6")|safe }}<br>
-                            
-                                    {% for error in form.links.errors %}
-                                    <span style="color: red;">[{{ error }}]</span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Otros</th>
-                                <td>{{ form.otros(cols="55", rows="6")|safe }}<br>
-                            
-                                    {% for error in form.otros.errors %}
-                                    <span style="color: red;">[{{ error }}]</span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                        </table>
-        
-        
-        
-                        <br>
-                        {{ form.submit() }}
-                    </div>
-        
+
+
+
                     <div id="sectionInvestigadores" class="tab-pane fade">
                         <h2>{{ _("Investigadores") }} </h2>
                         <table class="table">
@@ -201,9 +249,9 @@
                             </tr>
                             <tr>
                                 <th>Fechas de la investigación</th>
-                                <td>{{ form.investigacion_autores(cols="55", rows="6")|safe }}<br>
+                                <td>{{ form.investigacion_fecha(cols="55", rows="6")|safe }}<br>
                             
-                                    {% for error in form.investigacion_autores.errors %}
+                                    {% for error in form.investigacion_fecha.errors %}
                                     <span style="color: red;">[{{ error }}]</span>
                                     {% endfor %}
                                 </td>
@@ -248,7 +296,7 @@
                         <td>{{obj.person.first_name}}</td>
                     </tr>
                     <tr>
-                        <th>Apellido Nombre:</th>
+                        <th>Apellido:</th>
                         <td>{{obj.person.last_name}}</td>
                     </tr>
                     <tr>
@@ -264,7 +312,7 @@
                         <td>{{obj.person.gender.get_name()}}</td>
                     </tr>
                     <tr>
-                        <th>Biografía:</th>
+                        <th>Mini Biografía:</th>
                         <td>{{obj.person.biography}}</td>
                     </tr>
                 </table>

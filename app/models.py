@@ -197,6 +197,11 @@ class Person(db.Model):
             return '{}, {}'.format(self.last_name,self.first_name) 
         else:
             return self.last_name if self.last_name else self.first_name
+
+    def has_bio(self):
+        return self.bio_person.count() == 1
+    def get_bio(self):
+        return self.bio_person.first()
     
 class MediaLink(db.Model):
     id = db.Column(db.Integer, primary_key=True)

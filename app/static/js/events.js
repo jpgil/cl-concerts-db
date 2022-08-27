@@ -109,12 +109,13 @@ function checkDeleteElement(model,id)
               message: no_deps_message,
               buttons: [
                 {
-                  label: 'Sí, eliminar',
+                  label: 'Sí, eliminar.',
                   cssClass: 'btn-primary',
                   action: function(dialogItself){
-                           deleteElement(model,id)
-                           dialogItself.close();
-                          }
+                      deleteElement(model,id);
+                      dialogItself.close();
+                      location.reload(true);
+                    }
                 },
                 {
                   label: 'Cancelar',
