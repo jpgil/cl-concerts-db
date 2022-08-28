@@ -1285,10 +1285,9 @@ def NewBioPerson(person_id):
         bio = BioPerson()
         bio.person_id = person_id
         db.session.add(bio)
-        db.session.commit()
-
         addHistoryEntry('Creado','Bio Extendida de Persona: {}'.format(perico.get_name()))
         flash(_('Biografia Extendida creada. Por favor completala.'),'info')
+        db.session.commit()
         return redirect(url_for('main.EditBioPerson',id=bio.id))
 
 @bp.route('/edit/bioperson/<id>', methods = ['GET','POST'])
@@ -1308,7 +1307,7 @@ def EditBioPerson(id):
 
         addHistoryEntry('Modificado','BioPerson: {}'.format(original_data.get_name()))
         db.session.commit()
-        flash(_('Biografía actualizada'),'info')
+        flash(_('Biografía de {} actualizada'.format(original_data.person.get_name())),'info')
         # return redirect(url_for('main.EditBioPerson',id=id))
         return redirect(url_for('main.viewBiografias'))
         
@@ -1341,10 +1340,9 @@ def NewBioMusicalEnsemble(musical_ensemble_id):
         bio = BioMusicalEnsemble()
         bio.musical_ensemble_id = musical_ensemble_id
         db.session.add(bio)
-        db.session.commit()
-
         addHistoryEntry('Creado','Bio Extendida de Agrupacion: {}'.format(ensemble.get_name()))
         flash(_('Biografia Extendida creada. Por favor completala.'),'info')
+        db.session.commit()
         return redirect(url_for('main.EditBioMusicalEnsemble',id=bio.id))
 
 
@@ -1365,7 +1363,7 @@ def EditBioMusicalEnsemble(id):
 
         addHistoryEntry('Modificado','BioMusicalEnsemble: {}'.format(original_data.get_name()))
         db.session.commit()
-        flash(_('Biografía actualizada'),'info')
+        flash(_('Biografía de {} actualizada'.format(original_data.musical_ensemble.get_name())),'info')
         # return redirect(url_for('main.EditBioPerson',id=id))
         return redirect(url_for('main.viewBiografias'))
 

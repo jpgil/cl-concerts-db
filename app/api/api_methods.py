@@ -1,5 +1,5 @@
 from app.api import bp
-from flask import request, current_app, jsonify
+from flask import request, current_app, jsonify, flash
 from app import db
 from app.api.errors import bad_request, server_error
 from app.models import *
@@ -405,9 +405,15 @@ def delete_element(model,id):
             db.session.delete(participant)
             addHistoryEntry('Eliminado','Participante: {}'.format(participant.get_name()))
     table_name=getStringForModel(element.__repr__().split('(')[0])
-    addHistoryEntry('Eliminado','{}: {}'.format(table_name,element.get_name()[0:50]))
-    db.session.delete(element)
-    db.session.commit()
-    response = jsonify({})
-    response.status_code = 200
-    return response
+    try:
+        db.session.delete(element)
+        db.session.commit()
+        response = jsonify({})
+        response.status_code = 200
+        addHistoryEntry('Eliminado','{}: {}'.format(table_name,element.get_name()[0:50]))
+        return response
+    except Exception as ex:    
+        message=_('"Ocurrió un error tratando de borrar el elemento:')+str(ex)
+        addHistoryEntry('Error eliminando', message)
+        raise ex
+        return bad_request(message)
