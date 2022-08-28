@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-01-08 15:40-0300\n"
+"POT-Creation-Date: 2022-08-27 02:10-0400\n"
 "PO-Revision-Date: 2018-05-09 07:20-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -16,9 +16,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.9.1\n"
 
-#: app/__init__.py:23
+#: app/__init__.py:24
 msgid "Por favor, loguearse para ver esta página."
 msgstr "Please, log in to see this page."
 
@@ -168,6 +168,7 @@ msgstr "\"A mistake ocurred while trying to delete the element:"
 #: app/main/forms.py:138 app/templates/main/editevent.html:134
 #: app/templates/main/editevent.html:181
 #: app/templates/main/editmusicalensemble.html:64
+#: app/templates/main/showbios.html:31 app/templates/main/showbios.html:46
 #: app/templates/main/showlist.html:24 app/templates/public/detalle.html:163
 #: app/templates/public/detalle.html:221 app/users/forms.py:23
 #: app/users/forms.py:51 app/users/forms.py:61
@@ -177,6 +178,7 @@ msgstr "Name"
 #: app/main/forms.py:18 app/main/forms.py:33 app/main/forms.py:50
 #: app/main/forms.py:67 app/main/forms.py:76 app/main/forms.py:95
 #: app/main/forms.py:127 app/main/forms.py:140 app/main/forms.py:172
+#: app/main/forms.py:217
 msgid "Guardar"
 msgstr "Save"
 
@@ -256,7 +258,7 @@ msgstr "Last Name"
 
 #: app/main/forms.py:90 app/main/routes.py:51 app/templates/base.html:51
 #: app/templates/main/edit_elements.html:9
-#: app/templates/main/editperson.html:56
+#: app/templates/main/editperson.html:53
 msgid "Países"
 msgstr "Countries"
 
@@ -268,14 +270,14 @@ msgstr "Birth Year"
 msgid "Año de Muerte"
 msgstr "Death Year"
 
-#: app/main/forms.py:93 app/templates/main/editperson.html:28
+#: app/main/forms.py:93 app/templates/main/editperson.html:39
 msgid "Sexo"
 msgstr "Sex"
 
-#: app/main/forms.py:94 app/templates/public/detalle.html:82
-#: app/templates/public/person_initial.html:98
-msgid "Información Biográfica"
-msgstr "Biography"
+#: app/main/forms.py:94
+#, fuzzy
+msgid "Mini Biografía"
+msgstr "Biographies"
 
 #: app/main/forms.py:111
 msgid "Debe ingresar al menos un nombre o apellido"
@@ -318,7 +320,7 @@ msgstr "Day must be a number between 1 and 31"
 msgid "Fuentes"
 msgstr "Source(s)"
 
-#: app/main/forms.py:158 app/templates/public/menu.html:6
+#: app/main/forms.py:158 app/templates/public/menu.html:4
 msgid "Información"
 msgstr "Information"
 
@@ -394,6 +396,8 @@ msgstr "Organizations"
 
 #: app/main/routes.py:61 app/templates/base.html:60
 #: app/templates/main/edit_elements.html:14
+#: app/templates/public/page_consultar.html:29
+#: app/templates/public/page_consultar.html:46
 msgid "Personas"
 msgstr "People"
 
@@ -422,145 +426,173 @@ msgstr "Performance"
 msgid "Miembro de Agrupación Musical"
 msgstr "Musical Ensemble Member"
 
-#: app/main/routes.py:659 app/main/routes.py:713 app/main/routes.py:785
-#: app/main/routes.py:808 app/main/routes.py:835 app/main/routes.py:867
-#: app/main/routes.py:892 app/main/routes.py:921 app/main/routes.py:970
-#: app/main/routes.py:993 app/main/routes.py:1021 app/main/routes.py:1041
-#: app/main/routes.py:1067 app/main/routes.py:1086 app/main/routes.py:1107
-#: app/main/routes.py:1129 app/main/routes.py:1164 app/main/routes.py:1199
+#: app/main/routes.py:69
+#, fuzzy
+msgid "Biografía de Personas"
+msgstr "Biography of Stein, Hanns"
+
+#: app/main/routes.py:70
+#, fuzzy
+msgid "Biografía de Agrupación Musical"
+msgstr "Musical Ensemble Type"
+
+#: app/main/routes.py:684 app/main/routes.py:738 app/main/routes.py:810
+#: app/main/routes.py:833 app/main/routes.py:860 app/main/routes.py:892
+#: app/main/routes.py:917 app/main/routes.py:946 app/main/routes.py:995
+#: app/main/routes.py:1018 app/main/routes.py:1046 app/main/routes.py:1066
+#: app/main/routes.py:1092 app/main/routes.py:1111 app/main/routes.py:1132
+#: app/main/routes.py:1154 app/main/routes.py:1189 app/main/routes.py:1224
+#: app/main/routes.py:1271 app/main/routes.py:1293 app/main/routes.py:1327
 msgid "Debe ser Administrador/Editor para entrar a esta página"
 msgstr "Must be Admin/Editor to access this page"
 
-#: app/main/routes.py:667 app/main/routes.py:726 app/main/routes.py:800
-#: app/main/routes.py:825 app/main/routes.py:859 app/main/routes.py:883
-#: app/main/routes.py:910 app/main/routes.py:956 app/main/routes.py:985
-#: app/main/routes.py:1009 app/main/routes.py:1033 app/main/routes.py:1055
-#: app/main/routes.py:1078 app/main/routes.py:1095 app/main/routes.py:1121
-#: app/main/routes.py:1149 app/main/routes.py:1190 app/main/routes.py:1225
+#: app/main/routes.py:692 app/main/routes.py:751 app/main/routes.py:825
+#: app/main/routes.py:850 app/main/routes.py:884 app/main/routes.py:908
+#: app/main/routes.py:935 app/main/routes.py:981 app/main/routes.py:1010
+#: app/main/routes.py:1034 app/main/routes.py:1058 app/main/routes.py:1080
+#: app/main/routes.py:1103 app/main/routes.py:1120 app/main/routes.py:1146
+#: app/main/routes.py:1174 app/main/routes.py:1215 app/main/routes.py:1250
 #: app/users/routes.py:120 app/users/routes.py:145
 msgid "Tus cambios han sido guardados."
 msgstr "Your changes have been saved."
 
-#: app/main/routes.py:677
+#: app/main/routes.py:702
 msgid "Editar País"
 msgstr "Edit Country"
 
-#: app/main/routes.py:683
+#: app/main/routes.py:708
 msgid "Editar Tipo de Evento"
 msgstr "Edit Event Type"
 
-#: app/main/routes.py:688
+#: app/main/routes.py:713
 msgid "Editar Ciclo"
 msgstr "Edit Cycle"
 
-#: app/main/routes.py:693
+#: app/main/routes.py:718
 msgid "Editar Ciudad"
 msgstr "Edit City"
 
-#: app/main/routes.py:699 app/main/routes.py:709
+#: app/main/routes.py:724 app/main/routes.py:734
 msgid "Editar Tipo de Instrumento"
 msgstr "Edit Instrument Type"
 
-#: app/main/routes.py:704
+#: app/main/routes.py:729
 msgid "Editar Tipo de Agrupación Musical"
 msgstr "Edit Musical Ensemble Type"
 
-#: app/main/routes.py:718 app/main/routes.py:790 app/main/routes.py:872
-#: app/main/routes.py:975 app/main/routes.py:1026 app/main/routes.py:1072
+#: app/main/routes.py:743 app/main/routes.py:815 app/main/routes.py:897
+#: app/main/routes.py:1000 app/main/routes.py:1051 app/main/routes.py:1097
 msgid "Este nombre ya ha sido registrado"
 msgstr "Name already registered"
 
-#: app/main/routes.py:734
+#: app/main/routes.py:759
 msgid "Agregar País"
 msgstr "Add country"
 
-#: app/main/routes.py:739
+#: app/main/routes.py:764
 msgid "Agregar Tipo de Evento"
 msgstr "Add Event Type"
 
-#: app/main/routes.py:744
+#: app/main/routes.py:769
 msgid "Agregar Ciclo"
 msgstr "Add Cycle"
 
-#: app/main/routes.py:749
+#: app/main/routes.py:774
 msgid "Agregar Ciudad"
 msgstr "Add City"
 
-#: app/main/routes.py:754
+#: app/main/routes.py:779
 msgid "Agregar Tipo de Instrumento"
 msgstr "Add Instrument Type"
 
-#: app/main/routes.py:759
+#: app/main/routes.py:784
 msgid "Agregar Tipo de Agrupación Musical"
 msgstr "Add Musical Ensemble Type"
 
-#: app/main/routes.py:764
+#: app/main/routes.py:789
 msgid "Agregar Tipo de Estreno"
 msgstr "Add Premiere Type"
 
-#: app/main/routes.py:791 app/main/routes.py:802
+#: app/main/routes.py:816 app/main/routes.py:827
 msgid "Agregar Instrumento"
 msgstr "Add Instrument"
 
-#: app/main/routes.py:829
+#: app/main/routes.py:854
 msgid "Editar Instrumento"
 msgstr "Edit Instrument"
 
-#: app/main/routes.py:861
+#: app/main/routes.py:886
 msgid "Agregar Obra Musical"
 msgstr "Add Musical Piece"
 
-#: app/main/routes.py:873 app/main/routes.py:886
+#: app/main/routes.py:898 app/main/routes.py:911
 msgid "Agregar Agrupación Musical"
 msgstr "Add Musical Ensemble"
 
-#: app/main/routes.py:915
+#: app/main/routes.py:940
 msgid "Editar Agrupación Musical"
 msgstr "Edit Musical Ensemble"
 
-#: app/main/routes.py:963
+#: app/main/routes.py:988
 msgid "Editar Obra Musical"
 msgstr "Edit Musical Piece"
 
-#: app/main/routes.py:976 app/main/routes.py:987
+#: app/main/routes.py:1001 app/main/routes.py:1012
 msgid "Agregar Actividad"
 msgstr "Add Activity"
 
-#: app/main/routes.py:1013
+#: app/main/routes.py:1038
 msgid "Editar Actividad"
 msgstr "Edit Activity"
 
-#: app/main/routes.py:1027 app/main/routes.py:1035
+#: app/main/routes.py:1052 app/main/routes.py:1060
 msgid "Agregar Lugar"
 msgstr "Add Location"
 
-#: app/main/routes.py:1061
+#: app/main/routes.py:1086
 msgid "Editar Lugar"
 msgstr "Edit Location"
 
-#: app/main/routes.py:1073 app/main/routes.py:1080
+#: app/main/routes.py:1098 app/main/routes.py:1105
 msgid "Agregar Organización"
 msgstr "Add Organization"
 
-#: app/main/routes.py:1100
+#: app/main/routes.py:1125
 msgid "Editar Organización"
 msgstr "Edit Organization"
 
-#: app/main/routes.py:1123
+#: app/main/routes.py:1148
 msgid "Agregar Persona"
 msgstr "Add person"
 
-#: app/main/routes.py:1157
+#: app/main/routes.py:1182
 msgid "Editar Persona"
 msgstr "Edit Person"
 
-#: app/main/routes.py:1192
+#: app/main/routes.py:1217
 msgid "Agregar Evento"
 msgstr "Add Event"
 
-#: app/main/routes.py:1234
+#: app/main/routes.py:1259
 msgid "Editar Evento"
 msgstr "Edit Event"
+
+#: app/main/routes.py:1276
+msgid " ya tiene biografia. Mal ahí."
+msgstr ""
+
+#: app/main/routes.py:1286
+msgid "Biografia Extendida creada. Por favor completala."
+msgstr ""
+
+#: app/main/routes.py:1306
+msgid "Biografía actualizada"
+msgstr ""
+
+#: app/main/routes.py:1316
+#, fuzzy
+msgid "Editar Biografía de "
+msgstr "Search Biographies"
 
 #: app/templates/base.html:3
 msgid "Bienvenido a cl-concerts-db"
@@ -579,23 +611,29 @@ msgstr "Users"
 msgid "Editar Elementos"
 msgstr "Edit Elements"
 
-#: app/templates/base.html:71 app/templates/main/history.html:4
+#: app/templates/base.html:70 app/templates/main/editbioperson.html:335
+#: app/templates/main/showbios.html:5 app/templates/public/biographies.html:3
+#: app/templates/public/menu.html:19
+msgid "Biografías"
+msgstr "Biographies"
+
+#: app/templates/base.html:74 app/templates/main/history.html:4
 msgid "Historial"
 msgstr "History"
 
-#: app/templates/base.html:76 app/users/routes.py:126
+#: app/templates/base.html:77 app/users/routes.py:126
 msgid "Editar Perfil"
 msgstr "Edit Profile"
 
-#: app/templates/base.html:81
+#: app/templates/base.html:82
 msgid "Login"
 msgstr ""
 
-#: app/templates/base.html:83
+#: app/templates/base.html:84
 msgid "Logout"
 msgstr ""
 
-#: app/templates/base.html:87
+#: app/templates/base.html:88
 msgid "Sitio Público"
 msgstr "Public Site"
 
@@ -619,23 +657,49 @@ msgstr "The administrator has been notified. We're sorry for the inconvenience!"
 msgid "Tipos de Evento"
 msgstr "Event Types"
 
+#: app/templates/main/editbioperson.html:71
+#: app/templates/main/editbioperson.html:83
+#, fuzzy
+msgid "Biografía Extendida"
+msgstr "Biography of Stein, Hanns"
+
+#: app/templates/main/editbioperson.html:72
+#: app/templates/main/editbioperson.html:154
+msgid "Datos"
+msgstr ""
+
+#: app/templates/main/editbioperson.html:73
+#: app/templates/main/editbioperson.html:239
+msgid "Investigadores"
+msgstr ""
+
+#: app/templates/main/editbioperson.html:74
+#: app/templates/main/editbioperson.html:276
+#: app/templates/main/editevent.html:19
+msgid "Media"
+msgstr ""
+
+#: app/templates/main/editbioperson.html:335
+#, fuzzy
+msgid "Volver al listado de"
+msgstr "Return to search"
+
 #: app/templates/main/editevent.html:16 app/templates/main/editevent.html:24
 msgid "Información General"
 msgstr "General Information"
 
 #: app/templates/main/editevent.html:17 app/templates/main/editevent.html:98
+#: app/templates/public/page_consultar.html:43
 #: app/templates/public/sidebar.html:147
 msgid "Participantes"
 msgstr "Participants"
 
 #: app/templates/main/editevent.html:18 app/templates/main/editevent.html:143
-#: app/templates/public/detalle.html:255 app/templates/public/sidebar.html:151
+#: app/templates/public/detalle.html:255
+#: app/templates/public/page_consultar.html:50
+#: app/templates/public/sidebar.html:151
 msgid "Repertorio"
 msgstr "Repertoire"
-
-#: app/templates/main/editevent.html:19
-msgid "Media"
-msgstr ""
 
 #: app/templates/main/editevent.html:48 app/templates/main/editevent.html:56
 #: app/templates/main/editevent.html:65 app/templates/main/editevent.html:74
@@ -753,6 +817,11 @@ msgstr "Latest updates"
 msgid "*Guardar para agregar detalles"
 msgstr "*Save to add details"
 
+#: app/templates/main/showbios.html:32 app/templates/main/showbios.html:47
+#, fuzzy
+msgid "Eliminar"
+msgstr "Clean"
+
 #: app/templates/main/showlist.html:25
 msgid "X"
 msgstr ""
@@ -760,10 +829,6 @@ msgstr ""
 #: app/templates/public/bio_id.html:3
 msgid "Biografía de Stein, Hanns"
 msgstr "Biography of Stein, Hanns"
-
-#: app/templates/public/biographies.html:3 app/templates/public/menu.html:21
-msgid "Biografías"
-msgstr "Biographies"
 
 #: app/templates/public/biographies.html:11
 msgid ""
@@ -774,15 +839,10 @@ msgstr ""
 "more information"
 
 #: app/templates/public/carousel.html:6 app/templates/public/inicio.html:3
-#: app/templates/public/layout_global.html:61
 msgid "Intérpretes y Conciertos Doctos en Chile"
 msgstr "Performers and Art Music Concerts in Chile"
 
 #: app/templates/public/carousel.html:8
-msgid "VERSION 3 -- Con biografías"
-msgstr "VERSION 3 -- With biographies"
-
-#: app/templates/public/carousel.html:11
 msgid ""
 "Base de datos de eventos, biografías de intérpretes y agrupaciones de los"
 " siglos XX y XXI"
@@ -823,6 +883,11 @@ msgstr "Death:"
 #: app/templates/public/person_initial.html:89
 msgid "País(es):"
 msgstr "Country(s)"
+
+#: app/templates/public/detalle.html:82
+#: app/templates/public/person_initial.html:98
+msgid "Información Biográfica"
+msgstr "Biography"
 
 #: app/templates/public/detalle.html:91
 msgid "Cerrar"
@@ -910,6 +975,12 @@ msgid ""
 "    de 1945, además de biografías de diversos intérpretes de música \n"
 "    docta chilena de los siglos XX y XXI."
 msgstr ""
+"(please translate)Bienvenid@ a “Intérpretes y Conciertos Doctos en "
+"Chile”. \n"
+"    En esta página encontrarás una base de datos de conciertos y \n"
+"    otros eventos musicales realizados en Chile, mayormente a partir \n"
+"    de 1945, además de biografías de diversos intérpretes de música \n"
+"    docta chilena de los siglos XX y XXI."
 
 #: app/templates/public/inicio.html:16
 msgid ""
@@ -929,6 +1000,21 @@ msgid ""
 "seleccionar y combinar \n"
 "    categorías (repertorio, intérpretes, instrumentos, lugar, etc.)."
 msgstr ""
+"(please translate)En la sección de Conciertos se presentan informaciones "
+"sobre más de 2.000 eventos \n"
+"    (conciertos, pero también talleres, charlas y otros), realizados "
+"mayormente en Santiago \n"
+"    de Chile entre 1945 y 1995. El repertorio corresponde mayormente a la"
+" música docta del \n"
+"    siglo XX, si bien se han incluido también programas desde la música "
+"antigua al siglo XIX, \n"
+"    de jazz y música popular. La base de datos se nutre de informaciones "
+"provenientes de \n"
+"    programas de concierto, reseñas de prensa y revistas musicales y "
+"puede ser navegada a \n"
+"    través de la búsqueda simple o de la búsqueda avanzada, que permite "
+"seleccionar y combinar \n"
+"    categorías (repertorio, intérpretes, instrumentos, lugar, etc.)."
 
 #: app/templates/public/inicio.html:26
 msgid ""
@@ -942,6 +1028,15 @@ msgid ""
 " datos y remite a \n"
 "    los eventos o biografías en las que se mencionan. "
 msgstr ""
+"(please translate)En la sección de Biografías encontrarás biografías de "
+"intérpretes de música chilena \n"
+"    del siglo XX, redactadas a partir de nuestra investigación realizada "
+"en archivos, \n"
+"    entrevistas con los intérpretes y sus familiares. Por último, la "
+"lista de Participantes \n"
+"    y Compositores presenta todas las personas ingresadas en esta base de"
+" datos y remite a \n"
+"    los eventos o biografías en las que se mencionan. "
 
 #: app/templates/public/inicio.html:34
 msgid ""
@@ -955,23 +1050,44 @@ msgstr ""
 "    in this site and want to collaborate with us? You can get in contact "
 "with us at dfugellie@uahurtado.cl."
 
-#: app/templates/public/layout_global.html:105
+#: app/templates/public/layout_global.html:61
+#, fuzzy
+msgid "Intérpretes y Conciertos Doctos"
+msgstr "Performers and Art Music Concerts in Chile"
+
+#: app/templates/public/layout_global.html:62
+msgid "en Chile"
+msgstr "in Chile"
+
+#: app/templates/public/layout_global.html:67
+msgid "English"
+msgstr ""
+
+#: app/templates/public/layout_global.html:68
+msgid "Español"
+msgstr ""
+
+#: app/templates/public/layout_global.html:112
 msgid "Alameda 1869, 4to. piso Metro Los Héroes Santiago – Chile"
 msgstr "Alameda st. 1869, 4th Floor. Los Heroes Subway Station, Santiago - Chile"
 
-#: app/templates/public/layout_global.html:128
+#: app/templates/public/layout_global.html:135
 msgid "Mayores informaciones:"
 msgstr "More information:"
 
-#: app/templates/public/menu.html:8
+#: app/templates/public/layout_global.html:136
+msgid "Daniela Fugellie"
+msgstr ""
+
+#: app/templates/public/menu.html:6
 msgid "Inicio"
 msgstr "Home"
 
-#: app/templates/public/menu.html:9 app/templates/public/sidebar_about.html:7
+#: app/templates/public/menu.html:7 app/templates/public/sidebar_about.html:7
 msgid "Acerca de"
 msgstr "About"
 
-#: app/templates/public/menu.html:10
+#: app/templates/public/menu.html:8
 msgid ""
 "Cómo\n"
 "          Consultar"
@@ -979,12 +1095,12 @@ msgstr ""
 "How\n"
 "          To Search"
 
-#: app/templates/public/menu.html:12 app/templates/public/sidebar_about.html:17
+#: app/templates/public/menu.html:10 app/templates/public/sidebar_about.html:17
 #: app/templates/public/sidebar_inicio.html:108
 msgid "Cómo Citar"
 msgstr "How to Quote"
 
-#: app/templates/public/menu.html:13
+#: app/templates/public/menu.html:11
 msgid ""
 "Enlaces de\n"
 "          Interés"
@@ -992,21 +1108,13 @@ msgstr ""
 "Relevant\n"
 "          Links"
 
-#: app/templates/public/menu.html:18
+#: app/templates/public/menu.html:16
 msgid "Conciertos"
 msgstr "Concerts"
 
-#: app/templates/public/menu.html:24
+#: app/templates/public/menu.html:22
 msgid "Participantes y Compositores"
 msgstr "Participants and Composers"
-
-#: app/templates/public/menu.html:27
-msgid "English"
-msgstr ""
-
-#: app/templates/public/menu.html:30
-msgid "Español"
-msgstr ""
 
 #: app/templates/public/page_about.html:3
 msgid "Acerca de la base de datos"
@@ -1015,30 +1123,40 @@ msgstr "About the database"
 #: app/templates/public/page_about.html:19
 msgid ""
 "Esta base de datos surge a partir de dos proyectos de la investigadora "
-"responsable \n"
-"    Daniela Fugellie: el proyecto Fondecyt de Iniciación 11170844 "
-"“Espacios alternativos \n"
-"    de la música contemporánea en Chile, 1945–1995” (2017–2020) y el "
-"proyecto Fondo de la \n"
-"    Música, Línea de investigación 583750 “Biografías de intérpretes "
-"chilenos de música \n"
-"    docta, 1945-1995. Investigación y difusión de su aporte a la vida "
-"musical chilena” (2021/22). \n"
-"    \n"
-"    En el marco del primer proyecto surgió la base de datos de conciertos"
-" de música docta \n"
-"    (1945-1995), la cual se complementó ofreciendo biografías de "
-"intérpretes y agrupaciones \n"
-"    de música docta a partir del segundo proyecto.\n"
+"responsable Daniela Fugellie: el proyecto Fondecyt de Iniciación 11170844"
+" “Espacios alternativos de la música contemporánea en Chile, 1945–1995” "
+"(2017–2020) y el proyecto Fondo de la Música, Línea de investigación "
+"583750 “Biografías de intérpretes chilenos de música docta, 1945-1995."
+" Investigación y difusión de su aporte a la vida musical chilena” "
+"(2021/22).\n"
 "\n"
-"    En estos proyectos trabajaron Gerardo Marcoleta (2017-2019), Sergio "
-"Araya (2017-2021) y\n"
-"    Constanza Toledo (2020-2021). La base de datos y su interfaz de "
-"usuarios fueron diseñadas \n"
-"    por Johnny Reveco y Juan Pablo Gil."
+"En el marco del primer proyecto surgió la base de datos de conciertos de "
+"música docta (1945-1995), la cual se complementó ofreciendo biografías de"
+" intérpretes y agrupaciones de música docta a partir del segundo "
+"proyecto.\n"
+"\n"
+"En estos proyectos trabajaron Gerardo Marcoleta (2017-2019), Sergio Araya"
+" (2017-2021) y Constanza Toledo (2020-2021). La base de datos y su "
+"interfaz de usuarios fueron diseñadas por Johnny Reveco y Juan Pablo Gil."
 msgstr ""
+"(please translate)Esta base de datos surge a partir de dos proyectos de "
+"la investigadora responsable Daniela Fugellie: el proyecto Fondecyt de "
+"Iniciación 11170844 “Espacios alternativos de la música contemporánea en "
+"Chile, 1945–1995” (2017–2020) y el proyecto Fondo de la Música, Línea de "
+"investigación 583750 “Biografías de intérpretes chilenos de música "
+"docta, 1945-1995. Investigación y difusión de su aporte a la vida "
+"musical chilena” (2021/22).\n"
+"\n"
+"En el marco del primer proyecto surgió la base de datos de conciertos de "
+"música docta (1945-1995), la cual se complementó ofreciendo biografías de"
+" intérpretes y agrupaciones de música docta a partir del segundo "
+"proyecto.\n"
+"\n"
+"En estos proyectos trabajaron Gerardo Marcoleta (2017-2019), Sergio Araya"
+" (2017-2021) y Constanza Toledo (2020-2021). La base de datos y su "
+"interfaz de usuarios fueron diseñadas por Johnny Reveco y Juan Pablo Gil."
 
-#: app/templates/public/page_about.html:34
+#: app/templates/public/page_about.html:28
 msgid "Mayores informaciones: Daniela Fugellie"
 msgstr "More information: Daniela Fugellie"
 
@@ -1062,6 +1180,19 @@ msgid ""
 "marco de trabajos \n"
 "    de investigación sea consignada en las publicaciones correspondientes."
 msgstr ""
+"(please translate) La base de datos “Intérpretes y Conciertos Doctos en "
+"Chile” contiene informaciones de \n"
+"    más de 2.000 eventos musicales y más de 50 biografías de intérpretes "
+"y agrupaciones, \n"
+"    los que muchas veces proveen fuentes, tales como programas y reseñas "
+"de los eventos. \n"
+"    Por lo mismo, la herramienta puede ser utilizada para recopilar "
+"informaciones sobre \n"
+"    personas y eventos, pero constituye también una colección digital de "
+"fuentes primarias. \n"
+"    Mientras que su uso es gratuito, esperamos que su utilización en el "
+"marco de trabajos \n"
+"    de investigación sea consignada en las publicaciones correspondientes."
 
 #: app/templates/public/page_citar.html:28
 msgid "Recomendamos estos sistemas de citación."
@@ -1128,11 +1259,191 @@ msgstr ""
 msgid "Cómo consultar la base de datos"
 msgstr "How to search the database"
 
+#: app/templates/public/page_consultar.html:20
+msgid ""
+"La base de datos permite realizar una búsqueda simple ingresando palabras"
+" clave. En este caso, el resultado de la búsqueda contiene una lista de "
+"todos los eventos que contienen las palabras claves que se buscaron, las "
+"que aparecen destacadas bajo el título del evento. Esta búsqueda arrojará"
+" resultados por relevancia. Para resultados en orden cronológico, se "
+"sugiere usar los filtros de búsqueda."
+msgstr ""
+
+#: app/templates/public/page_consultar.html:23
+msgid ""
+"También es posible realizar una búsqueda avanzada seleccionando diversos "
+"filtros de búsqueda. El resultado de la búsqueda siempre será una lista "
+"de “eventos” (conciertos, pero también conferencias, talleres u otros) "
+"ordenados cronológicamente, la que podrá seguir siendo filtrada con el "
+"uso de nuevas categorías. En caso de que los eventos estén incompletos en"
+" alguno de sus items (sin nombre, sin nombre de ciclo, sin lugar, sin "
+"repertorio, etc.) esto quiere decir que dichas informaciones no figuraban"
+" en las fuentes consultadas."
+msgstr ""
+
+#: app/templates/public/page_consultar.html:29
+msgid ""
+"La búsqueda avanzada está organizada en diversas categorías y es posible "
+"seleccionar diferentes categorías al mismo tiempo, a fin de realizar "
+"preguntas complejas, tales como: ¿Qué obras para piano de Beethoven se "
+"interpretaron el año 1985? O también, ¿qué obras para piano de Beethoven "
+"se interpretaron en el Goethe-Institut el año 1985, siendo las pianistas "
+"mujeres? Para búsquedas centradas en una persona o compositor/a, es "
+"recomendable también ingresar a la pestaña de"
+msgstr ""
+
+#: app/templates/public/page_consultar.html:29
+msgid "e ir a los eventos asociados a personas en particular."
+msgstr ""
+
+#: app/templates/public/page_consultar.html:33
+#, fuzzy
+msgid "Filtros de búsqueda"
+msgstr "Search Filters"
+
+#: app/templates/public/page_consultar.html:37
+#: app/templates/public/sidebar.html:111
+msgid "Fechas"
+msgstr "Dates"
+
+#: app/templates/public/page_consultar.html:37
+msgid ""
+"Permite elegir un rango temporal entre 1945 y 1995. Las fechas se pueden "
+"tipear manualmente o bien ser seleccionadas en el calendario. Información"
+" del evento: Permite seleccionar un ciclo o un tipo de evento desde la "
+"lista de posibilidades ingresadas en la base de datos, las que se "
+"mostrarán como lista."
+msgstr ""
+
+#: app/templates/public/page_consultar.html:40
+#: app/templates/public/sidebar.html:145
+msgid "Lugar del evento"
+msgstr "Event Location"
+
+#: app/templates/public/page_consultar.html:40
+msgid ""
+"Los organizadores, lugares y ciudades pueden seleccionarse desde la lista"
+" de posibilidades ingresadas. Muchas veces los lugares y los "
+"organizadores son equivalentes."
+msgstr ""
+
+#: app/templates/public/page_consultar.html:43
+msgid ""
+"Corresponde a quienes participaron físicamente en los eventos, indicando "
+"su nombre, género, país o países, y la actividad realizada en el evento, "
+"la que se puede seleccionar de una lista de posibilidades ingresadas. Es "
+"posible seleccionar diversas actividades simultáneamente."
+msgstr ""
+
+#: app/templates/public/page_consultar.html:46
+#: app/templates/public/sidebar.html:149
+msgid "Compositores"
+msgstr "Composer(s)"
+
+#: app/templates/public/page_consultar.html:46
+msgid ""
+"Corresponde a los compositores/as, cuyas obras fueron interpretadas en "
+"conciertos, los que pueden ser seleccionados desde una lista o "
+"consultando la pestaña"
+msgstr ""
+
+#: app/templates/public/page_consultar.html:47
+msgid "También se puede seleccionar una opción de género o de países."
+msgstr ""
+
+#: app/templates/public/page_consultar.html:50
+msgid ""
+"Corresponde a las obras interpretadas en los conciertos, las que pueden "
+"buscarse por nombre, instrumentos o tipo de instrumentos desde una lista "
+"de posibilidades ingresadas, o indicar si es que fueron estrenos chilenos"
+" o mundiales."
+msgstr ""
+
+#: app/templates/public/page_consultar.html:53
+#: app/templates/public/sidebar.html:153
+msgid "Agrupaciones"
+msgstr "Ensembles"
+
+#: app/templates/public/page_consultar.html:53
+msgid ""
+"Corresponde a agrupaciones musicales (ensambles, coros, cuartetos de "
+"cuerdas, etc) que participaron en los eventos. Pueden buscarse por nombre"
+" o por tipos de agrupaciones, desde una lista de posibilidades ingresadas"
+" en la base de datos."
+msgstr ""
+
 #: app/templates/public/page_enlaces.html:3
 #: app/templates/public/sidebar_about.html:22
 #: app/templates/public/sidebar_inicio.html:110
 msgid "Enlaces de Interés"
 msgstr "Relevant Links"
+
+#: app/templates/public/page_enlaces.html:22
+msgid "Fondo Documental Anacrusa"
+msgstr ""
+
+#: app/templates/public/page_enlaces.html:25
+msgid ""
+"Diversos documentos físicos y electrónicos dialogan con los conciertos "
+"aquí recopilados. En el marco del Fondecyt de Iniciación 11170844 se "
+"realizó la inventarización del Fondo Documental Anacrusa, donado por "
+"Eduardo Cáceres al Archivo de Música de la Biblioteca Nacional de Chile. "
+"Bajo la supervisión de Cecilia Astudillo, Jefa del Archivo de Música, "
+"Dianilexis Echevarría, Daniela Nieto y Constanza Toledo realizaron el "
+"inventario. Este archivo contiene partituras, grabaciones de audio y "
+"videos, fotografías, programas de concierto y documentos administrativos,"
+" además de una extensa colección de correspondencia vinculada a los "
+"festivales y conciertos de la Agrupación Musical Anacrusa. Agradecemos a "
+"Jorge Aliaga por su ayuda en la digitalización de archivos de audio."
+msgstr ""
+
+#: app/templates/public/page_enlaces.html:29
+msgid "Los siguientes documentos se pueden consultar a continuación"
+msgstr ""
+
+#: app/templates/public/page_enlaces.html:35
+msgid "Guía del Fondo Documental Anacrusa"
+msgstr ""
+
+#: app/templates/public/page_enlaces.html:39
+msgid "Cuadro de clasificación del Fondo Documental Anacrusa"
+msgstr ""
+
+#: app/templates/public/page_enlaces.html:43
+msgid "Inventario del Fondo Documental Anacrusa"
+msgstr ""
+
+#: app/templates/public/page_enlaces.html:48
+msgid "Para mayores informaciones contactar a Cecilia Astudillo"
+msgstr ""
+
+#: app/templates/public/page_enlaces.html:55
+msgid ""
+"Dentro de los programas de conciertos de la década de 1950, destacan los "
+"conciertos de música contemporánea del grupo Tonus en los Institutos "
+"Chileno-Británico, Chileno-Alemán y Chileno-Francés de Cultura. El "
+"proyecto “<b>Tonus-Vanguardia de los años 50</b>” ha puesto a disposición"
+" por primera vez grabaciones de obras de algunos de sus principales "
+"integrantes."
+msgstr ""
+
+#: app/templates/public/page_enlaces.html:62
+msgid "Publicaciones vinculadas"
+msgstr ""
+
+#: app/templates/public/page_enlaces.html:64
+msgid ""
+"Algunas publicaciones vinculadas a los ejes del proyecto se encuentran en"
+" la página de Daniela Fugellie en Academia.edu"
+msgstr ""
+
+#: app/templates/public/page_enlaces.html:74
+msgid "Enlaces Institucionales"
+msgstr ""
+
+#: app/templates/public/page_enlaces.html:77
+msgid "Instituto de Música UAH"
+msgstr ""
 
 #: app/templates/public/person_initial.html:3
 msgid "Catálogo de Participantes y Compositores"
@@ -1231,10 +1542,6 @@ msgstr ""
 msgid "Filtros de Búsqueda"
 msgstr "Search Filters"
 
-#: app/templates/public/sidebar.html:111
-msgid "Fechas"
-msgstr "Dates"
-
 #: app/templates/public/sidebar.html:118
 msgid "Desde"
 msgstr "From"
@@ -1262,18 +1569,6 @@ msgstr "How to Search"
 #: app/templates/public/sidebar.html:143
 msgid "Información del evento"
 msgstr "Event Info"
-
-#: app/templates/public/sidebar.html:145
-msgid "Lugar del evento"
-msgstr "Event Location"
-
-#: app/templates/public/sidebar.html:149
-msgid "Compositores"
-msgstr "Composer(s)"
-
-#: app/templates/public/sidebar.html:153
-msgid "Agrupaciones"
-msgstr "Ensembles"
 
 #: app/templates/public/sidebar.html:156
 msgid "Aplicar Filtros"
@@ -1583,4 +1878,159 @@ msgstr "Edit User"
 
 #~ msgid "<h4>¿Está seguro que desea continuar?</h4>"
 #~ msgstr "<h4>Are you sure you want to continue?</h4>"
+
+#~ msgid "VERSION 3 -- Con biografías"
+#~ msgstr "VERSION 3 -- With biographies"
+
+#~ msgid ""
+#~ "Esta base de datos surge a partir"
+#~ " de dos proyectos de la investigadora"
+#~ " responsable \n"
+#~ "    Daniela Fugellie: el proyecto "
+#~ "Fondecyt de Iniciación 11170844 “Espacios "
+#~ "alternativos \n"
+#~ "    de la música contemporánea en "
+#~ "Chile, 1945–1995” (2017–2020) y el "
+#~ "proyecto Fondo de la \n"
+#~ "    Música, Línea de investigación "
+#~ "583750 “Biografías de intérpretes chilenos"
+#~ " de música \n"
+#~ "    docta, 1945-1995. Investigación y "
+#~ "difusión de su aporte a la vida"
+#~ " musical chilena” (2021/22). \n"
+#~ "    \n"
+#~ "    En el marco del primer "
+#~ "proyecto surgió la base de datos "
+#~ "de conciertos de música docta \n"
+#~ "    (1945-1995), la cual se complementó"
+#~ " ofreciendo biografías de intérpretes y "
+#~ "agrupaciones \n"
+#~ "    de música docta a partir del segundo proyecto.\n"
+#~ "\n"
+#~ "    En estos proyectos trabajaron "
+#~ "Gerardo Marcoleta (2017-2019), Sergio Araya"
+#~ " (2017-2021) y\n"
+#~ "    Constanza Toledo (2020-2021). La "
+#~ "base de datos y su interfaz de "
+#~ "usuarios fueron diseñadas \n"
+#~ "    por Johnny Reveco y Juan Pablo Gil."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "La base de datos permite realizar "
+#~ "una búsqueda simple ingresando palabras\n"
+#~ ""
+#~ "clave. En este caso, el resultado "
+#~ "de la búsqueda contiene una lista "
+#~ "de todos los\n"
+#~ "eventos que contienen las palabras "
+#~ "claves que se buscaron, las que "
+#~ "aparecen\n"
+#~ "destacadas bajo el título del evento."
+#~ " Esta búsqueda arrojará resultados por "
+#~ "relevancia. \n"
+#~ "Para resultados en orden cronológico, se"
+#~ " sugiere usar los filtros de "
+#~ "búsqueda."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "También es posible realizar una búsqueda"
+#~ " avanzada seleccionando diversos filtros\n"
+#~ "de búsqueda. El resultado de la "
+#~ "búsqueda siempre será una lista de "
+#~ "“eventos”\n"
+#~ "(conciertos, pero también conferencias, "
+#~ "talleres u otros) ordenados cronológicamente,"
+#~ " la que podrá seguir\n"
+#~ "siendo filtrada con el uso de "
+#~ "nuevas categorías. En caso de que "
+#~ "los eventos estén\n"
+#~ "incompletos en alguno de sus items "
+#~ "(sin nombre, sin nombre de ciclo, "
+#~ "sin lugar, sin\n"
+#~ "repertorio, etc.) esto quiere decir que"
+#~ " dichas informaciones no figuraban en "
+#~ "las\n"
+#~ "fuentes consultadas."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "La búsqueda avanzada está organizada en"
+#~ " diversas categorías y es posible\n"
+#~ "seleccionar diferentes categorías al mismo "
+#~ "tiempo, a fin de realizar preguntas\n"
+#~ ""
+#~ "complejas, tales como: ¿Qué obras para"
+#~ " piano de Beethoven se interpretaron "
+#~ "el\n"
+#~ "año 1985? O también, ¿qué obras "
+#~ "para piano de Beethoven se interpretaron"
+#~ " en el\n"
+#~ "Goethe-Institut el año 1985, siendo "
+#~ "las pianistas mujeres? Para búsquedas\n"
+#~ "centradas en una persona o compositor/a,"
+#~ " es recomendable también ingresar a "
+#~ "la\n"
+#~ "pestaña de"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Permite elegir un rango temporal entre 1945 y 1995. Las fechas se\n"
+#~ "pueden tipear manualmente o bien ser seleccionadas en el calendario.\n"
+#~ "Información del evento: Permite seleccionar"
+#~ " un ciclo o un tipo de evento"
+#~ " desde\n"
+#~ "la lista de posibilidades ingresadas en"
+#~ " la base de datos, las que se"
+#~ " mostrarán\n"
+#~ "como lista."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Los organizadores, lugares y ciudades pueden seleccionarse\n"
+#~ "desde la lista de posibilidades "
+#~ "ingresadas. Muchas veces los lugares y"
+#~ " los\n"
+#~ "organizadores son equivalentes."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Corresponde a quienes participaron físicamente en los eventos,\n"
+#~ "indicando su nombre, género, país o "
+#~ "países, y la actividad realizada en "
+#~ "el evento,\n"
+#~ "la que se puede seleccionar de una"
+#~ " lista de posibilidades ingresadas. Es "
+#~ "posible\n"
+#~ "seleccionar diversas actividades simultáneamente."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Corresponde a los compositores/as, cuyas obras fueron\n"
+#~ "interpretadas en conciertos, los que "
+#~ "pueden ser seleccionados desde una lista"
+#~ " o\n"
+#~ "consultando la pestaña"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Corresponde a las obras interpretadas en los conciertos, las que\n"
+#~ "pueden buscarse por nombre, instrumentos "
+#~ "o tipo de instrumentos desde una "
+#~ "lista\n"
+#~ "de posibilidades ingresadas, o indicar "
+#~ "si es que fueron estrenos chilenos "
+#~ "o mundiales."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Corresponde a agrupaciones musicales (ensambles, coros,\n"
+#~ "cuartetos de cuerdas, etc) que "
+#~ "participaron en los eventos. Pueden "
+#~ "buscarse por\n"
+#~ "nombre o por tipos de agrupaciones, "
+#~ "desde una lista de posibilidades "
+#~ "ingresadas en la base de datos."
+#~ msgstr ""
 

@@ -46,7 +46,7 @@ class EditMusicalEnsembleForm(FlaskForm):
     person= NonValidatingSelectMultipleField(label=_("Persona"),choices=[],validators=[Optional()])
     activity= NonValidatingSelectMultipleField(label=_("Actividad"),choices=[],validators=[Optional()])
 
-    additional_info=TextAreaField(_('Información Adicional'))
+    additional_info=TextAreaField(_('Información Resumida'))
     submit = SubmitField(_l('Guardar'))
     def __init__(self, original_name ,*args, **kwargs):
         super(EditMusicalEnsembleForm, self).__init__(*args, **kwargs)
@@ -91,7 +91,7 @@ class EditPersonForm(FlaskForm):
     birth_year=IntegerField(_('Año de Nacimiento'),validators=[Optional()])
     death_year=IntegerField(_('Año de Muerte'),validators=[Optional()])
     gender= NonValidatingSelectMultipleField(label=_("Sexo"),choices=[],validators=[DataRequired()])
-    biography=TextAreaField(_('Información Biográfica'))
+    biography=TextAreaField(_('Mini Biografía'))
     submit = SubmitField(_l('Guardar'))
     def __init__(self, original_person ,*args, **kwargs):
         super(EditPersonForm, self).__init__(*args, **kwargs)
@@ -176,3 +176,70 @@ class EditEventForm(FlaskForm):
         if original_event:
             self.original_name=original_event.name
 
+class EditBioPersonForm(FlaskForm):
+    # Investigadores del cl-concert-db
+    investigacion_autores = TextAreaField(validators=[Optional()])
+    investigacion_fecha = TextAreaField(validators=[Optional()])
+    investigacion_notas = TextAreaField(validators=[Optional()])
+
+   # Datos personales
+    familia =TextAreaField(validators=[Optional()]) 
+    profesion = TextAreaField(validators=[Optional()])
+    instrumento = TextAreaField(validators=[Optional()])
+    estudios_formales = TextAreaField(validators=[Optional()])
+    estudios_informales = TextAreaField(validators=[Optional()])
+    trabajo = TextAreaField(validators=[Optional()])
+    ensambles = TextAreaField(validators=[Optional()])
+    premios = TextAreaField(validators=[Optional()])
+    publicaciones = TextAreaField(validators=[Optional()])
+
+    # Biografia
+    biografia = TextAreaField(validators=[DataRequired()])
+    bibliografia = TextAreaField(validators=[Optional()])
+    archivos = TextAreaField(validators=[Optional()])
+    discografia = TextAreaField(validators=[Optional()])
+    links = TextAreaField(validators=[Optional()])
+    otros = TextAreaField(validators=[Optional()])
+
+    submit = SubmitField(_l('Guardar'))
+
+    def __init__(self,original_data,*args, **kwargs):
+        super(EditBioPersonForm, self).__init__(*args, **kwargs)
+        self.original_data=None
+        if original_data:
+            self.original_data=original_data
+
+
+
+
+class EditBioMusicalEnsembleForm(FlaskForm):
+    # Investigadores del cl-concert-db
+    investigacion_autores = TextAreaField(validators=[Optional()])
+    investigacion_fecha = TextAreaField(validators=[Optional()])
+    investigacion_notas = TextAreaField(validators=[Optional()])
+
+    # # Datos ensamble
+    # nombre_completo = TextAreaField(validators=[Optional()])
+    fundacion = TextAreaField(validators=[Optional()])
+    termino = TextAreaField(validators=[Optional()])
+    integrantes = TextAreaField(validators=[Optional()])
+    # tipo_ensamble = TextAreaField(validators=[Optional()])
+    repertorio = TextAreaField(validators=[Optional()])
+    premios = TextAreaField(validators=[Optional()])
+    publicaciones = TextAreaField(validators=[Optional()])
+
+    # Biografia
+    biografia = TextAreaField(validators=[DataRequired()])
+    bibliografia = TextAreaField(validators=[Optional()])
+    archivos = TextAreaField(validators=[Optional()])
+    discografia = TextAreaField(validators=[Optional()])
+    links = TextAreaField(validators=[Optional()])
+    otros = TextAreaField(validators=[Optional()])
+
+    submit = SubmitField(_l('Guardar'))
+
+    def __init__(self,original_data,*args, **kwargs):
+        super(EditBioMusicalEnsembleForm, self).__init__(*args, **kwargs)
+        self.original_data=None
+        if original_data:
+            self.original_data=original_data

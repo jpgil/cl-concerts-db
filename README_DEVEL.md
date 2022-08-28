@@ -11,20 +11,25 @@ FLASK_ENV=development flask run --port 5001
 ## Translations
 The website was translated using Babel 2.9.1
 
-### Modify the templates
+### 1. Modify the templates
 Add the special tokens in ```app/templates``` directory, for example, in ```app/templates/public/page_about.html``` it says:
 ```
 _('Acerca de la base de datos')
 ```
 
-There is a corresponding entry in ```app/translations/en/messages.po```:
+### 2. Update the main POT file
 ```
-#: app/templates/public/page_about.html:3
-msgid "Acerca de la base de datos"
-msgstr "About the database"
+# from the root of your project:
+pybabel extract -F babel.cfg -k _l -o app/translations/messages.pot .
 ```
 
-When adding new translation blocks, remember to regenerate the ```.po``` files by running 
+### 3. Update translations
+```
+pybabel update -i app/translations/messages.pot -d app/translations
+```
+
+### 4. Compile new translations
+Regenerate the ```.po``` files by running 
 ```
 pybabel compile -d app/translations
 ```

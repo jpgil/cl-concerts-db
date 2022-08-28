@@ -17,74 +17,40 @@
 </p>
 
 <p>
-    La base de datos permite realizar una búsqueda simple ingresando palabras
-    clave. En este caso, el resultado de la búsqueda contiene una lista de todos los
-    eventos que contienen las palabras claves que se buscaron, las que aparecen
-    destacadas bajo el título del evento. Esta búsqueda arrojará resultados por relevancia. 
-    Para resultados en orden cronológico, se sugiere usar los filtros de búsqueda.
+{{_('La base de datos permite realizar una búsqueda simple ingresando palabras clave. En este caso, el resultado de la búsqueda contiene una lista de todos los eventos que contienen las palabras claves que se buscaron, las que aparecen destacadas bajo el título del evento. Esta búsqueda arrojará resultados por relevancia. Para resultados en orden cronológico, se sugiere usar los filtros de búsqueda.')}}
 </p>
 <p>
-    También es posible realizar una búsqueda avanzada seleccionando diversos filtros
-    de búsqueda. El resultado de la búsqueda siempre será una lista de “eventos”
-    (conciertos, pero también conferencias, talleres u otros) ordenados cronológicamente, la que podrá seguir
-    siendo filtrada con el uso de nuevas categorías. En caso de que los eventos estén
-    incompletos en alguno de sus items (sin nombre, sin nombre de ciclo, sin lugar, sin
-    repertorio, etc.) esto quiere decir que dichas informaciones no figuraban en las
-    fuentes consultadas.
+{{_('También es posible realizar una búsqueda avanzada seleccionando diversos filtros de búsqueda. El resultado de la búsqueda siempre será una lista de “eventos” (conciertos, pero también conferencias, talleres u otros) ordenados cronológicamente, la que podrá seguir siendo filtrada con el uso de nuevas categorías. En caso de que los eventos estén incompletos en alguno de sus items (sin nombre, sin nombre de ciclo, sin lugar, sin repertorio, etc.) esto quiere decir que dichas informaciones no figuraban en las fuentes consultadas.')}}
 </p>
 <p>
-    Para comenzar una nueva búsqueda, se recomienda seleccionar la opción
-    “limpiar”, para borrar los filtros que se utilizaron en la última búsqueda.
+{{('Para comenzar una nueva búsqueda, se recomienda seleccionar la opción “limpiar”, para borrar los filtros que se utilizaron en la última búsqueda.')}}
 </p>
 <p>
-    La búsqueda avanzada está organizada en diversas categorías y es posible
-    seleccionar diferentes categorías al mismo tiempo, a fin de realizar preguntas
-    complejas, tales como: ¿Qué obras para piano de Beethoven se interpretaron el
-    año 1985? O también, ¿qué obras para piano de Beethoven se interpretaron en el
-    Goethe-Institut el año 1985, siendo las pianistas mujeres? Para búsquedas
-    centradas en una persona o compositor/a, es recomendable también ingresar a la
-    pestaña de “<a href="{{ url_for('public.person', initial='A') }}" id="m-consultar">Personas</a>” e ir a los eventos asociados a personas en particular.
+{{_('La búsqueda avanzada está organizada en diversas categorías y es posible seleccionar diferentes categorías al mismo tiempo, a fin de realizar preguntas complejas, tales como: ¿Qué obras para piano de Beethoven se interpretaron el año 1985? O también, ¿qué obras para piano de Beethoven se interpretaron en el Goethe-Institut el año 1985, siendo las pianistas mujeres? Para búsquedas centradas en una persona o compositor/a, es recomendable también ingresar a la pestaña de')}} “<a href="{{ url_for('public.person', initial='A') }}" id="m-consultar">{{(_('Personas'))}}</a>” {{_('e ir a los eventos asociados a personas en particular.')}}
 </p>
 
 <h3>
-    Filtros de búsqueda
+{{_('Filtros de búsqueda')}}
 </h3>
 
 <p>
-    <strong>Fechas:</strong> Permite elegir un rango temporal entre 1945 y 1995. Las fechas se
-    pueden tipear manualmente o bien ser seleccionadas en el calendario.
-    Información del evento: Permite seleccionar un ciclo o un tipo de evento desde
-    la lista de posibilidades ingresadas en la base de datos, las que se mostrarán
-    como lista.
+<strong>{{_('Fechas')}}:</strong> {{_('Permite elegir un rango temporal entre 1945 y 1995. Las fechas se pueden tipear manualmente o bien ser seleccionadas en el calendario. Información del evento: Permite seleccionar un ciclo o un tipo de evento desde la lista de posibilidades ingresadas en la base de datos, las que se mostrarán como lista.')}}
 </p>
 <p>
-    <strong>Lugar del evento:</strong> Los organizadores, lugares y ciudades pueden seleccionarse
-    desde la lista de posibilidades ingresadas. Muchas veces los lugares y los
-    organizadores son equivalentes.
+<strong>{{_('Lugar del evento')}}:</strong> {{_('Los organizadores, lugares y ciudades pueden seleccionarse desde la lista de posibilidades ingresadas. Muchas veces los lugares y los organizadores son equivalentes.')}}
 </p>
 <p>
-    <strong>Participantes:</strong> Corresponde a quienes participaron físicamente en los eventos,
-    indicando su nombre, género, país o países, y la actividad realizada en el evento,
-    la que se puede seleccionar de una lista de posibilidades ingresadas. Es posible
-    seleccionar diversas actividades simultáneamente.
+<strong>{{_('Participantes')}}:</strong> {{_('Corresponde a quienes participaron físicamente en los eventos, indicando su nombre, género, país o países, y la actividad realizada en el evento, la que se puede seleccionar de una lista de posibilidades ingresadas. Es posible seleccionar diversas actividades simultáneamente.')}}
 </p>
 <p>
-    <strong>Compositores:</strong> Corresponde a los compositores/as, cuyas obras fueron
-    interpretadas en conciertos, los que pueden ser seleccionados desde una lista o
-    consultando la pestaña “<a href="{{ url_for('public.person', initial='A') }}" id="m-consultar">Personas</a>”. También se puede seleccionar una opción de
-    género o de países.
+<strong>{{_('Compositores')}}:</strong> {{_('Corresponde a los compositores/as, cuyas obras fueron interpretadas en conciertos, los que pueden ser seleccionados desde una lista o consultando la pestaña')}} “<a href="{{ url_for('public.person', initial='A') }}" id="m-consultar">{{_('Personas')}}</a>”. 
+{{_('También se puede seleccionar una opción de género o de países.')}}
 </p>
 <p>
-    <strong>Repertorio:</strong> Corresponde a las obras interpretadas en los conciertos, las que
-    pueden buscarse por nombre, instrumentos o tipo de instrumentos desde una lista
-    de posibilidades ingresadas, o indicar si es que fueron estrenos chilenos o
-    mundiales.
+<strong>{{_('Repertorio')}}:</strong> {{_('Corresponde a las obras interpretadas en los conciertos, las que pueden buscarse por nombre, instrumentos o tipo de instrumentos desde una lista de posibilidades ingresadas, o indicar si es que fueron estrenos chilenos o mundiales.')}}
 </p>
 <p>
-    <strong>Agrupaciones:</strong> Corresponde a agrupaciones musicales (ensambles, coros,
-    cuartetos de cuerdas, etc) que participaron en los eventos. Pueden buscarse por
-    nombre o por tipos de agrupaciones, desde una lista de posibilidades ingresadas
-    en la base de datos.
+<strong>{{_('Agrupaciones')}}:</strong> {{_('Corresponde a agrupaciones musicales (ensambles, coros, cuartetos de cuerdas, etc) que participaron en los eventos. Pueden buscarse por nombre o por tipos de agrupaciones, desde una lista de posibilidades ingresadas en la base de datos.')}}
 </p>
 
 <!-- 

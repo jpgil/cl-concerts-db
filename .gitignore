@@ -34,7 +34,6 @@ nosetests.xml
 .project
 .pydevproject
 
-venv
 app.db
 microblog.log*
 logs/
@@ -45,3 +44,7 @@ logs/
 
 #cache and lock
 .cache
+
+# local directories
+venv
+backup
