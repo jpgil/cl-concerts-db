@@ -6,7 +6,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from app import db, login
-
+from sqlalchemy.dialects.mysql import MEDIUMTEXT
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -423,31 +423,31 @@ class BioPerson(db.Model):
     person_id = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=False)  
 
     # Investigadores del cl-concert-db
-    investigacion_autores = db.Column(db.String(800))
-    investigacion_fecha = db.Column(db.String(80))
-    investigacion_notas = db.Column(db.Text)
+    investigacion_autores = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    investigacion_fecha = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    investigacion_notas = db.Column(MEDIUMTEXT(charset='utf8mb4'))
 
     # Datos personales
     # nombre_completo = db.Column(db.String(400))
     # nacimiento = db.Column(db.String(800))
     # fallecimiento = db.Column(db.String(800))
-    familia = db.Column(db.Text)
-    profesion = db.Column(db.String(400))
-    instrumento = db.Column(db.String(2000))
-    estudios_formales = db.Column(db.Text)
-    estudios_informales = db.Column(db.Text)
-    trabajo = db.Column(db.Text)
-    ensambles = db.Column(db.Text)
-    premios = db.Column(db.Text)
-    publicaciones = db.Column(db.Text)
+    familia = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    profesion = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    instrumento = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    estudios_formales = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    estudios_informales = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    trabajo = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    ensambles = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    premios = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    publicaciones = db.Column(MEDIUMTEXT(charset='utf8mb4'))
 
     # Biografia
-    biografia = db.Column(db.Text)
-    bibliografia = db.Column(db.Text)
-    archivos = db.Column(db.Text)
-    discografia = db.Column(db.Text)
-    links = db.Column(db.Text)
-    otros = db.Column(db.Text)
+    biografia = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    bibliografia = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    archivos = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    discografia = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    links = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    otros = db.Column(MEDIUMTEXT(charset='utf8mb4'))
 
     def get_name(self):
         return "{}".format(self.person.get_name()) if self.person else "ERROR -- person_id is Null"
@@ -470,27 +470,27 @@ class BioMusicalEnsemble(db.Model):
     musical_ensemble_id = db.Column(db.Integer, db.ForeignKey('musical_ensemble.id'), nullable=False)
 
     # Investigadores del cl-concert-db
-    investigacion_autores = db.Column(db.String(800))
-    investigacion_fecha = db.Column(db.String(80))
-    investigacion_notas = db.Column(db.Text)
+    investigacion_autores = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    investigacion_fecha = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    investigacion_notas = db.Column(MEDIUMTEXT(charset='utf8mb4'))
 
     # Datos ensamble
     # nombre_completo = db.Column(db.String(400))
-    fundacion = db.Column(db.String(800))
-    termino = db.Column(db.String(800))
-    integrantes = db.Column(db.String(2000))
+    fundacion = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    termino = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    integrantes = db.Column(MEDIUMTEXT(charset='utf8mb4'))
     # tipo_ensamble = db.Column(db.String(200))
-    repertorio = db.Column(db.Text)
-    premios = db.Column(db.Text)
-    publicaciones = db.Column(db.Text)
+    repertorio = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    premios = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    publicaciones = db.Column(MEDIUMTEXT(charset='utf8mb4'))
 
     # Biografia
-    biografia = db.Column(db.Text)
-    bibliografia = db.Column(db.Text)
-    archivos = db.Column(db.Text)
-    discografia = db.Column(db.Text)
-    links = db.Column(db.Text)
-    otros = db.Column(db.Text)
+    biografia = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    bibliografia = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    archivos = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    discografia = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    links = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    otros = db.Column(MEDIUMTEXT(charset='utf8mb4'))
 
     def get_name(self):
         return "{}".format(self.musical_ensemble.get_name()) if self.musical_ensemble else "ERROR -- musical_ensemble_id is Null"
