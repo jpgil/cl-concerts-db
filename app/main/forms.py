@@ -178,13 +178,15 @@ class EditEventForm(FlaskForm):
 
 class EditBioPersonForm(FlaskForm):
     # Investigadores del cl-concert-db
-    investigacion_autores = TextAreaField(validators=[Optional()])
-    investigacion_fecha = TextAreaField(validators=[Optional()])
-    investigacion_notas = TextAreaField(validators=[Optional()])
+    investigacion_autores = TextAreaField(label=_("Autores de la Investigación"), validators=[Optional()])
+    investigacion_fecha = TextAreaField(label=_("Fechas de la Investigación"), validators=[Optional()])
+    investigacion_notas = TextAreaField(label=_("Notas de campo"), validators=[Optional()])
 
    # Datos personales
+    nombre_completo = StringField(label=_("Nombre Completo"), validators=[Optional(), Length(max=400)]) 
+    nacimiento_y_muerte = TextAreaField(label=_("Nacimiento y Muerte"), validators=[Optional(), Length(max=1000)]) 
     familia =TextAreaField(validators=[Optional()]) 
-    profesion = TextAreaField(validators=[Optional()])
+    profesion = TextAreaField(label=_("Profesión"), validators=[Optional(), Length(max=1000)])
     instrumento = TextAreaField(validators=[Optional()])
     estudios_formales = TextAreaField(validators=[Optional()])
     estudios_informales = TextAreaField(validators=[Optional()])
@@ -195,10 +197,10 @@ class EditBioPersonForm(FlaskForm):
 
     # Biografia
     biografia = TextAreaField(validators=[DataRequired()])
-    bibliografia = TextAreaField(validators=[Optional()])
+    bibliografia = TextAreaField(label=_("Bibliografía"), validators=[Optional()])
     archivos = TextAreaField(validators=[Optional()])
-    discografia = TextAreaField(validators=[Optional()])
-    links = TextAreaField(validators=[Optional()])
+    discografia = TextAreaField(label=_("Discografía"), validators=[Optional()])
+    links = TextAreaField(label=_("Enlaces"), validators=[Optional()])
     otros = TextAreaField(validators=[Optional()])
 
     submit = SubmitField(_l('Guardar'))
@@ -214,9 +216,9 @@ class EditBioPersonForm(FlaskForm):
 
 class EditBioMusicalEnsembleForm(FlaskForm):
     # Investigadores del cl-concert-db
-    investigacion_autores = TextAreaField(validators=[Optional()])
-    investigacion_fecha = TextAreaField(validators=[Optional()])
-    investigacion_notas = TextAreaField(validators=[Optional()])
+    investigacion_autores = TextAreaField(label=_("Autores de la Investigación"), validators=[Optional()])
+    investigacion_fecha = TextAreaField(label=_("Fechas de la Investigación"), validators=[Optional()])
+    investigacion_notas = TextAreaField(label=_("Notas de campo"), validators=[Optional()])
 
     # # Datos ensamble
     # nombre_completo = TextAreaField(validators=[Optional()])
@@ -233,7 +235,7 @@ class EditBioMusicalEnsembleForm(FlaskForm):
     bibliografia = TextAreaField(validators=[Optional()])
     archivos = TextAreaField(validators=[Optional()])
     discografia = TextAreaField(validators=[Optional()])
-    links = TextAreaField(validators=[Optional()])
+    links = TextAreaField(label=_("Enlaces"), validators=[Optional()])
     otros = TextAreaField(validators=[Optional()])
 
     submit = SubmitField(_l('Guardar'))
