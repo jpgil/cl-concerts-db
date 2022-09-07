@@ -428,8 +428,8 @@ class BioPerson(db.Model):
     investigacion_notas = db.Column(MEDIUMTEXT(charset='utf8mb4'))
 
     # Datos personales
-    # nombre_completo = db.Column(db.String(400))
-    # nacimiento = db.Column(db.String(800))
+    nombre_completo = db.Column(db.String(400))
+    nacimiento_y_muerte = db.Column(db.String(1000))
     # fallecimiento = db.Column(db.String(800))
     familia = db.Column(MEDIUMTEXT(charset='utf8mb4'))
     profesion = db.Column(MEDIUMTEXT(charset='utf8mb4'))
