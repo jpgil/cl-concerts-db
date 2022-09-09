@@ -107,7 +107,7 @@
     </div>
 </div>
 
-<div class="card">
+<!-- <div class="card">
     <div class="card-header">
         {{_("Imágenes adjuntas")}}
     </div>
@@ -115,17 +115,15 @@
     <div class="card-body">
         -
     </div>
-</div>
+</div> -->
 
-<div class="card">
-    <div class="card-header">
-        Eventos asociados
-    </div>
-
-    <div class="card-body">
-        LISTA DE EVENTOS SIMILAR A LA BUSQUEDA DE CONCIERTOS
-    </div>
-</div>
+{% if bio.person.musical_pieces %}
+<a role="button" href="{{ url_for('public.search', update='search', compositor_name=bio.person.id) }}"
+    class="btn btn-primary">{{_('Eventos asociados a esta persona')}}</a>
+{% else %}
+<a role="button" href="{{ url_for('public.search', update='search', participant_name=bio.person.id) }}"
+    class="btn btn-primary">{{_('Eventos asociados a esta persona')}}</a>
+{% endif %}
 
 </section>
 
