@@ -177,6 +177,11 @@
                                 - <a href="#" data-toggle="modal" data-target="#modalPersona{{ i.person.id }}" style="display: inline;">                                
                                     {{ i.get_short_name()|replace(i.musical_ensemble.name, '')|replace('[]', '') }}
                                 </a>
+                                {% if i.person.has_bio() %}
+                                <a href="{{ url_for('public.bio_id', id=i.person.get_bio().id) }}">
+                                    <small>({{_("Biografía Extendida")}})</small>
+                                </a>
+                                {% endif %}
                             {% elif i.person and not i.musical_ensemble %}
                                 <a href="#" data-toggle="modal" data-target="#modalPersona{{ i.person.id }}" style="display: inline;">
                                     {{ i.get_short_name() }}
