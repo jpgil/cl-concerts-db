@@ -7,7 +7,7 @@
             <ul>
                 {% for i in f.split("\n") %}
                 {% if i.strip() %}
-                <li>{{ i|urlize(None, true, target="_blank") }}lala</li>
+                <li>{{ i|urlize(None, true, target="_blank") }}</li>
                 {% endif %}
                 {% endfor %}
             </ul>
@@ -77,7 +77,7 @@
     </div>
 </div>
 
-<div class="card">
+<!-- <div class="card">
     <div class="card-header">
         {{_("Imágenes adjuntas")}}
     </div>
@@ -85,17 +85,10 @@
     <div class="card-body">
         -
     </div>
-</div>
+</div> -->
 
-<div class="card">
-    <div class="card-header">
-        Eventos asociados
-    </div>
-
-    <div class="card-body">
-        LISTA DE EVENTOS SIMILAR A LA BUSQUEDA DE CONCIERTOS
-    </div>
-</div>
+<a role="button" href="{{ url_for('public.search', update='search', musical_ensemble_name=bio.musical_ensemble.id) }}"
+    class="btn btn-primary">{{_('Eventos asociados')}}</a>
 
 </section>
 

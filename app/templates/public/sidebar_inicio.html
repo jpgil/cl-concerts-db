@@ -97,9 +97,21 @@
                 <strong>{{_('Participantes y Compositores')}}</strong>
             </a>
             <p>
-                {{_('Catálogo de participantes, compositores y agrupaciones presentes en la base de datos')}}.
+                {{_('Catálogo de participantes y compositores en la base de datos')}}.
             </p>
             <p><a href="{{ url_for('public.person', initial='A') }}">{{_('Acceder')}} &gt;&gt;</a></p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="form-group">
+            <a href="{{ url_for('public.person', initial='A') }}" role="button" class="text-success">
+                <strong>{{_('Agrupaciones')}}</strong>
+            </a>
+            <p>
+                {{_('Catálogo de agrupaciones en la base de datos')}}.
+            </p>
+            <p><a href="{{ url_for('public.ensemble', initial='A') }}">{{_('Acceder')}} &gt;&gt;</a></p>
         </div>
     </div>
 
@@ -108,16 +120,13 @@
 
 <div class="container">
 
-    <p style="font-weight: bold;">
+    <p style="font-weight: bold;" class="text-success">
         {{_('Más Información')}}:
     </p>
 
-    <ul>
-        <li><a style="text-decoration: underline;" class="" href="{{ url_for('public.show', page='page_about') }}">{{_('Acerca del proyecto')}}</a></li>
-        <li><a style="text-decoration: underline;" class="" href="{{ url_for('public.show', page='page_consultar') }}" id="m-consultar">{{_('Cómo Consultar')}}</a></li>
-        <li><a style="text-decoration: underline;" class="" href="{{ url_for('public.show', page='page_citar') }}" id="m-citar">{{_('Cómo Citar')}}</a></li>
-        <li><a style="text-decoration: underline;" class="" href="{{ url_for('public.show', page='page_enlaces') }}"
-            id="m-enlaces">{{_('Enlaces de Interés')}}</a></li>
-    </ul>
+    <a style="text-decoration: underline;" class="" href="{{ url_for('public.show', page='page_about') }}">{{_('Acerca del proyecto')}}</a><br>
+    <a style="text-decoration: underline;" class="" href="{{ url_for('public.show', page='page_consultar') }}" id="m-consultar">{{_('Cómo Consultar')}}</a><br>
+    <a style="text-decoration: underline;" class="" href="{{ url_for('public.show', page='page_citar') }}" id="m-citar">{{_('Cómo Citar')}}</a><br>
+    <a style="text-decoration: underline;" class="" href="{{ url_for('public.show', page='page_enlaces') }}" id="m-enlaces">{{_('Enlaces de Interés')}}</a><br>
 
 </div>

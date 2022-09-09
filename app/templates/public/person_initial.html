@@ -103,16 +103,18 @@ asociados a una persona en particular.")}}
     
 
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <div class="modal-footer" style="text-align: center;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{_("Cerrar")}}</button>
                     {% if p.musical_pieces %}
                     <a role="button" href="{{ url_for('public.search', update='search', compositor_name=p.id) }}"
-                        class="btn btn-primary">{{_('Eventos asociados a esta
-                        persona')}}</a>
+                        class="btn btn-primary">{{_('Eventos asociados')}}</a>
                     {% else %}
                     <a role="button" href="{{ url_for('public.search', update='search', participant_name=p.id) }}"
-                        class="btn btn-primary">{{_('Eventos asociados a esta
-                        persona')}}</a>
+                        class="btn btn-primary">{{_('Eventos asociados')}}</a>
+                    {% endif %}
+                    {% if p.has_bio() %}
+                    <a role="button" href="{{ url_for('public.bio_id', id=p.get_bio().id) }}" class="btn btn-primary">
+                        {{_("Biografía Extendida")}}</a>
                     {% endif %}
                 </div>
             </div>

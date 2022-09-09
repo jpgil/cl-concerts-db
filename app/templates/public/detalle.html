@@ -90,12 +90,14 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">{{_('Cerrar')}}</button>
                     {% if p.is_composer %}
-                    <a role="button" href="{{ url_for('public.search', update='search', compositor_name=p.id) }}" class="btn btn-primary">{{_('Eventos asociados a esta
-                        persona')}}</a>
+                    <a role="button" href="{{ url_for('public.search', update='search', compositor_name=p.id) }}" class="btn btn-primary">{{_('Eventos asociados')}}</a>
                     {% else %}
                     <a role="button" href="{{ url_for('public.search', update='search', participant_name=p.id) }}"
-                        class="btn btn-primary">{{_('Eventos asociados a esta
-                        persona')}}</a>
+                        class="btn btn-primary">{{_('Eventos asociados')}}</a>
+                    {% endif %}
+                    {% if p.has_bio() %}
+                    <a role="button" href="{{ url_for('public.bio_id', id=p.get_bio().id) }}" class="btn btn-primary">
+                        {{_("Biografía Extendida")}}</a>
                     {% endif %}
                 </div>
             </div>
@@ -172,13 +174,18 @@
                     <tr>
                         <td class='participante'>
                             {% if i.person and i.musical_ensemble %}
-                            - <a href="#" data-toggle="modal" data-target="#modalPersona{{ i.person.id }}" style="display: inline;">                                
-                                {{ i.get_short_name()|replace(i.musical_ensemble.name, '')|replace('[]', '') }}
-                            </a>
+                                - <a href="#" data-toggle="modal" data-target="#modalPersona{{ i.person.id }}" style="display: inline;">                                
+                                    {{ i.get_short_name()|replace(i.musical_ensemble.name, '')|replace('[]', '') }}
+                                </a>
                             {% elif i.person and not i.musical_ensemble %}
-                            <a href="#" data-toggle="modal" data-target="#modalPersona{{ i.person.id }}" style="display: inline;">
-                                {{ i.get_short_name() }}
-                            </a>
+                                <a href="#" data-toggle="modal" data-target="#modalPersona{{ i.person.id }}" style="display: inline;">
+                                    {{ i.get_short_name() }}
+                                </a>
+                                {% if i.person.has_bio() %}
+                                <a href="{{ url_for('public.bio_id', id=i.person.get_bio().id) }}">
+                                    <small>({{_("Biografía Extendida")}})</small>
+                                </a>
+                                {% endif %}
                             {% else %}
                                 <p>
                                     <strong>{{ i.musical_ensemble.name }}</strong>

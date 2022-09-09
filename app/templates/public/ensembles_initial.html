@@ -1,0 +1,100 @@
+{% extends 'public/layout_global.html' %}
+
+{% set title=_('Catálogo de Agrupaciones') %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+
+<style type="text/css">
+#catalogo {
+    margin: 2em 0;
+}
+#catalogo .nav-link {
+    padding: 5px 7px;
+}
+
+</style>
+
+<div class="card" id="catalogo">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+
+            {% for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+            <li class="nav-item">
+                <a class="nav-link {% if l == initial %}active{% endif %}" href="{{ url_for('public.ensemble', initial=l) }}">{{ l }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{ ensembles|length }} {{_('ensembles con inicial')}} "{{ initial }}"</h5>
+        
+        <ol class="row my-5">
+            {% for p in ensembles %}
+            <li class="col-sm-6">
+                <a href="#" data-toggle="modal" data-target="#modalPersona{{ p.id }}" style="display: inline;">
+                    {{ p.get_name() }} 
+                    <!-- {% if p.birth_year or p.death_year %}({{ p.birth_year or '' }} - {{ p.death_year or '' }}){% endif %} -->
+                </a>
+                
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+</div>
+
+
+    <!-- Modal para la biografia -->
+    {% for p in ensembles %}
+    <div class="modal fade" id="modalPersona{{ p.id }}" tabindex="-1" role="dialog" aria-labelledby="modalPersona{{ p.id }}"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+    
+                <div class="modal-body">
+    
+                                <h3>{{ p.get_name() }}</h3>
+
+                    <strong>{{_('Tipo de Agrupación')}}</strong><br>
+                    {{ p.musical_ensemble_type.name }}
+
+                </div>
+
+                {% if p.additional_info %}
+                <div class="modal-body">
+                    <strong>{{_('Información Resumida')}}</strong><br>
+                    {% for x in p.additional_info.split("\n") %}
+                    {{ x|urlize(None, true, target="_blank") }}<br>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if p.members %}
+                <div class="modal-body">
+                    <strong>{{_('Miembros')}}</strong><br>
+                    <ul style="padding: 0; list-style: none;">
+                    {% for person in p.members %}
+                    <li>{{ person.get_name()|replace('- '+person.musical_ensemble.name, '')|replace('[]', '')}}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+    
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{_("Cerrar")}}</button>
+                    <a role="button" href="{{ url_for('public.search', update='search', musical_ensemble_name=p.id) }}"
+                        class="btn btn-primary">{{_('Eventos asociados')}}</a>
+                    {% if p.has_bio() %}
+                    <a role="button" href="{{ url_for('public.bio_ensemble_id', id=p.get_bio().id) }}" class="btn btn-primary">
+                        {{_("Biografía Extendida")}}</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+{% endblock %}

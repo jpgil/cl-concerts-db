@@ -152,6 +152,28 @@ def person(initial="A"):
     except TemplateNotFound:
         abort(404)
 
+# Catalogo de Agrupaciones
+# 2022-09-09
+
+@bp.route(('/ensemble/<initial>'))
+def ensemble(initial="A"):
+    if initial not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+        return redirect(url_for('.ensemble', initial='A'))
+
+    ensembles = MusicalEnsemble.query.filter(MusicalEnsemble.name.ilike(initial + "%")).all()
+    collator = Collator() 
+    ensembles = sorted(ensembles, key=lambda e:  collator.sort_key( e.get_name().upper() ) )
+    return render_template('public/ensembles_initial.html', initial=initial, ensembles=ensembles)
+    
+    # try:
+    #     ensembles = MusicalEnsemble.query.filter(MusicalEnsemble.name.ilike(initial + "%")).all()
+    #     collator = Collator() 
+    #     ensembles = sorted(ensembles, key=lambda e:  collator.sort_key( e.get_name().upper() ) )
+    #     return render_template('public/ensembles_initial.html', initial=initial, ensembles=ensembles)
+    # except TemplateNotFound:
+    #     abort(404)
+
+
 
 # Event Detail
 
