@@ -432,6 +432,8 @@ class BioPerson(db.Model):
     nacimiento_y_muerte = db.Column(db.String(1000))
     # fallecimiento = db.Column(db.String(800))
     familia = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+
+    # Datos Profesionales
     profesion = db.Column(MEDIUMTEXT(charset='utf8mb4'))
     instrumento = db.Column(MEDIUMTEXT(charset='utf8mb4'))
     estudios_formales = db.Column(MEDIUMTEXT(charset='utf8mb4'))

@@ -57,11 +57,10 @@
     <input type="hidden" name="update" value="search">
     <div class="container">
         <div class="form-group">
-            <label class="text-success" for="keyword" data-trigger="hover" data-delay="500" data-toggle="tooltip"
-                title="Click para ayuda">
+            <label class="text-success" for="keyword">
 
                 <a href="#" role="button" class="text-success" data-toggle="popover"
-                    title="Acerca de la Búsqueda Rápida" data-content='{{_('En este cuadro Ud. puede ingresar una o más palabras clave. La búsqueda 
+                    title="{{_("Acerca de la Búsqueda Rápida")}}" data-content='{{_('En este cuadro Ud. puede ingresar una o más palabras clave. La búsqueda 
                 contendrá resultados con cualquiera de estas palabras clave (equivalente a OR lógico).
                 Esta búsqueda arrojará resultados por relevancia. Para resultados cronológicos 
                 recomendamos usar los Filtros de Búsqueda.')}}'>
@@ -83,16 +82,27 @@
     <div class="container">
         <div class="form-group">
             <a href="{{ url_for('public.biographies') }}" role="button" class="text-success" >
-                <strong>{{_('Buscar Biografías')}}</strong>
+                <strong>{{_('Biografías')}}</strong>
             </a>
             <p>
                 {{_('Desde 2022 contamos con biografías de varios de los compositores chilenos mostrados en este sitio.')}}
-                <br />
-                <a href="{{ url_for('public.biographies') }}">{{_('Acceder')}} &gt;&gt;</a>
             </p>
+            <p><a href="{{ url_for('public.biographies') }}">{{_('Acceder')}} &gt;&gt;</a></p>
         </div>
     </div>
     
+    <div class="container">
+        <div class="form-group">
+            <a href="{{ url_for('public.person', initial='A') }}" role="button" class="text-success">
+                <strong>{{_('Participantes y Compositores')}}</strong>
+            </a>
+            <p>
+                {{_('Catálogo de participantes, compositores y agrupaciones presentes en la base de datos')}}.
+            </p>
+            <p><a href="{{ url_for('public.person', initial='A') }}">{{_('Acceder')}} &gt;&gt;</a></p>
+        </div>
+    </div>
+
 </form>
 
 
