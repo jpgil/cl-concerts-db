@@ -222,6 +222,15 @@ def bio_id(id):
 
     return render_template('public/bio_id.html', bio_persons=bio_persons, bio_ensembles=bio_ensembles, bio=bio)
 
+# 2022-09-08: Routes for ensemble biographies below.
+@bp.route('/bio_ensemble/<id>')
+def bio_ensemble_id(id):
+    bio_persons = BioPerson.query.join(Person).order_by(Person.last_name).all()
+    bio_ensembles = BioMusicalEnsemble.query.join(MusicalEnsemble).order_by(MusicalEnsemble.name).all()
+    bio = BioMusicalEnsemble.query.filter_by(id=id).first_or_404()
+
+    return render_template('public/bio_ensemble_id.html', bio_persons=bio_persons, bio_ensembles=bio_ensembles, bio=bio)
+
 
 
 

@@ -23,7 +23,7 @@
 
 {% extends 'public/layout_global.html' %}
 
-{% set title=_('Biografía de')+' '+bio.person.first_name+' '+bio.person.last_name %}
+{% set title=bio.musical_ensemble.name %}
 {% set sidebar='public/sidebar_bio.html' %}
 
 {% block content %}
@@ -34,48 +34,26 @@
 
 <div class="card">
     <div class="card-header">
-        {{_("Datos Personales")}}
+        {{_("Datos de la Agrupación")}}
     </div>
 
     <div class="card-body">
-        <table class="table biografia">
-            <tbody>
-                <tr class="first">
-                    <th>{{_("Nombre Completo")}}:</th>
-                    <td>
-                    {% if bio.nombre_completo %}
-                    {{ bio.nombre_completo }}
-                    {% else %}
-                    {{ bio.person.first_name }} {{ bio.person.last_name }}
-                    {% endif %}
-                    </td>
-                </tr>
-                {{ campo(bio.nacimiento_y_muerte, _("Nacimiento")) }}
-                {{ campo(bio.familia, _("Informaciones familiares")) }}
-            </tbody>
-        </table>
-    </div>
-</div>
-
-
-<div class="card">
-    <div class="card-header">
-        {{_("Información Profesional")}}
-    </div>
-
-    <div class="card-body">
-        <table class="table biografia">
-{{ campo(bio.profesion, _("Profesión")) }}
-{{ campo(bio.instrumento, _("Instrumento / registro vocal / otros")) }}
-{{ campo(bio.estudios_formales, _("Lugar/es de estudio y años correspondientes"), True) }}
-{{ campo(bio.estudios_informales, _("Otros estudios")) }}
-{{ campo(bio.trabajo, _("Lugar/es de trabajo y años correspondientes"), True) }}
-{{ campo(bio.ensambles, _("Participación en ensambles y otros proyectos independientes"), True) }}
+        <table class="table">
+            <tr class="first">
+                <th>{{_("Nombre")}}:</th>
+                <td>
+                {{ bio.get_name() }}
+                </td>
+            </tr>
+{{ campo(bio.fundacion, _("Fecha de fundación")) }}
+{{ campo(bio.termino, _("Fecha de término")) }}
+{{ campo(bio.musical_ensemble.musical_ensemble_type.name, _("Tipo de ensamble o agrupación")) }}
+{{ campo(bio.integrantes, _("Integrantes")) }}
+{{ campo(bio.repertorio, _("Repertorio")) }}
 {{ campo(bio.premios, _("Premios, distinciones")) }}
         </table>
     </div>
 </div>
-
 
 <div class="card">
     <div class="card-header">
@@ -87,20 +65,12 @@
         {{ i|urlize(None, true, target="_blank") }}<br>
         {% endfor %}
     </div>
-</div>
-
-
-
-<div class="card">
-    <div class="card-header">
-        {{_("Referencias y Publicaciones")}}
-    </div>
 
     <div class="card-body">
-        <table class="table biografia">
-{{ campo(bio.bibliografia, _("Bibliografía")) }}
+        <table class="table">
+{{ campo(bio.bibliografia, _("Bibliografía"), True) }}
 {{ campo(bio.archivos, _("Archivos")) }}
-{{ campo(bio.discografia, _("Discografía")) }}
+{{ campo(bio.discografia, _("Discografía"), True) }}
 {{ campo(bio.links, _("Enlaces de interés")) }}
 {{ campo(bio.otros, _("Información adicional")) }}
         </table>

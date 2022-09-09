@@ -43,11 +43,11 @@ endif
 
 {% for x in bio_ensembles %}
 <p>
-    <strong><a href="{{ url_for('public.bio_id', id=x.id) }}">
+    <strong><a href="{{ url_for('public.bio_ensemble_id', id=x.id) }}">
             {{ x.musical_ensemble.name }}</a></strong>
     <br>
     {{ x.biografia|truncate(300,False)|safe }}
-    <a href="{{ url_for('public.bio_id', id=x.id) }}">{{_("Leer más")}}</a>
+    <a href="{{ url_for('public.bio_ensemble_id', id=x.id) }}">{{_("Leer más")}}</a>
 </p>
 {% endfor %}
 
