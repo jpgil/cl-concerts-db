@@ -7,7 +7,7 @@ from jinja2 import TemplateNotFound
 from sqlalchemy import or_, and_
 from app.public import bp
 from app.public import search as searchClDb
-from app.models import Event, Person
+from app.models import BioMusicalEnsemble, BioPerson, Event, MusicalEnsemble, Person
 from app.api.web_methods import search_events
 from pyuca import Collator 
 
@@ -208,12 +208,19 @@ def show(page):
 # 2021-09-28: Routes for biographies below.
 @bp.route('/biographies')
 def biographies():
-    return render_template('public/biographies.html')
+    bio_persons = BioPerson.query.join(Person).order_by(Person.last_name).all()
+    bio_ensembles = BioMusicalEnsemble.query.join(MusicalEnsemble).order_by(MusicalEnsemble.name).all()
+
+    return render_template('public/biographies.html', bio_persons=bio_persons, bio_ensembles=bio_ensembles)
 
 # 2021-09-28: Routes for biographies below.
 @bp.route('/bio/<id>')
 def bio_id(id):
-    return render_template('public/bio_id.html')
+    bio_persons = BioPerson.query.join(Person).order_by(Person.last_name).all()
+    bio_ensembles = BioMusicalEnsemble.query.join(MusicalEnsemble).order_by(MusicalEnsemble.name).all()
+    bio = BioPerson.query.filter_by(id=id).first_or_404()
+
+    return render_template('public/bio_id.html', bio_persons=bio_persons, bio_ensembles=bio_ensembles, bio=bio)
 
 
 

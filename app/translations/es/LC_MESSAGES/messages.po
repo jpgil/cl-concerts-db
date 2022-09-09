@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-08-27 02:10-0400\n"
+"POT-Creation-Date: 2022-09-08 22:58-0300\n"
 "PO-Revision-Date: 2022-01-04 16:54-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -159,7 +159,7 @@ msgstr ""
 msgid "Por favor, elimine esas dependencias antes de continuar"
 msgstr ""
 
-#: app/api/api_methods.py:372
+#: app/api/api_methods.py:372 app/api/api_methods.py:416
 msgid "\"Ocurrió un error tratando de borrar el elemento:"
 msgstr ""
 
@@ -167,8 +167,8 @@ msgstr ""
 #: app/main/forms.py:74 app/main/forms.py:88 app/main/forms.py:123
 #: app/main/forms.py:138 app/templates/main/editevent.html:134
 #: app/templates/main/editevent.html:181
-#: app/templates/main/editmusicalensemble.html:64
-#: app/templates/main/showbios.html:31 app/templates/main/showbios.html:46
+#: app/templates/main/editmusicalensemble.html:83
+#: app/templates/main/showbios.html:33 app/templates/main/showbios.html:51
 #: app/templates/main/showlist.html:24 app/templates/public/detalle.html:163
 #: app/templates/public/detalle.html:221 app/users/forms.py:23
 #: app/users/forms.py:51 app/users/forms.py:61
@@ -178,7 +178,7 @@ msgstr ""
 #: app/main/forms.py:18 app/main/forms.py:33 app/main/forms.py:50
 #: app/main/forms.py:67 app/main/forms.py:76 app/main/forms.py:95
 #: app/main/forms.py:127 app/main/forms.py:140 app/main/forms.py:172
-#: app/main/forms.py:217
+#: app/main/forms.py:206 app/main/forms.py:241
 msgid "Guardar"
 msgstr ""
 
@@ -199,22 +199,21 @@ msgstr ""
 
 #: app/main/forms.py:46 app/main/forms.py:163
 #: app/templates/main/editevent.html:113
-#: app/templates/main/editmusicalensemble.html:43
+#: app/templates/main/editmusicalensemble.html:62
 msgid "Persona"
 msgstr ""
 
 #: app/main/forms.py:47 app/main/forms.py:164
 #: app/templates/main/editevent.html:114 app/templates/main/editevent.html:135
 #: app/templates/main/editevent.html:182
-#: app/templates/main/editmusicalensemble.html:44
-#: app/templates/main/editmusicalensemble.html:65
+#: app/templates/main/editmusicalensemble.html:63
+#: app/templates/main/editmusicalensemble.html:84
 #: app/templates/public/detalle.html:165
 msgid "Actividad"
 msgstr ""
 
-#: app/main/forms.py:49 app/main/forms.py:126 app/main/forms.py:139
-#: app/templates/public/detalle.html:340
-msgid "Información Adicional"
+#: app/main/forms.py:49
+msgid "Información Resumida"
 msgstr ""
 
 #: app/main/forms.py:61
@@ -294,6 +293,11 @@ msgstr ""
 msgid "Ciudad"
 msgstr ""
 
+#: app/main/forms.py:126 app/main/forms.py:139
+#: app/templates/public/detalle.html:340
+msgid "Información Adicional"
+msgstr ""
+
 #: app/main/forms.py:151
 msgid "Nombre del Evento"
 msgstr ""
@@ -352,6 +356,42 @@ msgstr ""
 #: app/main/forms.py:169 app/main/routes.py:62
 #: app/templates/main/editevent.html:168
 msgid "Participante"
+msgstr ""
+
+#: app/main/forms.py:181 app/main/forms.py:219
+msgid "Autores de la Investigación"
+msgstr ""
+
+#: app/main/forms.py:182 app/main/forms.py:220
+msgid "Fechas de la Investigación"
+msgstr ""
+
+#: app/main/forms.py:183 app/main/forms.py:221
+msgid "Notas de campo"
+msgstr ""
+
+#: app/main/forms.py:186
+msgid "Nombre Completo"
+msgstr ""
+
+#: app/main/forms.py:187
+msgid "Nacimiento y Muerte"
+msgstr ""
+
+#: app/main/forms.py:189
+msgid "Profesión"
+msgstr ""
+
+#: app/main/forms.py:200
+msgid "Bibliografía"
+msgstr ""
+
+#: app/main/forms.py:202
+msgid "Discografía"
+msgstr ""
+
+#: app/main/forms.py:203 app/main/forms.py:238
+msgid "Enlaces"
 msgstr ""
 
 #: app/main/routes.py:53 app/templates/base.html:53
@@ -435,20 +475,21 @@ msgstr ""
 
 #: app/main/routes.py:684 app/main/routes.py:738 app/main/routes.py:810
 #: app/main/routes.py:833 app/main/routes.py:860 app/main/routes.py:892
-#: app/main/routes.py:917 app/main/routes.py:946 app/main/routes.py:995
-#: app/main/routes.py:1018 app/main/routes.py:1046 app/main/routes.py:1066
-#: app/main/routes.py:1092 app/main/routes.py:1111 app/main/routes.py:1132
-#: app/main/routes.py:1154 app/main/routes.py:1189 app/main/routes.py:1224
-#: app/main/routes.py:1271 app/main/routes.py:1293 app/main/routes.py:1327
+#: app/main/routes.py:917 app/main/routes.py:951 app/main/routes.py:1000
+#: app/main/routes.py:1023 app/main/routes.py:1051 app/main/routes.py:1071
+#: app/main/routes.py:1097 app/main/routes.py:1116 app/main/routes.py:1137
+#: app/main/routes.py:1159 app/main/routes.py:1194 app/main/routes.py:1229
+#: app/main/routes.py:1276 app/main/routes.py:1297 app/main/routes.py:1328
+#: app/main/routes.py:1350
 msgid "Debe ser Administrador/Editor para entrar a esta página"
 msgstr ""
 
 #: app/main/routes.py:692 app/main/routes.py:751 app/main/routes.py:825
 #: app/main/routes.py:850 app/main/routes.py:884 app/main/routes.py:908
-#: app/main/routes.py:935 app/main/routes.py:981 app/main/routes.py:1010
-#: app/main/routes.py:1034 app/main/routes.py:1058 app/main/routes.py:1080
-#: app/main/routes.py:1103 app/main/routes.py:1120 app/main/routes.py:1146
-#: app/main/routes.py:1174 app/main/routes.py:1215 app/main/routes.py:1250
+#: app/main/routes.py:935 app/main/routes.py:986 app/main/routes.py:1015
+#: app/main/routes.py:1039 app/main/routes.py:1063 app/main/routes.py:1085
+#: app/main/routes.py:1108 app/main/routes.py:1125 app/main/routes.py:1151
+#: app/main/routes.py:1179 app/main/routes.py:1220 app/main/routes.py:1255
 #: app/users/routes.py:120 app/users/routes.py:145
 msgid "Tus cambios han sido guardados."
 msgstr ""
@@ -478,7 +519,7 @@ msgid "Editar Tipo de Agrupación Musical"
 msgstr ""
 
 #: app/main/routes.py:743 app/main/routes.py:815 app/main/routes.py:897
-#: app/main/routes.py:1000 app/main/routes.py:1051 app/main/routes.py:1097
+#: app/main/routes.py:1005 app/main/routes.py:1056 app/main/routes.py:1102
 msgid "Este nombre ya ha sido registrado"
 msgstr ""
 
@@ -526,67 +567,67 @@ msgstr ""
 msgid "Agregar Agrupación Musical"
 msgstr ""
 
-#: app/main/routes.py:940
+#: app/main/routes.py:942
 msgid "Editar Agrupación Musical"
 msgstr ""
 
-#: app/main/routes.py:988
+#: app/main/routes.py:993
 msgid "Editar Obra Musical"
 msgstr ""
 
-#: app/main/routes.py:1001 app/main/routes.py:1012
+#: app/main/routes.py:1006 app/main/routes.py:1017
 msgid "Agregar Actividad"
 msgstr ""
 
-#: app/main/routes.py:1038
+#: app/main/routes.py:1043
 msgid "Editar Actividad"
 msgstr ""
 
-#: app/main/routes.py:1052 app/main/routes.py:1060
+#: app/main/routes.py:1057 app/main/routes.py:1065
 msgid "Agregar Lugar"
 msgstr ""
 
-#: app/main/routes.py:1086
+#: app/main/routes.py:1091
 msgid "Editar Lugar"
 msgstr ""
 
-#: app/main/routes.py:1098 app/main/routes.py:1105
+#: app/main/routes.py:1103 app/main/routes.py:1110
 msgid "Agregar Organización"
 msgstr ""
 
-#: app/main/routes.py:1125
+#: app/main/routes.py:1130
 msgid "Editar Organización"
 msgstr ""
 
-#: app/main/routes.py:1148
+#: app/main/routes.py:1153
 msgid "Agregar Persona"
 msgstr ""
 
-#: app/main/routes.py:1182
+#: app/main/routes.py:1187
 msgid "Editar Persona"
 msgstr ""
 
-#: app/main/routes.py:1217
+#: app/main/routes.py:1222
 msgid "Agregar Evento"
 msgstr ""
 
-#: app/main/routes.py:1259
+#: app/main/routes.py:1264
 msgid "Editar Evento"
 msgstr ""
 
-#: app/main/routes.py:1276
+#: app/main/routes.py:1281 app/main/routes.py:1333
 msgid " ya tiene biografia. Mal ahí."
 msgstr ""
 
-#: app/main/routes.py:1286
+#: app/main/routes.py:1289 app/main/routes.py:1341
 msgid "Biografia Extendida creada. Por favor completala."
 msgstr ""
 
-#: app/main/routes.py:1306
-msgid "Biografía actualizada"
+#: app/main/routes.py:1307 app/main/routes.py:1363
+msgid "Biografía de {} actualizada"
 msgstr ""
 
-#: app/main/routes.py:1316
+#: app/main/routes.py:1317 app/main/routes.py:1377
 msgid "Editar Biografía de "
 msgstr ""
 
@@ -607,9 +648,11 @@ msgstr ""
 msgid "Editar Elementos"
 msgstr ""
 
-#: app/templates/base.html:70 app/templates/main/editbioperson.html:335
-#: app/templates/main/showbios.html:5 app/templates/public/biographies.html:3
-#: app/templates/public/menu.html:19
+#: app/templates/base.html:70
+#: app/templates/main/editbiomusicalensemble.html:169
+#: app/templates/main/editbioperson.html:184 app/templates/main/showbios.html:5
+#: app/templates/public/biographies.html:3 app/templates/public/menu.html:19
+#: app/templates/public/sidebar_inicio.html:85
 msgid "Biografías"
 msgstr ""
 
@@ -653,29 +696,41 @@ msgstr ""
 msgid "Tipos de Evento"
 msgstr ""
 
-#: app/templates/main/editbioperson.html:71
-#: app/templates/main/editbioperson.html:83
+#: app/templates/main/editbiomusicalensemble.html:56
+#: app/templates/main/editbiomusicalensemble.html:68
+#: app/templates/main/editbioperson.html:56
+#: app/templates/main/editbioperson.html:68
 msgid "Biografía Extendida"
 msgstr ""
 
-#: app/templates/main/editbioperson.html:72
-#: app/templates/main/editbioperson.html:154
-msgid "Datos"
+#: app/templates/main/editbiomusicalensemble.html:57
+#: app/templates/main/editbiomusicalensemble.html:89
+msgid "Datos Agrupación"
 msgstr ""
 
-#: app/templates/main/editbioperson.html:73
-#: app/templates/main/editbioperson.html:239
-msgid "Investigadores"
+#: app/templates/main/editbiomusicalensemble.html:58
+#: app/templates/main/editbiomusicalensemble.html:108
+#: app/templates/main/editbioperson.html:58
+#: app/templates/main/editbioperson.html:112
+msgid "Investigación"
 msgstr ""
 
-#: app/templates/main/editbioperson.html:74
-#: app/templates/main/editbioperson.html:276
+#: app/templates/main/editbiomusicalensemble.html:59
+#: app/templates/main/editbiomusicalensemble.html:122
+#: app/templates/main/editbioperson.html:59
+#: app/templates/main/editbioperson.html:125
 #: app/templates/main/editevent.html:19
 msgid "Media"
 msgstr ""
 
-#: app/templates/main/editbioperson.html:335
+#: app/templates/main/editbiomusicalensemble.html:169
+#: app/templates/main/editbioperson.html:184
 msgid "Volver al listado de"
+msgstr ""
+
+#: app/templates/main/editbioperson.html:57
+#: app/templates/main/editbioperson.html:89
+msgid "Datos"
 msgstr ""
 
 #: app/templates/main/editevent.html:16 app/templates/main/editevent.html:24
@@ -724,12 +779,12 @@ msgid "Agregar participante: "
 msgstr ""
 
 #: app/templates/main/editevent.html:119
-#: app/templates/main/editmusicalensemble.html:49
+#: app/templates/main/editmusicalensemble.html:68
 msgid "Nueva Persona"
 msgstr ""
 
 #: app/templates/main/editevent.html:120
-#: app/templates/main/editmusicalensemble.html:50
+#: app/templates/main/editmusicalensemble.html:69
 msgid "Nueva Actividad"
 msgstr ""
 
@@ -775,11 +830,11 @@ msgstr ""
 msgid "Tipo de instrumento"
 msgstr ""
 
-#: app/templates/main/editmusicalensemble.html:39
+#: app/templates/main/editmusicalensemble.html:58
 msgid "Miembros"
 msgstr ""
 
-#: app/templates/main/editmusicalensemble.html:42
+#: app/templates/main/editmusicalensemble.html:61
 msgid "Agregar miembro: "
 msgstr ""
 
@@ -811,7 +866,7 @@ msgstr ""
 msgid "*Guardar para agregar detalles"
 msgstr ""
 
-#: app/templates/main/showbios.html:32 app/templates/main/showbios.html:47
+#: app/templates/main/showbios.html:34 app/templates/main/showbios.html:52
 msgid "Eliminar"
 msgstr ""
 
@@ -1011,23 +1066,15 @@ msgstr ""
 msgid "en Chile"
 msgstr ""
 
-#: app/templates/public/layout_global.html:67
-msgid "English"
-msgstr ""
-
-#: app/templates/public/layout_global.html:68
-msgid "Español"
-msgstr ""
-
-#: app/templates/public/layout_global.html:112
+#: app/templates/public/layout_global.html:106
 msgid "Alameda 1869, 4to. piso Metro Los Héroes Santiago – Chile"
 msgstr ""
 
-#: app/templates/public/layout_global.html:135
+#: app/templates/public/layout_global.html:129
 msgid "Mayores informaciones:"
 msgstr ""
 
-#: app/templates/public/layout_global.html:136
+#: app/templates/public/layout_global.html:130
 msgid "Daniela Fugellie"
 msgstr ""
 
@@ -1046,7 +1093,7 @@ msgid ""
 msgstr ""
 
 #: app/templates/public/menu.html:10 app/templates/public/sidebar_about.html:17
-#: app/templates/public/sidebar_inicio.html:108
+#: app/templates/public/sidebar_inicio.html:118
 msgid "Cómo Citar"
 msgstr ""
 
@@ -1061,7 +1108,16 @@ msgid "Conciertos"
 msgstr ""
 
 #: app/templates/public/menu.html:22
+#: app/templates/public/sidebar_inicio.html:97
 msgid "Participantes y Compositores"
+msgstr ""
+
+#: app/templates/public/menu.html:27
+msgid "English Version"
+msgstr ""
+
+#: app/templates/public/menu.html:30
+msgid "Versión en Español"
 msgstr ""
 
 #: app/templates/public/page_about.html:3
@@ -1286,7 +1342,7 @@ msgstr ""
 
 #: app/templates/public/page_enlaces.html:3
 #: app/templates/public/sidebar_about.html:22
-#: app/templates/public/sidebar_inicio.html:110
+#: app/templates/public/sidebar_inicio.html:120
 msgid "Enlaces de Interés"
 msgstr ""
 
@@ -1361,6 +1417,22 @@ msgstr ""
 msgid "Catálogo de Participantes y Compositores"
 msgstr ""
 
+#: app/templates/public/person_initial.html:10
+msgid ""
+"Esta pestaña contiene un catálogo de todas las personas ingresadas en la "
+"base\n"
+"de datos, ya sea como participantes de los eventos (intérpretes, "
+"directores/as,\n"
+"expositores/as) o como compositores/as de obras que se interpretaron en\n"
+"conciertos ingresados. Por esta razón, el catálogo abarca personas de "
+"diversos\n"
+"países y períodos históricos. Junto con ofrecer datos biográficos "
+"básicos, como\n"
+"años de nacimiento y muerte, el catálogo permite acceder a todos los "
+"eventos\n"
+"asociados a una persona en particular."
+msgstr ""
+
 #: app/templates/public/person_initial.html:40
 msgid "personas con inicial"
 msgstr ""
@@ -1393,11 +1465,12 @@ msgid "Click para ayuda"
 msgstr ""
 
 #: app/templates/public/sidebar.html:75
+#: app/templates/public/sidebar_inicio.html:63
 msgid "Acerca de la Búsqueda Rápida"
 msgstr ""
 
 #: app/templates/public/sidebar.html:76
-#: app/templates/public/sidebar_inicio.html:64
+#: app/templates/public/sidebar_inicio.html:63
 msgid ""
 "En este cuadro Ud. puede ingresar una o más palabras clave. La búsqueda \n"
 "                contendrá resultados con cualquiera de estas palabras "
@@ -1412,13 +1485,13 @@ msgid "Búsqueda Rápida"
 msgstr ""
 
 #: app/templates/public/sidebar.html:87
+#: app/templates/public/sidebar_inicio.html:74
 #: app/templates/public/sidebar_inicio.html:75
-#: app/templates/public/sidebar_inicio.html:76
 msgid "[palabras clave]"
 msgstr ""
 
 #: app/templates/public/sidebar.html:89
-#: app/templates/public/sidebar_inicio.html:78
+#: app/templates/public/sidebar_inicio.html:77
 msgid "Buscar"
 msgstr ""
 
@@ -1460,7 +1533,7 @@ msgstr ""
 
 #: app/templates/public/sidebar.html:139
 #: app/templates/public/sidebar_about.html:12
-#: app/templates/public/sidebar_inicio.html:107
+#: app/templates/public/sidebar_inicio.html:117
 msgid "Cómo Consultar"
 msgstr ""
 
@@ -1502,33 +1575,36 @@ msgstr ""
 msgid "Texto respecto a las biografías"
 msgstr ""
 
-#: app/templates/public/sidebar_inicio.html:68
+#: app/templates/public/sidebar_inicio.html:67
 msgid "Buscar Conciertos"
 msgstr ""
 
-#: app/templates/public/sidebar_inicio.html:79
+#: app/templates/public/sidebar_inicio.html:78
 msgid "Ver filtros"
 msgstr ""
 
-#: app/templates/public/sidebar_inicio.html:86
-msgid "Buscar Biografías"
-msgstr ""
-
-#: app/templates/public/sidebar_inicio.html:89
+#: app/templates/public/sidebar_inicio.html:88
 msgid ""
 "Desde 2022 contamos con biografías de varios de los compositores chilenos"
 " mostrados en este sitio."
 msgstr ""
 
-#: app/templates/public/sidebar_inicio.html:91
+#: app/templates/public/sidebar_inicio.html:90
+#: app/templates/public/sidebar_inicio.html:102
 msgid "Acceder"
 msgstr ""
 
-#: app/templates/public/sidebar_inicio.html:102
+#: app/templates/public/sidebar_inicio.html:100
+msgid ""
+"Catálogo de participantes, compositores y agrupaciones presentes en la "
+"base de datos"
+msgstr ""
+
+#: app/templates/public/sidebar_inicio.html:112
 msgid "Más Información"
 msgstr ""
 
-#: app/templates/public/sidebar_inicio.html:106
+#: app/templates/public/sidebar_inicio.html:116
 msgid "Acerca del proyecto"
 msgstr ""
 
@@ -1851,5 +1927,20 @@ msgstr ""
 #~ "nombre o por tipos de agrupaciones, "
 #~ "desde una lista de posibilidades "
 #~ "ingresadas en la base de datos."
+#~ msgstr ""
+
+#~ msgid "Biografía actualizada"
+#~ msgstr ""
+
+#~ msgid "Investigadores"
+#~ msgstr ""
+
+#~ msgid "English"
+#~ msgstr ""
+
+#~ msgid "Español"
+#~ msgstr ""
+
+#~ msgid "Buscar Biografías"
 #~ msgstr ""
 
