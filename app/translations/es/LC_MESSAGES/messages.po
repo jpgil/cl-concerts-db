@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-09-11 01:12-0300\n"
+"POT-Creation-Date: 2022-09-11 01:21-0300\n"
 "PO-Revision-Date: 2022-01-04 16:54-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -439,9 +439,7 @@ msgstr ""
 
 #: app/main/routes.py:61 app/templates/base.html:60
 #: app/templates/main/edit_elements.html:14
-#: app/templates/public/biographies.html:24
-#: app/templates/public/page_consultar.html:29
-#: app/templates/public/page_consultar.html:46
+#: app/templates/public/biographies.html:26
 #: app/templates/public/sidebar_bio.html:6
 msgid "Personas"
 msgstr ""
@@ -658,6 +656,7 @@ msgstr ""
 #: app/templates/main/editbiomusicalensemble.html:169
 #: app/templates/main/editbioperson.html:184 app/templates/main/showbios.html:5
 #: app/templates/public/biographies.html:15 app/templates/public/menu.html:19
+#: app/templates/public/page_consultar.html:51
 #: app/templates/public/sidebar_inicio.html:85
 msgid "Biografías"
 msgstr ""
@@ -748,16 +747,13 @@ msgid "Información General"
 msgstr ""
 
 #: app/templates/main/editevent.html:17 app/templates/main/editevent.html:98
-#: app/templates/public/page_consultar.html:43
 #: app/templates/public/sidebar.html:147
 msgid "Participantes"
 msgstr ""
 
 #: app/templates/main/editevent.html:18 app/templates/main/editevent.html:143
 #: app/templates/public/bio_ensemble_id.html:60
-#: app/templates/public/detalle.html:267
-#: app/templates/public/page_consultar.html:50
-#: app/templates/public/sidebar.html:151
+#: app/templates/public/detalle.html:267 app/templates/public/sidebar.html:151
 msgid "Repertorio"
 msgstr ""
 
@@ -994,16 +990,32 @@ msgstr ""
 msgid "Eventos asociados a esta persona"
 msgstr ""
 
-#: app/templates/public/biographies.html:38
-#: app/templates/public/biographies.html:59
+#: app/templates/public/biographies.html:22
+msgid ""
+"En esta sección encontrarás biografías de intérpretes y agrupaciones de "
+"música chilena docta del siglo XX, las que han sido redactadas por "
+"diversas investigadoras e investigadores en el marco del proyecto Fondo "
+"de la Música, Línea de investigación 583750 “Biografías de intérpretes "
+"chilenos de música docta, 1945-1995. Investigación y difusión de su "
+"aporte a la vida musical chilena” (2021/22). Las biografías se basan en "
+"una investigación realizada a partir de materiales archivísticos, "
+"entrevistas con los intérpretes y sus familiares. En ellas colaboraron, "
+"junto al equipo de trabajo, diversas investigadoras e investigadores, "
+"cuya autoría se indica en cada artículo. ¿Crees que otras personas o "
+"agrupaciones debieran figurar en esta sección y quieres colaborar con "
+"nosotros? No dudes en escribirnos a dfugellie@uahurtado.cl."
+msgstr ""
+
+#: app/templates/public/biographies.html:40
+#: app/templates/public/biographies.html:61
 #: app/templates/public/sidebar_inicio.html:90
 #: app/templates/public/sidebar_inicio.html:102
 #: app/templates/public/sidebar_inicio.html:114
 msgid "Acceder"
 msgstr ""
 
-#: app/templates/public/biographies.html:49 app/templates/public/menu.html:25
-#: app/templates/public/page_consultar.html:53
+#: app/templates/public/biographies.html:51 app/templates/public/menu.html:25
+#: app/templates/public/page_consultar.html:59
 #: app/templates/public/sidebar.html:153
 #: app/templates/public/sidebar_bio.html:16
 #: app/templates/public/sidebar_inicio.html:109
@@ -1236,10 +1248,13 @@ msgid ""
 msgstr ""
 
 #: app/templates/public/menu.html:16
+#: app/templates/public/page_consultar.html:23
+#: app/templates/public/search.html:3
 msgid "Conciertos"
 msgstr ""
 
 #: app/templates/public/menu.html:22
+#: app/templates/public/page_consultar.html:55
 #: app/templates/public/sidebar_inicio.html:97
 msgid "Participantes y Compositores"
 msgstr ""
@@ -1272,7 +1287,7 @@ msgid ""
 "proyecto.\n"
 "\n"
 "En estos proyectos trabajaron Gerardo Marcoleta (2017-2019), Sergio Araya"
-" (2017-2021) y Constanza Toledo (2020-2021). La base de datos y su "
+" (2017-2022) y Constanza Toledo (2020-2022). La base de datos y su "
 "interfaz de usuarios fueron diseñadas por Johnny Reveco y Juan Pablo Gil."
 msgstr ""
 
@@ -1357,114 +1372,109 @@ msgid ""
 msgstr ""
 
 #: app/templates/public/page_consultar.html:3
-msgid "Cómo consultar la base de datos"
+msgid "Cómo consultar"
 msgstr ""
 
-#: app/templates/public/page_consultar.html:20
+#: app/templates/public/page_consultar.html:19
+msgid ""
+"En esta sección te explicaremos qué tipo de información encontrarás en "
+"las pestañas de\n"
+"Conciertos, Biografías y Participantes y Compositores y cómo consultarlas."
+msgstr ""
+
+#: app/templates/public/page_consultar.html:24
 msgid ""
 "La base de datos permite realizar una búsqueda simple ingresando palabras"
 " clave. En este caso, el resultado de la búsqueda contiene una lista de "
-"todos los eventos que contienen las palabras claves que se buscaron, las "
+"todos los eventos que incluyen las palabras claves que se buscaron, las "
 "que aparecen destacadas bajo el título del evento. Esta búsqueda arrojará"
 " resultados por relevancia. Para resultados en orden cronológico, se "
-"sugiere usar los filtros de búsqueda."
-msgstr ""
-
-#: app/templates/public/page_consultar.html:23
-msgid ""
+"sugiere usar los filtros de búsqueda.\n"
+"\n"
 "También es posible realizar una búsqueda avanzada seleccionando diversos "
 "filtros de búsqueda. El resultado de la búsqueda siempre será una lista "
-"de “eventos” (conciertos, pero también conferencias, talleres u otros) "
-"ordenados cronológicamente, la que podrá seguir siendo filtrada con el "
-"uso de nuevas categorías. En caso de que los eventos estén incompletos en"
-" alguno de sus items (sin nombre, sin nombre de ciclo, sin lugar, sin "
-"repertorio, etc.) esto quiere decir que dichas informaciones no figuraban"
-" en las fuentes consultadas."
-msgstr ""
-
-#: app/templates/public/page_consultar.html:29
-msgid ""
+"de “eventos” ordenados cronológicamente, la que podrá seguir siendo "
+"filtrada con el uso de nuevas categorías. En caso de que los eventos "
+"estén incompletos en alguno de sus items (sin nombre, sin nombre de "
+"ciclo, sin lugar, sin repertorio, etc.) esto quiere decir que dichas "
+"informaciones no se encontraban disponibles en las fuentes consultadas.\n"
+"\n"
+"Para comenzar una nueva búsqueda, se recomienda seleccionar la opción "
+"“limpiar”, para borrar los filtros que se utilizaron en la última "
+"búsqueda.\n"
+"\n"
 "La búsqueda avanzada está organizada en diversas categorías y es posible "
 "seleccionar diferentes categorías al mismo tiempo, a fin de realizar "
 "preguntas complejas, tales como: ¿Qué obras para piano de Beethoven se "
 "interpretaron el año 1985? O también, ¿qué obras para piano de Beethoven "
 "se interpretaron en el Goethe-Institut el año 1985, siendo las pianistas "
-"mujeres? Para búsquedas centradas en una persona o compositor/a, es "
-"recomendable también ingresar a la pestaña de"
-msgstr ""
-
-#: app/templates/public/page_consultar.html:29
-msgid "e ir a los eventos asociados a personas en particular."
+"mujeres?"
 msgstr ""
 
 #: app/templates/public/page_consultar.html:33
-msgid "Filtros de búsqueda"
+#: app/templates/public/sidebar.html:102
+msgid "Filtros de Búsqueda"
 msgstr ""
 
-#: app/templates/public/page_consultar.html:37
-#: app/templates/public/sidebar.html:111
-msgid "Fechas"
-msgstr ""
-
-#: app/templates/public/page_consultar.html:37
+#: app/templates/public/page_consultar.html:34
 msgid ""
-"Permite elegir un rango temporal entre 1945 y 1995. Las fechas se pueden "
-"tipear manualmente o bien ser seleccionadas en el calendario. Información"
-" del evento: Permite seleccionar un ciclo o un tipo de evento desde la "
-"lista de posibilidades ingresadas en la base de datos, las que se "
-"mostrarán como lista."
+"<strong>Fechas:</strong> Permite elegir un rango temporal entre 1900 y el"
+" día de hoy. Las fechas se pueden tipear manualmente o bien ser "
+"seleccionadas en el calendario.\n"
+"\n"
+"<strong>Información del evento:</strong> Permite seleccionar un ciclo o "
+"un tipo de evento desde la lista de posibilidades ingresadas en la base "
+"de datos, las que se mostrarán como lista.\n"
+"\n"
+"<strong>Lugar del evento:</strong> Los organizadores, lugares y ciudades "
+"pueden seleccionarse desde la lista de posibilidades ingresadas. Muchas "
+"veces los lugares y los organizadores son equivalentes.\n"
+"\n"
+"<strong>Participantes:</strong> Corresponde a quienes participaron "
+"físicamente en los eventos, indicando su nombre, género, país o países, y"
+" la actividad realizada en el evento, la que se puede seleccionar de una "
+"lista de posibilidades ingresadas. Es posible seleccionar diversas "
+"actividades simultáneamente.\n"
+"\n"
+"<strong>Compositores:</strong> Corresponde a los compositores/as, cuyas "
+"obras fueron interpretadas en conciertos, los que pueden ser "
+"seleccionados desde una lista o consultando la pestaña Participantes y "
+"Compositores. También se puede seleccionar una opción de género o de "
+"países.\n"
+"\n"
+"<strong>Repertorio:</strong> Corresponde a las obras interpretadas en los"
+" conciertos, las que pueden buscarse por nombre, instrumentos o tipo de "
+"instrumentos desde una lista de posibilidades ingresadas, o indicar si es"
+" que fueron estrenos en Chile o mundiales.\n"
+"\n"
+"<strong>Agrupaciones:</strong> Corresponde a agrupaciones musicales "
+"(ensambles, coros, cuartetos de cuerdas, etc) que participaron en los "
+"eventos. Pueden buscarse por nombre o por tipos de agrupaciones, desde "
+"una lista de posibilidades ingresadas en la base de datos.\n"
 msgstr ""
 
-#: app/templates/public/page_consultar.html:40
-#: app/templates/public/sidebar.html:145
-msgid "Lugar del evento"
-msgstr ""
-
-#: app/templates/public/page_consultar.html:40
+#: app/templates/public/page_consultar.html:52
 msgid ""
-"Los organizadores, lugares y ciudades pueden seleccionarse desde la lista"
-" de posibilidades ingresadas. Muchas veces los lugares y los "
-"organizadores son equivalentes."
+"En esta sección se presentan, en orden alfabético, (1) biografías de "
+"personas y (2) de agrupaciones musicales. Dentro de las biografías, se "
+"encontrarán también materiales adjuntos, como también hipervínculos a "
+"otras personas y agrupaciones contenidas en la base de datos."
 msgstr ""
 
-#: app/templates/public/page_consultar.html:43
+#: app/templates/public/page_consultar.html:56
 msgid ""
-"Corresponde a quienes participaron físicamente en los eventos, indicando "
-"su nombre, género, país o países, y la actividad realizada en el evento, "
-"la que se puede seleccionar de una lista de posibilidades ingresadas. Es "
-"posible seleccionar diversas actividades simultáneamente."
+"Esta sección presenta una lista de todas las personas ingresadas en la "
+"base de datos, ya sea como participantes de eventos o como compositor@s "
+"de obras ingresadas. Al consultar un nombre en particular, se indican los"
+" eventos a los que dicha persona está asociada."
 msgstr ""
 
-#: app/templates/public/page_consultar.html:46
-#: app/templates/public/sidebar.html:149
-msgid "Compositores"
-msgstr ""
-
-#: app/templates/public/page_consultar.html:46
+#: app/templates/public/page_consultar.html:60
 msgid ""
-"Corresponde a los compositores/as, cuyas obras fueron interpretadas en "
-"conciertos, los que pueden ser seleccionados desde una lista o "
-"consultando la pestaña"
-msgstr ""
-
-#: app/templates/public/page_consultar.html:47
-msgid "También se puede seleccionar una opción de género o de países."
-msgstr ""
-
-#: app/templates/public/page_consultar.html:50
-msgid ""
-"Corresponde a las obras interpretadas en los conciertos, las que pueden "
-"buscarse por nombre, instrumentos o tipo de instrumentos desde una lista "
-"de posibilidades ingresadas, o indicar si es que fueron estrenos chilenos"
-" o mundiales."
-msgstr ""
-
-#: app/templates/public/page_consultar.html:53
-msgid ""
-"Corresponde a agrupaciones musicales (ensambles, coros, cuartetos de "
-"cuerdas, etc) que participaron en los eventos. Pueden buscarse por nombre"
-" o por tipos de agrupaciones, desde una lista de posibilidades ingresadas"
-" en la base de datos."
+"Esta sección presenta una lista de todas las agrupaciones presentes en la"
+" base de datos. Como en la sección anterior, al consultar un nombre en "
+"particular, se indican los eventos en los que la agrupación está "
+"asociada."
 msgstr ""
 
 #: app/templates/public/page_enlaces.html:3
@@ -1564,14 +1574,15 @@ msgstr ""
 msgid "personas con inicial"
 msgstr ""
 
-#: app/templates/public/search.html:3
-msgid "Resultados de la búsqueda"
-msgstr ""
-
 #: app/templates/public/search.html:8
 msgid ""
-"Los resultados que se muestran a continuación pueden ser refinados con "
-"los filtros de búsqueda disponibles a la izquierda de esta página."
+"En esta sección de Conciertos se presentan informaciones sobre más de "
+"2.000 eventos (conciertos, pero también talleres, charlas y otros), "
+"realizados mayormente en Santiago de Chile entre 1945 y 1995. Esta base "
+"de datos se nutre de informaciones provenientes de programas de "
+"concierto, reseñas de prensa y revistas musicales y puede ser navegada a "
+"través de la Búsqueda rápida o usando los Filtros de Búsqueda a la "
+"izquierda de esta página."
 msgstr ""
 
 #: app/templates/public/search.html:27
@@ -1636,8 +1647,8 @@ msgid ""
 "                Esta búsqueda arrojará resultados en orden cronológico."
 msgstr ""
 
-#: app/templates/public/sidebar.html:102
-msgid "Filtros de Búsqueda"
+#: app/templates/public/sidebar.html:111
+msgid "Fechas"
 msgstr ""
 
 #: app/templates/public/sidebar.html:118
@@ -1658,7 +1669,7 @@ msgstr ""
 msgid "Ver más en"
 msgstr ""
 
-#: app/templates/public/sidebar.html:139
+#: app/templates/public/sidebar.html:139 app/templates/public/sidebar.html:163
 #: app/templates/public/sidebar_about.html:12
 #: app/templates/public/sidebar_inicio.html:128
 msgid "Cómo Consultar"
@@ -1666,6 +1677,14 @@ msgstr ""
 
 #: app/templates/public/sidebar.html:143
 msgid "Información del evento"
+msgstr ""
+
+#: app/templates/public/sidebar.html:145
+msgid "Lugar del evento"
+msgstr ""
+
+#: app/templates/public/sidebar.html:149
+msgid "Compositores"
 msgstr ""
 
 #: app/templates/public/sidebar.html:156
@@ -2082,5 +2101,163 @@ msgstr ""
 #~ "Catálogo de participantes, compositores y "
 #~ "agrupaciones presentes en la base de "
 #~ "datos"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Esta base de datos surge a partir"
+#~ " de dos proyectos de la investigadora"
+#~ " responsable Daniela Fugellie: el proyecto"
+#~ " Fondecyt de Iniciación 11170844 “Espacios"
+#~ " alternativos de la música contemporánea"
+#~ " en Chile, 1945–1995” (2017–2020) y "
+#~ "el proyecto Fondo de la Música, "
+#~ "Línea de investigación 583750 “Biografías "
+#~ "de intérpretes chilenos de música "
+#~ "docta, 1945-1995. Investigación y difusión"
+#~ " de su aporte a la vida musical"
+#~ " chilena” (2021/22).\n"
+#~ "\n"
+#~ "En el marco del primer proyecto "
+#~ "surgió la base de datos de "
+#~ "conciertos de música docta (1945-1995), "
+#~ "la cual se complementó ofreciendo "
+#~ "biografías de intérpretes y agrupaciones "
+#~ "de música docta a partir del "
+#~ "segundo proyecto.\n"
+#~ "\n"
+#~ "En estos proyectos trabajaron Gerardo "
+#~ "Marcoleta (2017-2019), Sergio Araya "
+#~ "(2017-2021) y Constanza Toledo (2020-2021)."
+#~ " La base de datos y su interfaz"
+#~ " de usuarios fueron diseñadas por "
+#~ "Johnny Reveco y Juan Pablo Gil."
+#~ msgstr ""
+
+#~ msgid "Cómo consultar la base de datos"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "La base de datos permite realizar "
+#~ "una búsqueda simple ingresando palabras "
+#~ "clave. En este caso, el resultado "
+#~ "de la búsqueda contiene una lista "
+#~ "de todos los eventos que contienen "
+#~ "las palabras claves que se buscaron, "
+#~ "las que aparecen destacadas bajo el "
+#~ "título del evento. Esta búsqueda "
+#~ "arrojará resultados por relevancia. Para "
+#~ "resultados en orden cronológico, se "
+#~ "sugiere usar los filtros de búsqueda."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "También es posible realizar una búsqueda"
+#~ " avanzada seleccionando diversos filtros de"
+#~ " búsqueda. El resultado de la "
+#~ "búsqueda siempre será una lista de "
+#~ "“eventos” (conciertos, pero también "
+#~ "conferencias, talleres u otros) ordenados "
+#~ "cronológicamente, la que podrá seguir "
+#~ "siendo filtrada con el uso de "
+#~ "nuevas categorías. En caso de que "
+#~ "los eventos estén incompletos en alguno"
+#~ " de sus items (sin nombre, sin "
+#~ "nombre de ciclo, sin lugar, sin "
+#~ "repertorio, etc.) esto quiere decir que"
+#~ " dichas informaciones no figuraban en "
+#~ "las fuentes consultadas."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "La búsqueda avanzada está organizada en"
+#~ " diversas categorías y es posible "
+#~ "seleccionar diferentes categorías al mismo "
+#~ "tiempo, a fin de realizar preguntas "
+#~ "complejas, tales como: ¿Qué obras para"
+#~ " piano de Beethoven se interpretaron "
+#~ "el año 1985? O también, ¿qué obras"
+#~ " para piano de Beethoven se "
+#~ "interpretaron en el Goethe-Institut el"
+#~ " año 1985, siendo las pianistas "
+#~ "mujeres? Para búsquedas centradas en una"
+#~ " persona o compositor/a, es recomendable"
+#~ " también ingresar a la pestaña de"
+#~ msgstr ""
+
+#~ msgid "e ir a los eventos asociados a personas en particular."
+#~ msgstr ""
+
+#~ msgid "Filtros de búsqueda"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Permite elegir un rango temporal entre"
+#~ " 1945 y 1995. Las fechas se "
+#~ "pueden tipear manualmente o bien ser "
+#~ "seleccionadas en el calendario. Información"
+#~ " del evento: Permite seleccionar un "
+#~ "ciclo o un tipo de evento desde"
+#~ " la lista de posibilidades ingresadas "
+#~ "en la base de datos, las que "
+#~ "se mostrarán como lista."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Los organizadores, lugares y ciudades "
+#~ "pueden seleccionarse desde la lista de"
+#~ " posibilidades ingresadas. Muchas veces los"
+#~ " lugares y los organizadores son "
+#~ "equivalentes."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Corresponde a quienes participaron físicamente"
+#~ " en los eventos, indicando su nombre,"
+#~ " género, país o países, y la "
+#~ "actividad realizada en el evento, la "
+#~ "que se puede seleccionar de una "
+#~ "lista de posibilidades ingresadas. Es "
+#~ "posible seleccionar diversas actividades "
+#~ "simultáneamente."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Corresponde a los compositores/as, cuyas "
+#~ "obras fueron interpretadas en conciertos, "
+#~ "los que pueden ser seleccionados desde"
+#~ " una lista o consultando la pestaña"
+#~ msgstr ""
+
+#~ msgid "También se puede seleccionar una opción de género o de países."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Corresponde a las obras interpretadas en"
+#~ " los conciertos, las que pueden "
+#~ "buscarse por nombre, instrumentos o tipo"
+#~ " de instrumentos desde una lista de"
+#~ " posibilidades ingresadas, o indicar si "
+#~ "es que fueron estrenos chilenos o "
+#~ "mundiales."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Corresponde a agrupaciones musicales "
+#~ "(ensambles, coros, cuartetos de cuerdas, "
+#~ "etc) que participaron en los eventos."
+#~ " Pueden buscarse por nombre o por "
+#~ "tipos de agrupaciones, desde una lista"
+#~ " de posibilidades ingresadas en la "
+#~ "base de datos."
+#~ msgstr ""
+
+#~ msgid "Resultados de la búsqueda"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Los resultados que se muestran a "
+#~ "continuación pueden ser refinados con "
+#~ "los filtros de búsqueda disponibles a"
+#~ " la izquierda de esta página."
 #~ msgstr ""
 
