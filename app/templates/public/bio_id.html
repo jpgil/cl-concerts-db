@@ -32,6 +32,13 @@
 
 <section id="biografias">
 
+<p>
+{% if bio.investigacion_autores %}
+{{_("Investigación realizada por ")}} {{ bio.investigacion_autores }}. 
+{% endif %}
+{% if bio.investigacion_fecha %}{{ bio.investigacion_fecha }}{% endif %}
+</p>
+
 <div class="card">
     <div class="card-header">
         {{_("Datos Personales")}}
@@ -82,7 +89,7 @@
         {{_("Biografía")}}
     </div>
 
-    <div class="card-body">
+    <div class="card-body" style="text-align: justify;">
         {% for i in bio.biografia.split("\n") %}
         {{ i|urlize(None, true, target="_blank") }}<br>
         {% endfor %}
