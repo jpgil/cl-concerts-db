@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-09-08 22:58-0300\n"
+"POT-Creation-Date: 2022-09-11 00:12-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -168,9 +168,10 @@ msgstr ""
 #: app/templates/main/editevent.html:181
 #: app/templates/main/editmusicalensemble.html:83
 #: app/templates/main/showbios.html:33 app/templates/main/showbios.html:51
-#: app/templates/main/showlist.html:24 app/templates/public/detalle.html:163
-#: app/templates/public/detalle.html:221 app/users/forms.py:23
-#: app/users/forms.py:51 app/users/forms.py:61
+#: app/templates/main/showlist.html:24
+#: app/templates/public/bio_ensemble_id.html:51
+#: app/templates/public/detalle.html:165 app/templates/public/detalle.html:233
+#: app/users/forms.py:23 app/users/forms.py:51 app/users/forms.py:61
 msgid "Nombre"
 msgstr ""
 
@@ -207,11 +208,11 @@ msgstr ""
 #: app/templates/main/editevent.html:182
 #: app/templates/main/editmusicalensemble.html:63
 #: app/templates/main/editmusicalensemble.html:84
-#: app/templates/public/detalle.html:165
+#: app/templates/public/detalle.html:167
 msgid "Actividad"
 msgstr ""
 
-#: app/main/forms.py:49
+#: app/main/forms.py:49 app/templates/public/ensembles_initial.html:67
 msgid "Información Resumida"
 msgstr ""
 
@@ -293,7 +294,7 @@ msgid "Ciudad"
 msgstr ""
 
 #: app/main/forms.py:126 app/main/forms.py:139
-#: app/templates/public/detalle.html:340
+#: app/templates/public/detalle.html:352
 msgid "Información Adicional"
 msgstr ""
 
@@ -318,11 +319,12 @@ msgstr ""
 msgid "El díá debe corresponder a un número entre 1 y 31"
 msgstr ""
 
-#: app/main/forms.py:157 app/templates/public/detalle.html:355
+#: app/main/forms.py:157 app/templates/public/detalle.html:367
 msgid "Fuentes"
 msgstr ""
 
 #: app/main/forms.py:158 app/templates/public/menu.html:4
+#: app/templates/public/sidebar_about.html:4
 msgid "Información"
 msgstr ""
 
@@ -369,7 +371,7 @@ msgstr ""
 msgid "Notas de campo"
 msgstr ""
 
-#: app/main/forms.py:186
+#: app/main/forms.py:186 app/templates/public/bio_id.html:51
 msgid "Nombre Completo"
 msgstr ""
 
@@ -377,15 +379,17 @@ msgstr ""
 msgid "Nacimiento y Muerte"
 msgstr ""
 
-#: app/main/forms.py:189
+#: app/main/forms.py:189 app/templates/public/bio_id.html:75
 msgid "Profesión"
 msgstr ""
 
-#: app/main/forms.py:200
+#: app/main/forms.py:200 app/templates/public/bio_ensemble_id.html:79
+#: app/templates/public/bio_id.html:108
 msgid "Bibliografía"
 msgstr ""
 
-#: app/main/forms.py:202
+#: app/main/forms.py:202 app/templates/public/bio_ensemble_id.html:81
+#: app/templates/public/bio_id.html:110
 msgid "Discografía"
 msgstr ""
 
@@ -434,8 +438,10 @@ msgstr ""
 
 #: app/main/routes.py:61 app/templates/base.html:60
 #: app/templates/main/edit_elements.html:14
+#: app/templates/public/biographies.html:24
 #: app/templates/public/page_consultar.html:29
 #: app/templates/public/page_consultar.html:46
+#: app/templates/public/sidebar_bio.html:6
 msgid "Personas"
 msgstr ""
 
@@ -650,7 +656,7 @@ msgstr ""
 #: app/templates/base.html:70
 #: app/templates/main/editbiomusicalensemble.html:169
 #: app/templates/main/editbioperson.html:184 app/templates/main/showbios.html:5
-#: app/templates/public/biographies.html:3 app/templates/public/menu.html:19
+#: app/templates/public/biographies.html:15 app/templates/public/menu.html:19
 #: app/templates/public/sidebar_inicio.html:85
 msgid "Biografías"
 msgstr ""
@@ -699,6 +705,10 @@ msgstr ""
 #: app/templates/main/editbiomusicalensemble.html:68
 #: app/templates/main/editbioperson.html:56
 #: app/templates/main/editbioperson.html:68
+#: app/templates/public/detalle.html:100 app/templates/public/detalle.html:182
+#: app/templates/public/detalle.html:191
+#: app/templates/public/ensembles_initial.html:92
+#: app/templates/public/person_initial.html:117
 msgid "Biografía Extendida"
 msgstr ""
 
@@ -743,7 +753,8 @@ msgid "Participantes"
 msgstr ""
 
 #: app/templates/main/editevent.html:18 app/templates/main/editevent.html:143
-#: app/templates/public/detalle.html:255
+#: app/templates/public/bio_ensemble_id.html:60
+#: app/templates/public/detalle.html:267
 #: app/templates/public/page_consultar.html:50
 #: app/templates/public/sidebar.html:151
 msgid "Repertorio"
@@ -817,6 +828,8 @@ msgid "Subir Archivo"
 msgstr ""
 
 #: app/templates/main/editevent.html:206
+#: app/templates/public/bio_ensemble_id.html:80
+#: app/templates/public/bio_id.html:109
 msgid "Archivos"
 msgstr ""
 
@@ -830,6 +843,7 @@ msgid "Tipo de instrumento"
 msgstr ""
 
 #: app/templates/main/editmusicalensemble.html:58
+#: app/templates/public/ensembles_initial.html:76
 msgid "Miembros"
 msgstr ""
 
@@ -873,14 +887,126 @@ msgstr ""
 msgid "X"
 msgstr ""
 
-#: app/templates/public/bio_id.html:3
-msgid "Biografía de Stein, Hanns"
+#: app/templates/public/bio_ensemble_id.html:37
+#: app/templates/public/bio_id.html:37
+msgid "Investigación realizada por "
 msgstr ""
 
-#: app/templates/public/biographies.html:11
-msgid ""
-"Introducción para las biografías, textos sobre el proyecto FONDART, "
-"alcance, más información"
+#: app/templates/public/bio_ensemble_id.html:45
+msgid "Datos de la Agrupación"
+msgstr ""
+
+#: app/templates/public/bio_ensemble_id.html:56
+msgid "Fecha de fundación"
+msgstr ""
+
+#: app/templates/public/bio_ensemble_id.html:57
+msgid "Fecha de término"
+msgstr ""
+
+#: app/templates/public/bio_ensemble_id.html:58
+msgid "Tipo de ensamble o agrupación"
+msgstr ""
+
+#: app/templates/public/bio_ensemble_id.html:59
+msgid "Integrantes"
+msgstr ""
+
+#: app/templates/public/bio_ensemble_id.html:61
+#: app/templates/public/bio_id.html:81
+msgid "Premios, distinciones"
+msgstr ""
+
+#: app/templates/public/bio_ensemble_id.html:68
+#: app/templates/public/bio_id.html:89
+msgid "Biografía"
+msgstr ""
+
+#: app/templates/public/bio_ensemble_id.html:82
+#: app/templates/public/bio_id.html:111
+msgid "Enlaces de interés"
+msgstr ""
+
+#: app/templates/public/bio_ensemble_id.html:83
+#: app/templates/public/bio_id.html:112
+msgid "Información adicional"
+msgstr ""
+
+#: app/templates/public/bio_ensemble_id.html:90
+#: app/templates/public/bio_id.html:119
+msgid "Imágenes adjuntas"
+msgstr ""
+
+#: app/templates/public/bio_ensemble_id.html:99
+#: app/templates/public/detalle.html:93 app/templates/public/detalle.html:96
+#: app/templates/public/ensembles_initial.html:89
+#: app/templates/public/person_initial.html:110
+#: app/templates/public/person_initial.html:113
+msgid "Eventos asociados"
+msgstr ""
+
+#: app/templates/public/bio_id.html:26
+msgid "Biografía de"
+msgstr ""
+
+#: app/templates/public/bio_id.html:44
+msgid "Datos Personales"
+msgstr ""
+
+#: app/templates/public/bio_id.html:60
+msgid "Nacimiento"
+msgstr ""
+
+#: app/templates/public/bio_id.html:61
+msgid "Informaciones familiares"
+msgstr ""
+
+#: app/templates/public/bio_id.html:70
+msgid "Información Profesional"
+msgstr ""
+
+#: app/templates/public/bio_id.html:76
+msgid "Instrumento / registro vocal / otros"
+msgstr ""
+
+#: app/templates/public/bio_id.html:77
+msgid "Lugar/es de estudio y años correspondientes"
+msgstr ""
+
+#: app/templates/public/bio_id.html:78
+msgid "Otros estudios"
+msgstr ""
+
+#: app/templates/public/bio_id.html:79
+msgid "Lugar/es de trabajo y años correspondientes"
+msgstr ""
+
+#: app/templates/public/bio_id.html:80
+msgid "Participación en ensambles y otros proyectos independientes"
+msgstr ""
+
+#: app/templates/public/bio_id.html:103
+msgid "Referencias y Publicaciones"
+msgstr ""
+
+#: app/templates/public/bio_id.html:129 app/templates/public/bio_id.html:132
+msgid "Eventos asociados a esta persona"
+msgstr ""
+
+#: app/templates/public/biographies.html:38
+#: app/templates/public/biographies.html:59
+#: app/templates/public/sidebar_inicio.html:90
+#: app/templates/public/sidebar_inicio.html:102
+#: app/templates/public/sidebar_inicio.html:114
+msgid "Acceder"
+msgstr ""
+
+#: app/templates/public/biographies.html:49 app/templates/public/menu.html:25
+#: app/templates/public/page_consultar.html:53
+#: app/templates/public/sidebar.html:153
+#: app/templates/public/sidebar_bio.html:16
+#: app/templates/public/sidebar_inicio.html:109
+msgid "Agrupaciones"
 msgstr ""
 
 #: app/templates/public/carousel.html:6 app/templates/public/inicio.html:3
@@ -897,7 +1023,7 @@ msgstr ""
 msgid "Información del Evento"
 msgstr ""
 
-#: app/templates/public/detalle.html:53 app/templates/public/detalle.html:109
+#: app/templates/public/detalle.html:53 app/templates/public/detalle.html:111
 #: app/templates/public/person_initial.html:69
 msgid "Nombre:"
 msgstr ""
@@ -933,79 +1059,85 @@ msgid "Información Biográfica"
 msgstr ""
 
 #: app/templates/public/detalle.html:91
+#: app/templates/public/ensembles_initial.html:87
+#: app/templates/public/person_initial.html:107
 msgid "Cerrar"
 msgstr ""
 
-#: app/templates/public/detalle.html:93 app/templates/public/detalle.html:97
-#: app/templates/public/person_initial.html:110
-#: app/templates/public/person_initial.html:114
-msgid ""
-"Eventos asociados a esta\n"
-"                        persona"
-msgstr ""
-
-#: app/templates/public/detalle.html:113
+#: app/templates/public/detalle.html:115
 msgid "Ciclo:"
 msgstr ""
 
-#: app/templates/public/detalle.html:117
+#: app/templates/public/detalle.html:119
 msgid "Tipo de Evento:"
 msgstr ""
 
-#: app/templates/public/detalle.html:121
+#: app/templates/public/detalle.html:123
 msgid "Fecha:"
 msgstr ""
 
-#: app/templates/public/detalle.html:126
+#: app/templates/public/detalle.html:128
 msgid "Organizador(es):"
 msgstr ""
 
-#: app/templates/public/detalle.html:140
+#: app/templates/public/detalle.html:142
 msgid "Ciudad:"
 msgstr ""
 
-#: app/templates/public/detalle.html:144
+#: app/templates/public/detalle.html:146
 msgid "Locación:"
 msgstr ""
 
-#: app/templates/public/detalle.html:155
+#: app/templates/public/detalle.html:157
 msgid "Participante(s)"
 msgstr ""
 
-#: app/templates/public/detalle.html:164 app/templates/public/detalle.html:222
+#: app/templates/public/detalle.html:166 app/templates/public/detalle.html:234
 msgid "Género"
 msgstr ""
 
-#: app/templates/public/detalle.html:167 app/templates/public/detalle.html:223
+#: app/templates/public/detalle.html:169 app/templates/public/detalle.html:235
 msgid "País(es)"
 msgstr ""
 
-#: app/templates/public/detalle.html:213
+#: app/templates/public/detalle.html:225
 msgid "Compositor(es)"
 msgstr ""
 
-#: app/templates/public/detalle.html:298
+#: app/templates/public/detalle.html:310
 msgid "ESTRENO:"
 msgstr ""
 
-#: app/templates/public/detalle.html:303
+#: app/templates/public/detalle.html:315
 msgid "Instrumentos:"
 msgstr ""
 
-#: app/templates/public/detalle.html:320
+#: app/templates/public/detalle.html:332
 msgid "[Agrupación]"
 msgstr ""
 
-#: app/templates/public/detalle.html:370
+#: app/templates/public/detalle.html:382
 msgid "Información Gráfica"
 msgstr ""
 
-#: app/templates/public/detalle.html:379
+#: app/templates/public/detalle.html:391
 msgid "[Ver Archivo]"
 msgstr ""
 
-#: app/templates/public/detalle.html:393
+#: app/templates/public/detalle.html:405
 msgid "Volver a la búsqueda"
+msgstr ""
+
+#: app/templates/public/ensembles_initial.html:3
+msgid "Catálogo de Agrupaciones"
+msgstr ""
+
+#: app/templates/public/ensembles_initial.html:32
+msgid "ensembles con inicial"
+msgstr ""
+
+#: app/templates/public/ensembles_initial.html:60
+msgid "Tipo de Agrupación"
 msgstr ""
 
 #: app/templates/public/inicio.html:10
@@ -1081,7 +1213,7 @@ msgstr ""
 msgid "Inicio"
 msgstr ""
 
-#: app/templates/public/menu.html:7 app/templates/public/sidebar_about.html:7
+#: app/templates/public/menu.html:7
 msgid "Acerca de"
 msgstr ""
 
@@ -1092,7 +1224,7 @@ msgid ""
 msgstr ""
 
 #: app/templates/public/menu.html:10 app/templates/public/sidebar_about.html:17
-#: app/templates/public/sidebar_inicio.html:118
+#: app/templates/public/sidebar_inicio.html:129
 msgid "Cómo Citar"
 msgstr ""
 
@@ -1111,11 +1243,11 @@ msgstr ""
 msgid "Participantes y Compositores"
 msgstr ""
 
-#: app/templates/public/menu.html:27
+#: app/templates/public/menu.html:30
 msgid "English Version"
 msgstr ""
 
-#: app/templates/public/menu.html:30
+#: app/templates/public/menu.html:33
 msgid "Versión en Español"
 msgstr ""
 
@@ -1327,11 +1459,6 @@ msgid ""
 msgstr ""
 
 #: app/templates/public/page_consultar.html:53
-#: app/templates/public/sidebar.html:153
-msgid "Agrupaciones"
-msgstr ""
-
-#: app/templates/public/page_consultar.html:53
 msgid ""
 "Corresponde a agrupaciones musicales (ensambles, coros, cuartetos de "
 "cuerdas, etc) que participaron en los eventos. Pueden buscarse por nombre"
@@ -1341,7 +1468,7 @@ msgstr ""
 
 #: app/templates/public/page_enlaces.html:3
 #: app/templates/public/sidebar_about.html:22
-#: app/templates/public/sidebar_inicio.html:120
+#: app/templates/public/sidebar_inicio.html:130
 msgid "Enlaces de Interés"
 msgstr ""
 
@@ -1532,7 +1659,7 @@ msgstr ""
 
 #: app/templates/public/sidebar.html:139
 #: app/templates/public/sidebar_about.html:12
-#: app/templates/public/sidebar_inicio.html:117
+#: app/templates/public/sidebar_inicio.html:128
 msgid "Cómo Consultar"
 msgstr ""
 
@@ -1548,8 +1675,8 @@ msgstr ""
 msgid "Limpiar"
 msgstr ""
 
-#: app/templates/public/sidebar_about.html:4
-msgid "Sobre el Proyecto"
+#: app/templates/public/sidebar_about.html:7
+msgid "Acerca de la Base de Datos"
 msgstr ""
 
 #: app/templates/public/sidebar_about.html:8
@@ -1570,10 +1697,6 @@ msgid ""
 "aquí recopilados"
 msgstr ""
 
-#: app/templates/public/sidebar_bio.html:4
-msgid "Texto respecto a las biografías"
-msgstr ""
-
 #: app/templates/public/sidebar_inicio.html:67
 msgid "Buscar Conciertos"
 msgstr ""
@@ -1588,22 +1711,19 @@ msgid ""
 " mostrados en este sitio."
 msgstr ""
 
-#: app/templates/public/sidebar_inicio.html:90
-#: app/templates/public/sidebar_inicio.html:102
-msgid "Acceder"
-msgstr ""
-
 #: app/templates/public/sidebar_inicio.html:100
-msgid ""
-"Catálogo de participantes, compositores y agrupaciones presentes en la "
-"base de datos"
+msgid "Catálogo de participantes y compositores en la base de datos"
 msgstr ""
 
 #: app/templates/public/sidebar_inicio.html:112
+msgid "Catálogo de agrupaciones en la base de datos"
+msgstr ""
+
+#: app/templates/public/sidebar_inicio.html:124
 msgid "Más Información"
 msgstr ""
 
-#: app/templates/public/sidebar_inicio.html:116
+#: app/templates/public/sidebar_inicio.html:127
 msgid "Acerca del proyecto"
 msgstr ""
 
