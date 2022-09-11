@@ -1,41 +1,19 @@
-{% macro form_field(field) -%}
-{% set with_label = kwargs.pop('with_label', False) %}
-{% set placeholder = '' %}
-{% if not with_label %}
-{% set placeholder = field.label.text %}
-{% endif %}
-<div class="control-group {% if field.errors %}error{% endif %}">
-    {% if with_label %}
-    <label for="{{ field.id }}" class="control-label">
-        {{ field.label.text }}{% if field.flags.required %} *{% endif %}:
-    </label>
-    {% endif %}
-    <div class="controls">
-        {% set class_ = kwargs.pop('class_', '') %}
-        {% if field.flags.required %}
-        {% set class_ = class_ + ' required' %}
-        {% endif %}
-        {% if field.type == 'BooleanField' %}
-        <label class="checkbox">
-            {{ field(class_=class_, **kwargs) }}
-            {{ field.label.text|safe }}
-        </label>
+{% macro form_field(f) -%}
+<tr>
+    <th>{{ f.label }}{% if f.flags.required %} (*)<br><small>Campo requerido</small>{% endif %}</th>
+    <td>
+        {% if f.type in ('TextField', 'StringField', 'IntegerField') %}
+        {{ f(size=55) }}
+        {% elif f.type in ('TextAreaField') %}
+        {{ f(cols="55", rows="6")|safe }}
         {% else %}
-        {% if field.type in ('TextField', 'TextAreaField', 'PasswordField') %}
-        {% set class_ = class_ + ' input-xlarge' %}
-        {% elif field.type == 'FileField' %}
-        {% set class_ = class_ + ' input-file' %}
+        Ojo, no hay para {{ f.type }}
         {% endif %}
-        {{ field(class_=class_, placeholder=placeholder, **kwargs) }}
-        {% endif %}
-        {% if field.errors %}
-        <span class="error help-inline">{{ field.errors|join(', ') }}</span>
-        {% endif %}
-        {% if field.description %}
-        <p class="help-block">{{ field.description|safe }}</p>
-        {% endif %}
-    </div>
-</div>
+        {% for error in f.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </td>
+</tr>
 {%- endmacro %}
 
 {% extends "base.html" %}
@@ -49,6 +27,13 @@
 </style>	
     <h1>{{ title }}</h1>
 
+    {% if form.errors.items() %}
+    <div class="alert alert-danger" role="danger">
+    {% for field, errors in form.errors.items() %}
+    {{ ', '.join(errors) }}
+    {% endfor %}
+    </div>
+    {% endif %}
 
     <p>
         Para modificar la información de la persona, debe ir a
@@ -70,7 +55,7 @@
                 <ul class="nav nav-tabs" id="myTab">
                     <li><a data-toggle="tab" href="#sectionBiograficos">{{ _("Biografía Extendida")}} </a></li>
                     <li><a data-toggle="tab" href="#sectionPersonales">{{ _("Datos") }}</a></li>
-                    <li><a data-toggle="tab" href="#sectionInvestigadores">{{ _("Investigadores")}} </a></li>
+                    <li><a data-toggle="tab" href="#sectionInvestigadores">{{ _("Investigación")}} </a></li>
                     <li><a data-toggle="tab" href="#sectionMedia">{{ _("Media")}} </a></li>
                 </ul>
         
@@ -84,62 +69,12 @@
                     
                     
                         <table class="table">
-                            <tr>
-                                <th>Biografía (*)<br>
-                                    <small>Campo requerido</small>
-                                </th>
-                                <td>{{ form.biografia(cols="55", rows="6")|safe }}<br>
-                    
-                                    {% for error in form.biografia.errors %}
-                                    <span style="color: red;">[{{ error }}]</span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Bibliografía</th>
-                                <td>{{ form.bibliografia(cols="55", rows="6")|safe }}<br>
-                    
-                                    {% for error in form.bibliografia.errors %}
-                                    <span style="color: red;">[{{ error }}]</span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Archivos</th>
-                                <td>{{ form.archivos(cols="55", rows="6")|safe }}<br>
-                    
-                                    {% for error in form.archivos.errors %}
-                                    <span style="color: red;">[{{ error }}]</span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Discografía</th>
-                                <td>{{ form.discografia(cols="55", rows="6")|safe }}<br>
-                    
-                                    {% for error in form.discografia.errors %}
-                                    <span style="color: red;">[{{ error }}]</span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Enlaces</th>
-                                <td>{{ form.links(cols="55", rows="6")|safe }}<br>
-                    
-                                    {% for error in form.links.errors %}
-                                    <span style="color: red;">[{{ error }}]</span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Otros</th>
-                                <td>{{ form.otros(cols="55", rows="6")|safe }}<br>
-                    
-                                    {% for error in form.otros.errors %}
-                                    <span style="color: red;">[{{ error }}]</span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
+                            {{ form_field(form.biografia) }}
+                            {{ form_field(form.bibliografia) }}
+                            {{ form_field(form.archivos) }}
+                            {{ form_field(form.discografia) }}
+                            {{ form_field(form.links) }}
+                            {{ form_field(form.otros) }}
                         </table>
                     
                     
@@ -153,78 +88,16 @@
                     <div id="sectionPersonales" class="tab-pane fade">
                         <h2>{{ _("Datos") }} </h2>
                         <table class="table">
-                            <tr>
-                                <th>Familia</th>
-                                <td>{{ form.familia(cols="55", rows="6")|safe }}<br>
-                                
-                                {% for error in form.familia.errors %}
-                                <span style="color: red;">[{{ error }}]</span>
-                                {% endfor %}</td>
-                            </tr>
-                            <tr>
-                                <th>Profesión</th>
-                                <td>{{ form.profesion(cols="55", rows="6")|safe }}<br>
-                                
-                                {% for error in form.profesion.errors %}
-                                <span style="color: red;">[{{ error }}]</span>
-                                {% endfor %}</td>
-                            </tr>
-                            <tr>
-                                <th>Instrumento</th>
-                                <td>{{ form.instrumento(cols="55", rows="6")|safe }}<br>
-                                
-                                {% for error in form.instrumento.errors %}
-                                <span style="color: red;">[{{ error }}]</span>
-                                {% endfor %}</td>
-                            </tr>
-                            <tr>
-                                <th>Estudios Formales</th>
-                                <td>{{ form.estudios_formales(cols="55", rows="6")|safe }}<br>
-                                
-                                {% for error in form.estudios_formales.errors %}
-                                <span style="color: red;">[{{ error }}]</span>
-                                {% endfor %}</td>
-                            </tr>
-                            <tr>
-                                <th>Estudios Informales</th>
-                                <td>{{ form.estudios_informales(cols="55", rows="6")|safe }}<br>
-                                
-                                {% for error in form.estudios_informales.errors %}
-                                <span style="color: red;">[{{ error }}]</span>
-                                {% endfor %}</td>
-                            </tr>
-                            <tr>
-                                <th>Trabajo</th>
-                                <td>{{ form.trabajo(cols="55", rows="6")|safe }}<br>
-                                
-                                {% for error in form.trabajo.errors %}
-                                <span style="color: red;">[{{ error }}]</span>
-                                {% endfor %}</td>
-                            </tr>
-                            <tr>
-                                <th>Ensambles</th>
-                                <td>{{ form.ensambles(cols="55", rows="6")|safe }}<br>
-                                
-                                {% for error in form.ensambles.errors %}
-                                <span style="color: red;">[{{ error }}]</span>
-                                {% endfor %}</td>
-                            </tr>
-                            <tr>
-                                <th>Premios</th>
-                                <td>{{ form.premios(cols="55", rows="6")|safe }}<br>
-                                
-                                {% for error in form.premios.errors %}
-                                <span style="color: red;">[{{ error }}]</span>
-                                {% endfor %}</td>
-                            </tr>
-                            <tr>
-                                <th>Publicaciones</th>
-                                <td>{{ form.publicaciones(cols="55", rows="6")|safe }}<br>
-                                
-                                {% for error in form.publicaciones.errors %}
-                                <span style="color: red;">[{{ error }}]</span>
-                                {% endfor %}</td>
-                            </tr>
+                            {{ form_field(form.nombre_completo) }}
+                            {{ form_field(form.nacimiento_y_muerte) }}
+                            {{ form_field(form.familia) }}
+                            {{ form_field(form.profesion) }}
+                            {{ form_field(form.instrumento) }}
+                            {{ form_field(form.estudios_formales) }}
+                            {{ form_field(form.estudios_informales) }}
+                            {{ form_field(form.trabajo) }}
+                            {{ form_field(form.ensambles) }}
+                            {{ form_field(form.premios) }}
                         </table>
 
 
@@ -236,35 +109,11 @@
 
 
                     <div id="sectionInvestigadores" class="tab-pane fade">
-                        <h2>{{ _("Investigadores") }} </h2>
+                        <h2>{{ _("Investigación") }} </h2>
                         <table class="table">
-                            <tr>
-                                <th>Autores de la investigación</th>
-                                <td>{{ form.investigacion_autores(cols="55", rows="6")|safe }}<br>
-                        
-                                    {% for error in form.investigacion_autores.errors %}
-                                    <span style="color: red;">[{{ error }}]</span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Fechas de la investigación</th>
-                                <td>{{ form.investigacion_fecha(cols="55", rows="6")|safe }}<br>
-                            
-                                    {% for error in form.investigacion_fecha.errors %}
-                                    <span style="color: red;">[{{ error }}]</span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Notas internas</th>
-                                <td>{{ form.investigacion_notas(cols="55", rows="6")|safe }}<br>
-                            
-                                    {% for error in form.investigacion_notas.errors %}
-                                    <span style="color: red;">[{{ error }}]</span>
-                                    {% endfor %}
-                                </td>
-                            </tr>
+                            {{ form_field(form.investigacion_autores) }}
+                            {{ form_field(form.investigacion_fecha) }}
+                            {{ form_field(form.investigacion_notas) }}
                         </table>
                         <br>
                         {{ form.submit() }}
@@ -301,11 +150,11 @@
                     </tr>
                     <tr>
                         <th>Nacimiento:</th>
-                        <td>{{obj.person.birth_year}}</td>
+                        <td>{% if obj.person.birth_year %}{{obj.person.birth_year}}{% else %}-{% endif %}</td>
                     </tr>
                     <tr>
                         <th>Muerte:</th>
-                        <td>{{obj.person.death_year}}</td>
+                        <td>{% if obj.person.death_year %}{{obj.person.death_year}}{% else %}-{% endif %}</td>
                     </tr>
                     <tr>
                         <th>Genero:</th>

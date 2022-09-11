@@ -1297,13 +1297,10 @@ def EditBioPerson(id):
         flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
 
     original_data=BioPerson.query.filter_by(id=id).first_or_404()
-    # parent = original_data.person
     form = EditBioPersonForm(dbmodel=BioPerson,original_data=original_data)
 
     if form.validate_on_submit():
         form.populate_obj(original_data)
-        
-            # original_data.__dict__[x]=form[x].data
 
         addHistoryEntry('Modificado','BioPerson: {}'.format(original_data.get_name()))
         db.session.commit()
@@ -1313,7 +1310,7 @@ def EditBioPerson(id):
         
 
     else:
-        for x in ['trabajo', 'links', 'otros', 'ensambles', 'premios', 'familia', 'profesion', 'publicaciones', 'instrumento', 'biografia', 'estudios_formales', 'bibliografia', 'investigacion_autores', 'estudios_informales', 'investigacion_fecha', 'archivos', 'investigacion_notas', 'discografia']:
+        for x in ['nombre_completo', 'nacimiento_y_muerte', 'trabajo', 'links', 'otros', 'ensambles', 'premios', 'familia', 'profesion', 'publicaciones', 'instrumento', 'biografia', 'estudios_formales', 'bibliografia', 'investigacion_autores', 'estudios_informales', 'investigacion_fecha', 'archivos', 'investigacion_notas', 'discografia']:
             form[x].data = original_data.__dict__[x]
 
         return render_template('main/editbioperson.html', form=form, obj=original_data, 
