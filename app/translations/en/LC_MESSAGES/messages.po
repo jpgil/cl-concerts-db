@@ -391,7 +391,7 @@ msgstr "Profesion"
 #: app/templates/public/bio_id.html:108
 #
 msgid "Bibliografía"
-msgstr "Biography"
+msgstr "Bibliography"
 
 #: app/main/forms.py:202 app/templates/public/bio_ensemble_id.html:81
 #: app/templates/public/bio_id.html:110
