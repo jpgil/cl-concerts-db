@@ -61,7 +61,7 @@ pyparsing==2.4.6
 python-dateutil==2.8.0
 python-dotenv==0.10.3
 python-editor==1.0.4
-python-Levenshtein==0.12.0
+python-Levenshtein
 pytoml==0.1.21
 pytz==2019.2
 pyuca==1.2
