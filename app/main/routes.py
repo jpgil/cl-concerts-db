@@ -15,6 +15,7 @@ from sqlalchemy import or_, and_
 from werkzeug.local import LocalProxy
 from pyuca import Collator 
 import os
+import time
 
 log = LocalProxy(lambda: current_app.logger)
 
@@ -1313,7 +1314,7 @@ def EditBioPerson(id):
         for x in ['nombre_completo', 'nacimiento_y_muerte', 'trabajo', 'links', 'otros', 'ensambles', 'premios', 'familia', 'profesion', 'publicaciones', 'instrumento', 'biografia', 'estudios_formales', 'bibliografia', 'investigacion_autores', 'estudios_informales', 'investigacion_fecha', 'archivos', 'investigacion_notas', 'discografia']:
             form[x].data = original_data.__dict__[x]
 
-        return render_template('main/editbioperson.html', form=form, obj=original_data, 
+        return render_template('main/editbioperson.html', form=form, obj=original_data, rand=(time.time()), 
         title=_('Editar Biografía de ') + original_data.person.get_name() )
 
 
