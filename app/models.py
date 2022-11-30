@@ -210,6 +210,8 @@ class MediaLink(db.Model):
     url = db.Column(db.String(512))
     description = db.Column(db.String(2000))
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'))   
+    bio_person_id = db.Column(db.Integer, db.ForeignKey('bio_person.id'))   
+    bio_musical_ensemble_id = db.Column(db.Integer, db.ForeignKey('bio_musical_ensemble.id'))   
     def get_name(self):
         return self.filename
     def __repr__(self):
@@ -421,6 +423,7 @@ class BioPerson(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     person_id = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=False)  
+    medialinks = db.relationship('MediaLink', backref='bio_person', lazy='dynamic')     
 
     # Investigadores del cl-concert-db
     investigacion_autores = db.Column(MEDIUMTEXT(charset='utf8mb4'))
@@ -470,6 +473,7 @@ class BioMusicalEnsemble(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     musical_ensemble_id = db.Column(db.Integer, db.ForeignKey('musical_ensemble.id'), nullable=False)
+    medialinks = db.relationship('MediaLink', backref='bio_musical_ensemble', lazy='dynamic')     
 
     # Investigadores del cl-concert-db
     investigacion_autores = db.Column(MEDIUMTEXT(charset='utf8mb4'))

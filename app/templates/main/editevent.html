@@ -210,7 +210,7 @@
                data-only-info-pagination="false"
                data-side-pagination="server"
                data-pagination="true"
-               data-url={{ url_for("main.getMediaLinkListTable",event_id=event_id) }}  >
+               data-url={{ url_for("main.getMediaLinkListTable", id=event_id, id_type='event') }}  >
                 <thead>
                     <tr>
                         <th data-field="filename">{{ _("Archivo") }}</th>
@@ -234,5 +234,5 @@
     <script src="{{ url_for('static', filename = 'js/lib/select2.min.js') }}"></script>  
     <script type = "text/javascript"  src = "{{ url_for('static', filename = 'js/flash_message.js') }}" ></script>
     <script type = "text/javascript"  src = "{{ url_for('static', filename = 'js/dd_select2.js') }}" ></script>
-    <script src="{{url_for('static', filename='js/events.js')}}"></script>
+    <script src="{{url_for('static', filename='js/events.js')}}?rand={{rand}}"></script>
 {% endblock %}
