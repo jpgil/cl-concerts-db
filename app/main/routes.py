@@ -17,6 +17,12 @@ from pyuca import Collator
 import os
 import time
 
+
+# Used to refresh JS
+def randEvent():
+    return time.time()
+
+
 log = LocalProxy(lambda: current_app.logger)
 
 
@@ -420,6 +426,30 @@ def getMediaLinkListTable(id, id_type='event'):
                 'url': file.url })
     return jsonify(data)
 
+@bp.route('/listtable/imagelink/<id>/<id_type>')
+def getImageLinkListTable(id, id_type=''):
+    limit = request.args.get('limit', 10, type=int)
+    offset = request.args.get('offset', 0, type=int)
+    data={ "rows": [], "total": 0 }
+    if id_type=='bio_person':
+        imagelinks=ImageLink.query.filter_by(bio_person_id=id)
+    elif id_type=='bio_musical_ensemble':
+        imagelinks=ImageLink.query.filter_by(bio_musical_ensemble_id=id)
+    else:
+        raise Exception('%s not an id_type' % id_type )
+    if imagelinks:
+        data["total"]=imagelinks.count()
+        for file in imagelinks.order_by(ImageLink.filename).limit(limit).offset(offset).all():
+            (path,filename)=os.path.split(file.filename)
+            data["rows"].append({ 'filename': filename ,
+                'description': file.description,
+                'id': file.id, 
+                'type': file.mime_type,
+                'is_cover': file.is_cover,
+                'id_type': id_type,
+                'id_bio': id,
+                'url': file.url })
+    return jsonify(data)
 
 
 @bp.route('/list/participants/<event_id>')
@@ -1322,7 +1352,7 @@ def EditBioPerson(id):
         for x in ['nombre_completo', 'nacimiento_y_muerte', 'trabajo', 'links', 'otros', 'ensambles', 'premios', 'familia', 'profesion', 'publicaciones', 'instrumento', 'biografia', 'estudios_formales', 'bibliografia', 'investigacion_autores', 'estudios_informales', 'investigacion_fecha', 'archivos', 'investigacion_notas', 'discografia']:
             form[x].data = original_data.__dict__[x]
 
-        return render_template('main/editbioperson.html', form=form, obj=original_data, rand=1, 
+        return render_template('main/editbioperson.html', form=form, obj=original_data, rand=randEvent(), 
         title=_('Editar Biografía de ') + original_data.person.get_name() )
 
 
@@ -1382,5 +1412,5 @@ def EditBioMusicalEnsemble(id):
             except:
                 pass
 
-        return render_template('main/editbiomusicalensemble.html', form=form, obj=original_data, 
+        return render_template('main/editbiomusicalensemble.html', form=form, obj=original_data, rand=randEvent(), 
         title=_('Editar Biografía de ') + original_data.musical_ensemble.get_name() )
