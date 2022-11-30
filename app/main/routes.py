@@ -396,16 +396,22 @@ def getMusicalEnsembleMemberListTable(musical_ensemble_id):
     return jsonify(data)
 
 
-@bp.route('/listtable/medialink/<event_id>')
-def getMediaLinkListTable(event_id):
+@bp.route('/listtable/medialink/<id>/<id_type>')
+def getMediaLinkListTable(id, id_type='event'):
     limit = request.args.get('limit', 10, type=int)
     offset = request.args.get('offset', 0, type=int)
     data={ "rows": [], "total": 0 }
-    event=Event.query.filter_by(id=event_id).first()
-    if event:
-        data["total"]=event.medialinks.count()
-        medialinks=event.medialinks.order_by(MediaLink.filename).limit(limit).offset(offset).all()
-        for file in medialinks:
+    if id_type=='event':
+        medialinks=MediaLink.query.filter_by(event_id=id)
+    elif id_type=='bio_person':
+        medialinks=MediaLink.query.filter_by(bio_person_id=id)
+    elif id_type=='bio_musical_ensemble':
+        medialinks=MediaLink.query.filter_by(bio_musical_ensemble_id=id)
+    else:
+        raise Exception('%s not an id_type' % id_type )
+    if medialinks:
+        data["total"]=medialinks.count()
+        for file in medialinks.order_by(MediaLink.filename).limit(limit).offset(offset).all():
             (path,filename)=os.path.split(file.filename)
             data["rows"].append({ 'filename': filename ,
                 'description': file.description,
@@ -413,6 +419,8 @@ def getMediaLinkListTable(event_id):
                 'type': file.mime_type,
                 'url': file.url })
     return jsonify(data)
+
+
 
 @bp.route('/list/participants/<event_id>')
 def getParticipantsList(event_id):

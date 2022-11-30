@@ -198,28 +198,47 @@ def delete_performance_detail():
 #    response.headers['Location'] = url_for('api.get_user', id=user.id)
     return response
 
+# Method improved to accept media links from other sources.
 @bp.route('/uploadajax', methods=['POST'])
 @login_required
 def upldfile():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))    
     if checkForKeys(['file'],request.files):
-        return bad_request(_('debe incluir al menos un archivo'))    
-    if checkForKeys(['event_id'],request.form):
-        return bad_request(_('debe incluir el id del evento'))
+        return bad_request(_('debe incluir al menos un archivo: %s' % repr(request.files) ))    
     if checkForKeys(['description'],request.form):
         return bad_request(_('debe incluir una descripcion'))   
     elif request.form['description'].strip() == '':
         return bad_request(_('debe incluir una descripcion'))   
+
+    # Search for ID, to discriminate byb type of requester
+    id_type, id_value = False, False
+    if 'event_id' in request.form.keys():
+        id_type, id_value = 'event', request.form['event_id']
+        folder_prefix = ''
+    elif 'bio_person_id' in request.form.keys():
+        id_type, id_value = 'bio_person', request.form['bio_person_id']
+        folder_prefix = 'bio_person/'
+    else:
+        return bad_request('id_type no encontrado')
+
+    if not id_type:  
+        return bad_request(_('debe incluir el id del evento %s %s' % (id_type, id_value) ))
+
     files = request.files['file']
-    if files:
-        filename = files_collection.save(request.files['file'],folder=request.form['event_id'])
-        url = files_collection.url(filename)            
-        current_app.logger.info('FileName: ' + filename)
+    filename = files_collection.save(request.files['file'],folder='{}{}'.format( folder_prefix, id_value ))
+    url = files_collection.url(filename)            
+    current_app.logger.info('FileName: ' + filename)
+    if id_type == 'event':
         event=Event.query.filter_by(id=request.form['event_id']).first()
         db.session.add(MediaLink(event_id=int(request.form['event_id']), filename=filename, mime_type=files.mimetype,url=url, description=request.form['description']))
         addHistoryEntry('Agregado','Archivo: {} a {}'.format(request.files['file'],event.name))
-        db.session.commit()
+    elif id_type == 'bio_person':
+        db.session.add(MediaLink(bio_person_id=int( id_value ), filename=filename, mime_type=files.mimetype,url=url, description=request.form['description']))
+        addHistoryEntry('Agregado','Archivo: {} a bio_person_id={}'.format(request.files['file'],id_value))
+    else:
+        raise Exception('Algo muy mal ocurrio aqui')
+    db.session.commit()
     response = jsonify({})
     response.status_code = 201
 #    response.headers['Location'] = url_for('api.get_user', id=user.id)
@@ -234,15 +253,16 @@ def deleteFile():
         return bad_request(_('id de archivo no incluído'))
     file=MediaLink.query.filter_by(id=request.form['medialink_id']).first()        
     try:
-        os.remove(files_collection.path(file.filename))
-        addHistoryEntry('Eliminado','Archivo: {} de {}'.format(file.filename,file.event.name))
+        if os.path.exists(files_collection.path(file.filename)):
+            os.remove(files_collection.path(file.filename))
+        addHistoryEntry('Eliminado','Archivo: {} id = {}'.format(file.filename,file.id))
         db.session.delete(file)
         db.session.commit()
         response = jsonify({})
         response.status_code = 200
         return response
     except:
-        return server_error("Error removing {}".format(files_collection.path(file.filename)))
+        return bad_request("Error removing {}".format(files_collection.path(file.filename)))
   
 @bp.route('/musicalensemblemember/add',methods=['POST'])
 @login_required

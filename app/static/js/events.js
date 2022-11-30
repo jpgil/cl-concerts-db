@@ -393,6 +393,7 @@ $(function() {
         form_data.append("description",$('#description')[0].value)
 
         console.log($('#description'))
+        console.log(form_data)
         $.ajax({
             type: 'POST',
             url: '/api/uploadajax',

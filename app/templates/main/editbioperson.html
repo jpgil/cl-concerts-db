@@ -120,6 +120,8 @@
 
                     </div>
         
+                                </form>
+
         
                     <div id="sectionMedia" class="tab-pane fade in active">
                         <h2>{{ _("Media") }} </h2>
@@ -127,9 +129,9 @@
             <h3>{{ _("Agregar un archivo") }} </h3>
             <br>
             <form id="uploadform" method="post" enctype="multipart/form-data">
-                <label for="file">{{ _("Subir Archivo") }} </label>
+                <label for="file">{{ _("Seleccionar un Archivo") }} </label>
                 <input name="file" type="file">
-                <input type="hidden" id="event_id" name="event_id" value="{{event_id}}">
+                <input type="hidden" id="bio_person_id" name="bio_person_id" value="{{obj.id}}">
                 <br>
                 <div class="form-group">
                     <label for="description">{{ _("Descripción") }}</label>
@@ -141,7 +143,7 @@
             <h3>{{ _("Archivos") }} </h3>
             <table id="table-medialink" data-toggle="table" data-show-footer="false" data-only-info-pagination="false"
                 data-side-pagination="server" data-pagination="true" data-url={{
-                url_for("main.getMediaLinkListTable",event_id=event_id) }}>
+                url_for("main.getMediaLinkListTable", id=obj.id, id_type='bio_person') }}>
                 <thead>
                     <tr>
                         <th data-field="filename">{{ _("Archivo") }}</th>
@@ -157,7 +159,6 @@
                     </div>
         
                 </div>
-            </form>
             </div>
         
 
