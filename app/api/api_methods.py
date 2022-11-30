@@ -219,6 +219,9 @@ def upldfile():
     elif 'bio_person_id' in request.form.keys():
         id_type, id_value = 'bio_person', request.form['bio_person_id']
         folder_prefix = 'bio_person/'
+    elif 'bio_musical_ensemble_id' in request.form.keys():
+        id_type, id_value = 'bio_musical_ensemble', request.form['bio_musical_ensemble_id']
+        folder_prefix = 'bio_musical_ensemble/'
     else:
         return bad_request('id_type no encontrado')
 
@@ -236,6 +239,9 @@ def upldfile():
     elif id_type == 'bio_person':
         db.session.add(MediaLink(bio_person_id=int( id_value ), filename=filename, mime_type=files.mimetype,url=url, description=request.form['description']))
         addHistoryEntry('Agregado','Archivo: {} a bio_person_id={}'.format(request.files['file'],id_value))
+    elif id_type == 'bio_musical_ensemble':
+        db.session.add(MediaLink(bio_musical_ensemble_id=int( id_value ), filename=filename, mime_type=files.mimetype,url=url, description=request.form['description']))
+        addHistoryEntry('Agregado','Archivo: {} a bio_musical_ensemble={}'.format(request.files['file'],id_value))
     else:
         raise Exception('Algo muy mal ocurrio aqui')
     db.session.commit()

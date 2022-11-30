@@ -107,7 +107,7 @@ def get_locale():
         session['language'] = Config.DEFAULT_LANGUAGE
         logger.info(f"DEFAULT Lang={Config.DEFAULT_LANGUAGE} loaded from CONFIG, because nothing was set before")
 
-    logger.info(f"LANGUAGE FOR THIS REQUEST: {session['language']}")
+    # logger.info(f"LANGUAGE FOR THIS REQUEST: {session['language']}")
     return session['language'] # The function returns the language stored in config.py as "defaultlang"
 
 from app import models
