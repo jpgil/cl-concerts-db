@@ -10,7 +10,7 @@ from flask_mail import Mail
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_babel import Babel, lazy_gettext as _l
-from flask_uploads import UploadSet, configure_uploads, AllExcept
+from flask_uploads import UploadSet, configure_uploads, AllExcept, IMAGES
 #from elasticsearch import Elasticsearch
 from flask_caching import Cache
 from config import Config
@@ -31,7 +31,7 @@ babel = Babel()
 cache = Cache(config={'CACHE_TYPE': 'simple', 'CACHE_DEFAULT_TIMEOUT': 9999999999 })
 scheduler = BackgroundScheduler()
 files_collection = UploadSet('uploads', AllExcept(('exe', 'iso')))
-
+img_collection = UploadSet('uploads', IMAGES)
 
 
 def create_app(config_class=Config):

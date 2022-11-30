@@ -4,7 +4,7 @@ from app import db
 from app.api.errors import bad_request, server_error
 from app.models import *
 from flask_babel import _
-from app import files_collection
+from app import files_collection, img_collection
 from app.main.routes import addHistoryEntry,getStringForModel
 from sqlalchemy import and_
 
@@ -225,9 +225,6 @@ def upldfile():
     else:
         return bad_request('id_type no encontrado')
 
-    if not id_type:  
-        return bad_request(_('debe incluir el id del evento %s %s' % (id_type, id_value) ))
-
     files = request.files['file']
     filename = files_collection.save(request.files['file'],folder='{}{}'.format( folder_prefix, id_value ))
     url = files_collection.url(filename)            
@@ -250,13 +247,92 @@ def upldfile():
 #    response.headers['Location'] = url_for('api.get_user', id=user.id)
     return response
         
+
+@bp.route('/uploadajaximage', methods=['POST'])
+@login_required
+def upldfileimage():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))    
+    if checkForKeys(['file'],request.files):
+        return bad_request(_('debe incluir al menos un archivo: %s' % repr(request.files) ))    
+    if checkForKeys(['description'],request.form):
+        return bad_request(_('debe incluir una descripcion'))   
+    elif request.form['description'].strip() == '':
+        return bad_request(_('debe incluir una descripcion'))   
+
+    # Search for ID, to discriminate byb type of requester
+    id_type, id_value = False, False
+    if 'bio_person_id' in request.form.keys():
+        id_type, id_value = 'bio_person', request.form['bio_person_id']
+        folder_prefix = 'images_bio_person/'
+    elif 'bio_musical_ensemble_id' in request.form.keys():
+        id_type, id_value = 'bio_musical_ensemble', request.form['bio_musical_ensemble_id']
+        folder_prefix = 'images_bio_musical_ensemble/'
+    else:
+        return bad_request('id_type no encontrado')
+
+    files = request.files['file']
+    try:
+        filename = img_collection.save(request.files['file'],folder='{}{}'.format( folder_prefix, id_value ))
+    except:
+        return bad_request("No es posible subir esa imagen")
+    url = img_collection.url(filename)            
+    current_app.logger.info('FileName: ' + filename)
+    if id_type == 'bio_person':
+        db.session.add(ImageLink(bio_person_id=int( id_value ), is_cover=False, filename=filename, mime_type=files.mimetype,url=url, description=request.form['description']))
+        addHistoryEntry('Agregado','Imagen: {} a bio_person_id={}'.format(request.files['file'],id_value))
+    elif id_type == 'bio_musical_ensemble':
+        db.session.add(ImageLink(bio_musical_ensemble_id=int( id_value ), is_cover=False, filename=filename, mime_type=files.mimetype,url=url, description=request.form['description']))
+        addHistoryEntry('Agregado','Imagen: {} a bio_musical_ensemble={}'.format(request.files['file'],id_value))
+    else:
+        raise Exception('Algo muy mal ocurrio aqui')
+    db.session.commit()
+    response = jsonify({})
+    response.status_code = 201
+    return response
+
+
+@bp.route('updatecover', methods=['POST', 'GET'])
+@login_required
+def updateCover():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))   
+
+    id_type = request.form['id_type']
+    id_bio = request.form['id_bio']
+    id_img = request.form['id_img']
+
+    # Remueve todos
+    if id_type=='bio_person':
+        imagelinks=ImageLink.query.filter_by(bio_person_id=id_bio)
+    elif id_type=='bio_musical_ensemble':
+        imagelinks=ImageLink.query.filter_by(bio_musical_ensemble_id=id_bio)
+    else:
+        return bad_request('%s not an id_type' % id_type )
+
+    if imagelinks:
+        for im in imagelinks.order_by(ImageLink.filename).all():
+            im.is_cover=False
+        #     print(imgelement)
+
+    # Asigna a img_id
+    thisImg = ImageLink.query.filter_by(id=id_img).first()
+    thisImg.is_cover = True
+
+    # Guarda
+    db.session.commit()
+
+    response = jsonify({})
+    response.status_code = 200
+    return response
+
 @bp.route('/medialink/delete', methods=['POST'])
 @login_required
 def deleteFile():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))    
     if checkForKeys(['medialink_id'],request.form):
-        return bad_request(_('id de archivo no incluído'))
+        return bad_request(_('id de archivo no incluido'))
     file=MediaLink.query.filter_by(id=request.form['medialink_id']).first()        
     try:
         if os.path.exists(files_collection.path(file.filename)):
@@ -269,7 +345,27 @@ def deleteFile():
         return response
     except:
         return bad_request("Error removing {}".format(files_collection.path(file.filename)))
-  
+
+@bp.route('/imagelink/delete', methods=['POST'])
+@login_required
+def deleteImage():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))    
+    if checkForKeys(['imagelink_id'],request.form):
+        return bad_request(_('id de archivo no incluído'))
+    file=ImageLink.query.filter_by(id=request.form['imagelink_id']).first()        
+    try:
+        if os.path.exists(img_collection.path(file.filename)):
+            os.remove(img_collection.path(file.filename))
+        addHistoryEntry('Eliminado','Imagen: {} id = {}'.format(file.filename,file.id))
+        db.session.delete(file)
+        db.session.commit()
+        response = jsonify({})
+        response.status_code = 200
+        return response
+    except:
+        return bad_request("Error removing {}".format(img_collection.path(file.filename)))
+
 @bp.route('/musicalensemblemember/add',methods=['POST'])
 @login_required
 def add_musical_ensemble_member():

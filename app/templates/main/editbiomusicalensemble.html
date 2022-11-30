@@ -57,13 +57,14 @@
                     <li><a data-toggle="tab" href="#sectionPersonales">{{ _("Datos Agrupación") }}</a></li>
                     <li><a data-toggle="tab" href="#sectionInvestigadores">{{ _("Investigación")}} </a></li>
                     <li><a data-toggle="tab" href="#sectionMedia">{{ _("Media")}} </a></li>
+                    <li><a data-toggle="tab" href="#sectionImagenes">{{ _("Imágenes")}} </a></li>
                 </ul>
         
         
                 <div class="tab-content">
 
                     
-                    <div id="sectionBiograficos" class="tab-pane fade">
+                    <div id="sectionBiograficos" class="tab-pane fade in active">
                     
                         <h2>{{ _("Biografía Extendida") }} </h2>
                     
@@ -119,7 +120,7 @@
         
                     </form>
 
-                    <div id="sectionMedia" class="tab-pane fade in active">
+                    <div id="sectionMedia" class="tab-pane fade">
                         <h2>{{ _("Media") }} </h2>
         
             <h3>{{ _("Agregar un archivo") }} </h3>
@@ -153,7 +154,43 @@
 
                         
                     </div>
-        
+
+                    <div id="sectionImagenes" class="tab-pane fade">
+                        <h2>{{ _("Imágenes") }} </h2>
+                    
+                        <h3>{{ _("Agregar un archivo") }} </h3>
+                        <br>
+                        <form id="uploadformimage" method="post" enctype="multipart/form-data">
+                            <label for="file">{{ _("Seleccionar un Archivo") }} </label>
+                            <input name="file" type="file">
+                            <input type="hidden" id="bio_musical_ensemble_id" name="bio_musical_ensemble_id" value="{{obj.id}}">
+                            <br>
+                            <div class="form-group">
+                                <label for="descriptionimage">{{ _("Descripción") }}</label>
+                                <input type="text" class="form-control" id="descriptionimage">
+                            </div>
+                            <button id="uploadButtonImage" type="button">{{ _("Subir Archivo") }}</button>
+                        </form>
+                        <br>
+                        <h3>{{ _("Imágenes") }} </h3>
+                        <table id="table-imagelink" data-toggle="table" data-show-footer="false" data-only-info-pagination="false"
+                            data-side-pagination="server" data-pagination="true" data-url={{ url_for("main.getImageLinkListTable",
+                            id=obj.id, id_type='bio_musical_ensemble' ) }}>
+                            <thead>
+                                <tr>
+                                    <th data-field="is_cover" data-formatter="isCoverCol">{{ "Portada" }}</th>
+                                    <th data-field="url" data-formatter="thumbnailCol">{{ _("Miniatura") }}</th>
+                                    <th data-field="filename">{{ _("Nombre") }}</th>
+                                    <th data-field="description">{{ _("Descripción") }} </th>
+                                    <!-- <th data-field="url" data-formatter="linkCol"></th> -->
+                                    <th data-field="id" data-formatter="deleteImageCol"></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    
+                    
+                    </div>
+                    
                 </div>
             </div>
         
