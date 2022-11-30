@@ -39,15 +39,45 @@
 {% if bio.investigacion_fecha %}{{ bio.investigacion_fecha }}{% endif %}
 </p>
 
+
+<!-- Modal para las imagenes -->
+{% for i in bio.imagelinks %}
+<div class="modal fade"  id="modalImage{{ i.id }}" tabindex="-1" role="dialog" aria-labelledby="modalImage{{ i.id }}"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <p style="margin: 1em 10%; text-align: center;">
+                {{ i.description }}
+                </p>
+            </div>
+            <div class="modal-body">
+                <img src="{{ i.url }}" style="margin-bottom: 1em; width: 100%;" alt="{{ i.description | e }}">
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+
 <div class="card">
     <div class="card-header">
         {{_("Datos Personales")}}
     </div>
 
     <div class="card-body">
+
         <table class="table biografia">
             <tbody>
                 <tr class="first">
+                    {% if bio.imagelinks.filter_by(is_cover=True).all() %}
+                    {% for m in bio.imagelinks.filter_by(is_cover=True).all() %}
+                    <td rowspan="3">
+                        <img src="{{m.url}}" width=250>
+                    </td>
+                    {% endfor %}
+                    {% endif %}
                     <th>{{_("Nombre Completo")}}:</th>
                     <td>
                     {% if bio.nombre_completo %}
@@ -139,15 +169,29 @@
 </div>
 {% endif %}
 
-<!-- <div class="card">
+{% if bio.imagelinks.all() %}
+<div class="card">
     <div class="card-header">
-        {{_("Imágenes adjuntas")}}
+        {{_("Imágenes")}}
     </div>
 
-    <div class="card-body">
-        -
+    <div class="card-body container">
+        <div class="row">
+    {% for i in bio.imagelinks %}
+            <div class="col-md-3">
+                <div class="thumbnail">
+                    <a href="#" data-toggle="modal" data-target="#modalImage{{ i.id }}" style="display: inline;">
+                        <img src="{{ i.url }}" style="margin-bottom: 1em; width: 150px;" alt="{{ i.description | e }}" class="img-thumbnail">
+                    </a>
+                    <br>
+                </div>
+            </div>
+   {% endfor %}
+        </div>
     </div>
-</div> -->
+</div>
+{% endif %}
+
 
 {% if bio.person.musical_pieces %}
 <a role="button" href="{{ url_for('public.search', update='search', compositor_name=bio.person.id) }}"
