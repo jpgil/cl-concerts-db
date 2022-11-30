@@ -423,7 +423,7 @@ class BioPerson(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     person_id = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=False)  
-    # medialinksperson = db.relationship('MediaLink', backref='event', lazy='dynamic')     
+    medialinks = db.relationship('MediaLink', backref='bio_person', lazy='dynamic')     
 
     # Investigadores del cl-concert-db
     investigacion_autores = db.Column(MEDIUMTEXT(charset='utf8mb4'))
@@ -473,7 +473,7 @@ class BioMusicalEnsemble(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     musical_ensemble_id = db.Column(db.Integer, db.ForeignKey('musical_ensemble.id'), nullable=False)
-    # medialinksensemble = db.relationship('MediaLink', backref='event', lazy='dynamic')     
+    medialinks = db.relationship('MediaLink', backref='bio_musical_ensemble', lazy='dynamic')     
 
     # Investigadores del cl-concert-db
     investigacion_autores = db.Column(MEDIUMTEXT(charset='utf8mb4'))
