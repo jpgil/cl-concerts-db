@@ -95,49 +95,34 @@
 
             <!-- <footer class="footer bg-primary text-light"> -->
             <footer class="footer bg-primary text-light">
-                <div class="container">
-                    <div class="row py-5"> <!-- align-items-end -->
-                        <div class="col-sm-5">
+                <div class="containesr">
+                    <div class="row py-5">
+                        <div class="col-sm" style="margin-left: 30px;">
                             <p>
-                                <a href="https://filosofiahumanidades.uahurtado.cl/departamentos/instituto-musica/"
-                                ><img src="{{ url_for('static', filename='public/images/logo_uah_filum_blanco-01.png') }}"
-                                        style="width: 350px; margin: -1px 0 0 -9px;"></a>
-                            </p>
-                            <p><small>{{_('Alameda 1869, 4to. piso Metro Los Héroes Santiago – Chile')}}</small></p>
-                            <p>
-                                <a style="color: white;" href="{{ url_for('main.index') }}">Admin</a>
-                            </p>
-                            <!-- <p class="mb-0">
-                                <a class="text-light" href="https://filosofiahumanidades.uahurtado.cl/">Facultad de Filosofía y Humanidades</a>
-                            </p>
-                            <p>
-                                <a class="text-light" href="https://filosofiahumanidades.uahurtado.cl/departamentos/instituto-musica/">Instituto de Música</a>
-                            </p> -->
+                                <a href="https://filosofiahumanidades.uahurtado.cl/departamentos/instituto-musica/"><img
+                                        src="{{ url_for('static', filename='public/images/logo_uah_filum_blanco-01.png') }}"
+                                        style="width: 350px; margin: -20px 0 0 -9px;"></a>
+                            <br><small>Alameda 1869, 4to. piso Metro Los Héroes <br>Santiago – Chile</small></p>
+                            <p><a style="color: white;" href="{{ url_for('main.index') }}">Admin</a></p>
                         </div>
 
                         <div class="col-sm" style="text-align: center;">
-                            <p>
-                                <img src="{{ url_for('static', filename='public/images/logo-fondecyt-bw2.png') }}" style="width: 310px">
-                            </p>
-                            <!-- <p>
-                                Fondecyt de Iniciación 11170844
-                            </p> -->
+                            <img src="{{ url_for('static', filename='public/images/logo-fondecyt-bw2.png') }}" 
+                            style="height: 100px">
                         </div>
-                        
-                        <div class="col-sm pt-0" style="text-align: right;">
-                        
-                            <p>{{_('Mayores informaciones:')}} </p>
-                            <p>{{_('Daniela Fugellie')}}
-                                <br />
-                                <a style="color: white;" href="mailto:dfugellie@uahurtado.cl">dfugellie@uahurtado.cl</a></p>
+                        <div class="col-sm" style="text-align: center;">
+                            <img src="{{ url_for('static', filename='public/images/Logo-SerialismoLatam-conbajada.png') }}"
+                                style="height: 100px">
                         </div>
-
-
-
-
-            
+                        <div class="col-sm" style="text-align: center;">
+                            <img src="{{ url_for('static', filename='public/images/logo_archivopatrimonial_negro.png') }}" 
+                            style="height: 100px; background-color: white;">
+                        </div>
+                        <div class="col-sm" style="text-align: center;">
+                            <img src="{{ url_for('static', filename='public/images/Logo_Ministerio.jpg') }}" 
+                            style="height: 100px">
+                        </div>
                     </div>
-            
                 </div>
             </footer>
 
