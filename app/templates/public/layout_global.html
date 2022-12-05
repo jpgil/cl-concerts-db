@@ -95,20 +95,15 @@
 
             <!-- <footer class="footer bg-primary text-light"> -->
             <footer class="footer bg-primary text-light">
-                <div class="containesr">
+                <div class="container">
                     <div class="row py-5">
-                        <div class="col-sm" style="margin-left: 30px;">
-                            <p>
-                                <a href="https://filosofiahumanidades.uahurtado.cl/departamentos/instituto-musica/"><img
-                                        src="{{ url_for('static', filename='public/images/logo_uah_filum_blanco-01.png') }}"
-                                        style="width: 350px; margin: -20px 0 0 -9px;"></a>
-                            <br><small>Alameda 1869, 4to. piso Metro Los Héroes <br>Santiago – Chile</small></p>
-                            <p><a style="color: white;" href="{{ url_for('main.index') }}">Admin</a></p>
-                        </div>
-
                         <div class="col-sm" style="text-align: center;">
                             <img src="{{ url_for('static', filename='public/images/logo-fondecyt-bw2.png') }}" 
                             style="height: 100px">
+                        </div>
+                        <div class="col-sm" style="text-align: center;">
+                            <img src="{{ url_for('static', filename='public/images/Logo_Ministerio.jpg') }}" 
+                            style="height: 120px">
                         </div>
                         <div class="col-sm" style="text-align: center;">
                             <img src="{{ url_for('static', filename='public/images/Logo-SerialismoLatam-conbajada.png') }}"
@@ -116,12 +111,11 @@
                         </div>
                         <div class="col-sm" style="text-align: center;">
                             <img src="{{ url_for('static', filename='public/images/logo_archivopatrimonial_negro.png') }}" 
-                            style="height: 100px; background-color: white;">
+                            style="height: 70px; background-color: white;">
                         </div>
-                        <div class="col-sm" style="text-align: center;">
-                            <img src="{{ url_for('static', filename='public/images/Logo_Ministerio.jpg') }}" 
-                            style="height: 100px">
-                        </div>
+                    </div>
+                    <div class="row">
+                            <p><a style="color: white;" href="{{ url_for('main.index') }}">Admin</a></p>
                     </div>
                 </div>
             </footer>

@@ -32,27 +32,26 @@
 
 <section id="biografias">
 
-<p>
-    {% if bio.investigacion_autores %}
-    {{_("Investigación realizada por ")}} {{ bio.investigacion_autores }}.
-    {% endif %}
-    {% if bio.investigacion_fecha %}{{ bio.investigacion_fecha }}{% endif %}
-</p>
 
 <!-- Modal para las imagenes -->
 {% for i in bio.imagelinks %}
 <div class="modal fade" id="modalImage{{ i.id }}" tabindex="-1" role="dialog" aria-labelledby="modalImage{{ i.id }}"
     aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
-        <div class="modal-content">
-
+        <div class="modal-content" style="text-align: center;">
             <div class="modal-header">
                 <p style="margin: 1em 10%; text-align: center;">
                     {{ i.description }}
                 </p>
             </div>
-            <div class="modal-body">
-                <img src="{{ i.url }}" style="margin-bottom: 1em; width: 100%;" alt="{{ i.description | e }}">
+            <div class="modal-body" style="text-align: center;">
+                <a href="{{ i.url }}" target="_blank"><img src="{{ i.url }}" style="margin-bottom: 1em; height: 500px;"
+                        alt="{{ i.description | e }}"></a>
+            </div>
+            <div class="modal-footer" style="text-align: center;">
+                <p style="text-align: center;">
+                    <a href="{{ i.url }}" target="_blank">Click para expandir</a>
+                </p>
             </div>
         </div>
     </div>
@@ -111,9 +110,9 @@
 
     <div class="card-body">
         <table class="table">
-{{ campo(bio.bibliografia, _("Bibliografía"), True) }}
+{{ campo(bio.bibliografia, _("Bibliografía")) }}
 {{ campo(bio.archivos, _("Archivos")) }}
-{{ campo(bio.discografia, _("Discografía"), True) }}
+{{ campo(bio.discografia, _("Discografía")) }}
 {{ campo(bio.links, _("Enlaces de interés")) }}
 {{ campo(bio.otros, _("Información adicional")) }}
         </table>
@@ -157,10 +156,8 @@
             {% for i in bio.imagelinks %}
             <div class="col-md-3">
                 <div class="thumbnail">
-                    <a href="#" data-toggle="modal" data-target="#modalImage{{ i.id }}" style="display: inline;">
-                        <img src="{{ i.url }}" style="margin-bottom: 1em; width: 150px;" alt="{{ i.description | e }}"
-                            class="img-thumbnail">
-                    </a>
+                    <a href="#" data-toggle="modal" data-target="#modalImage{{ i.id }}" style="display: inline;"><img src="{{ i.url }}" style="margin-bottom: 1em; width: 150px;" alt="{{ i.description | e }}"
+                            class="img-thumbnail"></a>
                     <br>
                 </div>
             </div>
@@ -170,6 +167,30 @@
 </div>
 {% endif %}
 
+{% if bio.investigacion_autores %}
+<div class="card">
+    <div class="card-header">
+        {{_("Datos de la Investigación")}}
+    </div>
+
+    <div class="card-body">
+        <table class="table biografia">
+            {{ campo(bio.investigacion_autores, _("Autor/a")) }}
+            {{ campo(bio.investigacion_fecha, _("Última actualización")) }}
+            {{ campo(bio.investigacion_notas, _("Notas de campo")) }}
+            <tr>
+                <th>{{ _("Cómo citar") }}</th>
+                <td>{{ bio.investigacion_autores }}, “{{bio.get_name()}}”, en:
+                    Intérpretes y Conciertos Doctos en Chile <br>
+                    <a href="{{ url_for('public.bio_ensemble_id', id=bio.id, _external=True) }}">{{ url_for('public.bio_ensemble_id',
+                        id=bio.id, _external=True) }}</a> <br>
+                    ({{_('Última actualización ')}}{{bio.investigacion_fecha}})
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endif %}
 
 <a role="button" href="{{ url_for('public.search', update='search', musical_ensemble_name=bio.musical_ensemble.id) }}"
     class="btn btn-primary">{{_('Eventos asociados')}}</a>
