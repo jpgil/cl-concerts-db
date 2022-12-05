@@ -39,6 +39,26 @@
     {% if bio.investigacion_fecha %}{{ bio.investigacion_fecha }}{% endif %}
 </p>
 
+<!-- Modal para las imagenes -->
+{% for i in bio.imagelinks %}
+<div class="modal fade" id="modalImage{{ i.id }}" tabindex="-1" role="dialog" aria-labelledby="modalImage{{ i.id }}"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <p style="margin: 1em 10%; text-align: center;">
+                    {{ i.description }}
+                </p>
+            </div>
+            <div class="modal-body">
+                <img src="{{ i.url }}" style="margin-bottom: 1em; width: 100%;" alt="{{ i.description | e }}">
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
 
 <div class="card">
     <div class="card-header">
@@ -48,14 +68,29 @@
     <div class="card-body">
         <table class="table">
             <tr class="first">
+            {% if bio.imagelinks.filter_by(is_cover=True).all() %}
+                {% for m in bio.imagelinks.filter_by(is_cover=True).all() %}
+                <td rowspan="4">
+                    <img src="{{m.url}}" width=250>
+                </td>
                 <th>{{_("Nombre")}}:</th>
+                <td>
+                    {{ bio.get_name() }}
+                </td>
+                {% endfor %}
+            {% else %}
+                <th style="width: 275px;">{{_("Nombre")}}:</th>
                 <td>
                 {{ bio.get_name() }}
                 </td>
+            {% endif %}
             </tr>
 {{ campo(bio.fundacion, _("Fecha de fundación")) }}
 {{ campo(bio.termino, _("Fecha de término")) }}
 {{ campo(bio.musical_ensemble.musical_ensemble_type.name, _("Tipo de ensamble o agrupación")) }}
+        </table>
+        <style type="text/css">.bioensemble th { width: 275px; }</style>
+        <table class="table bioensemble">
 {{ campo(bio.integrantes, _("Integrantes")) }}
 {{ campo(bio.repertorio, _("Repertorio")) }}
 {{ campo(bio.premios, _("Premios, distinciones")) }}
@@ -109,6 +144,32 @@
     </div>
 </div>
 {% endif %}
+
+
+{% if bio.imagelinks.all() %}
+<div class="card">
+    <div class="card-header">
+        {{_("Imágenes")}}
+    </div>
+
+    <div class="card-body container">
+        <div class="row">
+            {% for i in bio.imagelinks %}
+            <div class="col-md-3">
+                <div class="thumbnail">
+                    <a href="#" data-toggle="modal" data-target="#modalImage{{ i.id }}" style="display: inline;">
+                        <img src="{{ i.url }}" style="margin-bottom: 1em; width: 150px;" alt="{{ i.description | e }}"
+                            class="img-thumbnail">
+                    </a>
+                    <br>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
 
 <a role="button" href="{{ url_for('public.search', update='search', musical_ensemble_name=bio.musical_ensemble.id) }}"
     class="btn btn-primary">{{_('Eventos asociados')}}</a>
