@@ -7,7 +7,7 @@ from jinja2 import TemplateNotFound
 from sqlalchemy import or_, and_
 from app.public import bp
 from app.public import search as searchClDb
-from app.models import Event, Person
+from app.models import BioMusicalEnsemble, BioPerson, Event, MusicalEnsemble, Person
 from app.api.web_methods import search_events
 from pyuca import Collator 
 
@@ -152,6 +152,28 @@ def person(initial="A"):
     except TemplateNotFound:
         abort(404)
 
+# Catalogo de Agrupaciones
+# 2022-09-09
+
+@bp.route(('/ensemble/<initial>'))
+def ensemble(initial="A"):
+    if initial not in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+        return redirect(url_for('.ensemble', initial='A'))
+
+    ensembles = MusicalEnsemble.query.filter(MusicalEnsemble.name.ilike(initial + "%")).all()
+    collator = Collator() 
+    ensembles = sorted(ensembles, key=lambda e:  collator.sort_key( e.get_name().upper() ) )
+    return render_template('public/ensembles_initial.html', initial=initial, ensembles=ensembles)
+    
+    # try:
+    #     ensembles = MusicalEnsemble.query.filter(MusicalEnsemble.name.ilike(initial + "%")).all()
+    #     collator = Collator() 
+    #     ensembles = sorted(ensembles, key=lambda e:  collator.sort_key( e.get_name().upper() ) )
+    #     return render_template('public/ensembles_initial.html', initial=initial, ensembles=ensembles)
+    # except TemplateNotFound:
+    #     abort(404)
+
+
 
 # Event Detail
 
@@ -202,6 +224,38 @@ def show(page):
     except TemplateNotFound:
         abort(404)
 
+
+
+
+# 2021-09-28: Routes for biographies below.
+@bp.route('/biographies')
+def biographies():
+    bio_persons = BioPerson.query.join(Person).order_by(Person.last_name).all()
+    bio_ensembles = BioMusicalEnsemble.query.join(MusicalEnsemble).order_by(MusicalEnsemble.name).all()
+
+    return render_template('public/biographies.html', bio_persons=bio_persons, bio_ensembles=bio_ensembles)
+
+# 2021-09-28: Routes for biographies below.
+@bp.route('/bio/<id>')
+def bio_id(id):
+    bio_persons = BioPerson.query.join(Person).order_by(Person.last_name).all()
+    bio_ensembles = BioMusicalEnsemble.query.join(MusicalEnsemble).order_by(MusicalEnsemble.name).all()
+    bio = BioPerson.query.filter_by(id=id).first_or_404()
+
+    return render_template('public/bio_id.html', bio_persons=bio_persons, bio_ensembles=bio_ensembles, bio=bio)
+
+# 2022-09-08: Routes for ensemble biographies below.
+@bp.route('/bio_ensemble/<id>')
+def bio_ensemble_id(id):
+    bio_persons = BioPerson.query.join(Person).order_by(Person.last_name).all()
+    bio_ensembles = BioMusicalEnsemble.query.join(MusicalEnsemble).order_by(MusicalEnsemble.name).all()
+    bio = BioMusicalEnsemble.query.filter_by(id=id).first_or_404()
+
+    return render_template('public/bio_ensemble_id.html', bio_persons=bio_persons, bio_ensembles=bio_ensembles, bio=bio)
+
+
+
+
 @bp.before_app_first_request
 def initialize_cache():
     from config import Config
@@ -215,3 +269,5 @@ def initialize_cache():
     logger.debug("starting refresh thread")
     scheduler.add_job(refresh_cache_thread, 'interval', seconds=Config.CACHE_TIMEOUT-10, args=[current_app._get_current_object()])
     scheduler.start()
+
+

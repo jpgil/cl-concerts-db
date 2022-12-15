@@ -1,0 +1,201 @@
+{% macro campo(f, label, is_list=False) -%}
+{% if f %}
+    <tr>
+        <th>{{ label }}:</th>
+        <td>
+        {% if is_list %}
+            <ul>
+                {% for i in f.split("\n") %}
+                {% if i.strip() %}
+                <li>{{ i|urlize(None, true, target="_blank") }}</li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        {% else %}
+            {% for i in f.split("\n") %}
+            {{ i|urlize(None, true, target="_blank") }}<br>
+            {% endfor %}
+        {% endif %}
+        </td>
+    </tr>
+{% endif %}
+{%- endmacro %}
+
+{% extends 'public/layout_global.html' %}
+
+{% set title=bio.musical_ensemble.name %}
+{% set sidebar='public/sidebar_bio.html' %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<section id="biografias">
+
+
+<!-- Modal para las imagenes -->
+{% for i in bio.imagelinks %}
+<div class="modal fade" id="modalImage{{ i.id }}" tabindex="-1" role="dialog" aria-labelledby="modalImage{{ i.id }}"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content" style="text-align: center;">
+            <div class="modal-header">
+                <p style="margin: 1em 10%; text-align: center;">
+                    {{ i.description }}
+                </p>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <a href="{{ i.url }}" target="_blank"><img src="{{ i.url }}" style="margin-bottom: 1em; height: 500px;"
+                        alt="{{ i.description | e }}"></a>
+            </div>
+            <div class="modal-footer" style="text-align: center;">
+                <p style="text-align: center;">
+                    <a href="{{ i.url }}" target="_blank">Click para expandir</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+
+<div class="card">
+    <div class="card-header">
+        {{_("Datos de la Agrupación")}}
+    </div>
+
+    <div class="card-body">
+        <table class="table">
+            <tr class="first">
+            {% if bio.imagelinks.filter_by(is_cover=True).all() %}
+                {% for m in bio.imagelinks.filter_by(is_cover=True).all() %}
+                <td rowspan="4">
+                    <img src="{{m.url}}" width=250>
+                </td>
+                <th>{{_("Nombre")}}:</th>
+                <td>
+                    {{ bio.get_name() }}
+                </td>
+                {% endfor %}
+            {% else %}
+                <th style="width: 275px;">{{_("Nombre")}}:</th>
+                <td>
+                {{ bio.get_name() }}
+                </td>
+            {% endif %}
+            </tr>
+{{ campo(bio.fundacion, _("Fecha de fundación")) }}
+{{ campo(bio.termino, _("Fecha de término")) }}
+{{ campo(bio.musical_ensemble.musical_ensemble_type.name, _("Tipo de ensamble o agrupación")) }}
+        </table>
+        <style type="text/css">.bioensemble th { width: 275px; }</style>
+        <table class="table bioensemble">
+{{ campo(bio.integrantes, _("Integrantes")) }}
+{{ campo(bio.repertorio, _("Repertorio")) }}
+{{ campo(bio.premios, _("Premios, distinciones")) }}
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        {{_("Biografía")}}
+    </div>
+
+    <div class="card-body" style="text-align: justify;">
+        {% for i in bio.biografia.split("\n") %}
+        {{ i|urlize(None, true, target="_blank") }}<br>
+        {% endfor %}
+    </div>
+
+    <div class="card-body">
+        <table class="table">
+{{ campo(bio.bibliografia, _("Bibliografía")) }}
+{{ campo(bio.archivos, _("Archivos")) }}
+{{ campo(bio.discografia, _("Discografía")) }}
+{{ campo(bio.links, _("Enlaces de interés")) }}
+{{ campo(bio.otros, _("Información adicional")) }}
+        </table>
+    </div>
+</div>
+
+{% if bio.medialinks.all() %}
+<div class="card">
+    <div class="card-header">
+        {{_('Archivos Adjuntos')}}
+    </div>
+
+    <div class="card-body">
+        <ul>
+            {% for m in bio.medialinks.all() %}
+            <li>
+                {{ m.description|urlize(None, true, target="_blank") }} - <a style="display: inline"
+                    href="{{ request.url_root }}_uploads/uploads/{{ m.filename }}" target="_blank">{{_('[Ver
+                    Archivo]')}}</a>
+            </li>
+            <!-- <iframe src="{{ m.url }}" style="width: 100%; height: 30em;"></iframe> -->
+            <!-- <p>
+                <a href="{{ m.url }}">Ver</a>
+            </p> -->
+            {% endfor %}
+        </ul>
+
+    </div>
+</div>
+{% endif %}
+
+
+{% if bio.imagelinks.all() %}
+<div class="card">
+    <div class="card-header">
+        {{_("Imágenes")}}
+    </div>
+
+    <div class="card-body container">
+        <div class="row">
+            {% for i in bio.imagelinks %}
+            <div class="col-md-3">
+                <div class="thumbnail">
+                    <a href="#" data-toggle="modal" data-target="#modalImage{{ i.id }}" style="display: inline;"><img src="{{ i.url }}" style="margin-bottom: 1em; width: 150px;" alt="{{ i.description | e }}"
+                            class="img-thumbnail"></a>
+                    <br>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if bio.investigacion_autores %}
+<div class="card">
+    <div class="card-header">
+        {{_("Datos de la Investigación")}}
+    </div>
+
+    <div class="card-body">
+        <table class="table biografia">
+            {{ campo(bio.investigacion_autores, _("Autor/a")) }}
+            {{ campo(bio.investigacion_fecha, _("Última actualización")) }}
+            {{ campo(bio.investigacion_notas, _("Notas de campo")) }}
+            <tr>
+                <th>{{ _("Cómo citar") }}</th>
+                <td>{{ bio.investigacion_autores }}, “{{bio.get_name()}}”, en:
+                    Intérpretes y Conciertos Doctos en Chile <br>
+                    <a href="{{ url_for('public.bio_ensemble_id', id=bio.id, _external=True) }}">{{ url_for('public.bio_ensemble_id',
+                        id=bio.id, _external=True) }}</a> <br>
+                    ({{_('Última actualización ')}}{{bio.investigacion_fecha}})
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<a role="button" href="{{ url_for('public.search', update='search', musical_ensemble_name=bio.musical_ensemble.id) }}"
+    class="btn btn-primary">{{_('Eventos asociados')}}</a>
+
+</section>
+
+
+{% endblock %}

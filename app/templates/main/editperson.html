@@ -1,81 +1,83 @@
+{% macro form_field(f) -%}
+<tr>
+    <th>{{ f.label }}{% if f.flags.required %} (*){% endif %}</th>
+    <td>
+        {% if f.type in ('TextField', 'StringField', 'IntegerField') %}
+            {{ f(size=40) }}
+        {% elif f.type in ('TextAreaField') %}
+            {{ f(cols="40", rows="8")|safe }}
+        {% else %}
+            Ojo, no hay para {{ f.type }}
+        {% endif %}
+        {% for error in f.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </td>
+</tr>
+{%- endmacro %}
+
+
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
     <h1>{{ title }}</h1> 
+
+    <br>
     <form action="" method="post">
     {{ form.hidden_tag() }}
     <div class="container">
-        <div class="row"> {{ form.first_name.label }} </div>
-        <div class="row">  {{ form.first_name(size=20) }} </div>                
-        <div class="row">
-                {% for error in form.first_name.errors %}
-                   <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
-        </div>
-        <br>
 
-        <div class="row"> {{ form.last_name.label }} </div>
-        <div class="row">  {{ form.last_name(size=20) }} </div>                
-        <div class="row">
-                {% for error in form.last_name.errors %}
-                   <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
-        </div>
-        <br>
-
-        <div class="row"> {{ form.gender.label }} </div>
-        <div class="row">  {{ form.gender( **{"class":"dd_select2", "url":"genders", "description":_("Sexo"),  "maxelem":"1" , "selectedElements":selectedElementGender } ) }}  </div> 
-        <div class="row">
+    <table class="table">
+        {{ form_field(form.first_name) }}
+        {{ form_field(form.last_name) }}
+        <tr>
+            <th>
+            {{ form.gender.label }}
+            </th>
+            <td>
+                {{ form.gender( **{"class":"dd_select2", "url":"genders", "description":_("Sexo"), "maxelem":"1" ,
+                "selectedElements":selectedElementGender } ) }} </div>
                 {% for error in form.gender.errors %}
-                   <span style="color: red;">[{{ error }}]</span>
+                <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
-        </div> 
-        <br> 
-        
-        <div class="row"> {{ form.birth_year.label }} </div>
-        <div class="row">  {{ form.birth_year }} </div>                
-        <div class="row">
-                {% for error in form.birth_year.errors %}
-                   <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
-        </div>
-        <br>
-
-        <div class="row"> {{ form.death_year.label }} </div>
-        <div class="row">  {{ form.death_year }} </div>                
-        <div class="row">
-                {% for error in form.death_year.errors %}
-                   <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
-        </div>
-        <br>
-
-
-        <div class="row"> {{ form.nationalities.label }} </div>
-        <div class="row">  {{ form.nationalities( **{"class":"dd_select2", "url":"countries", "description":_("Países"),  "maxelem":"10" , "selectedElements":selectedElements } ) }}  </div> 
-        <div class="row">
+            </td>
+        </tr>
+        {{ form_field(form.birth_year) }}
+        {{ form_field(form.death_year) }}
+        <tr>
+            <th>
+                {{ form.nationalities.label }}
+            </th>
+            <td>
+                {{ form.nationalities( **{"class":"dd_select2", "url":"countries", "description":_("Países"), "maxelem":"10" ,
+                "selectedElements":selectedElements } ) }}
                 {% for error in form.nationalities.errors %}
-                   <span style="color: red;">[{{ error }}]</span>
+                <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
-        </div> 
-        <br> 
+            </td>
+        </tr>
+        {{ form_field(form.biography) }}
 
-        <div class="row"> {{ form.biography.label }} </div>
-        <div class="row">  {{ form.biography(cols="55", rows="15")|safe }} </div>                
-        <div class="row">
-                {% for error in form.biography.errors %}
-                   <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
-        </div>
-        <br>
+{% if person %}
+        <tr>
+            <th>Biografía Extendida</th>
+            <td>
+{% if person.has_bio() %}
+<a href="{{ url_for('main.EditBioPerson', id=person.get_bio().id) }}">Editar Biografía Extendida</a> 
+{% else %}
+No hay biografia extenida. -- <a href="{{ url_for('main.NewBioPerson', person_id=person.id) }}">¿Crear Biografía Extendida?</a>
+{% endif %}           
+            </td>
+        </tr>
+{% endif %}
 
-        <div class="row"></div>
-        <div class="row">
-             {{ form.submit() }} 
-        </div>
-    </div>       
-
+    </table>
+    <div class="row">
+        {{ form.submit() }}
+    </div>
+    <br><br>
+    </div>
     </form>
     
 {% endblock %}

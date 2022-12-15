@@ -1,0 +1,245 @@
+{% macro form_field(f) -%}
+<tr>
+    <th>{{ f.label }}{% if f.flags.required %} (*)<br><small>Campo requerido</small>{% endif %}</th>
+    <td>
+        {% if f.type in ('TextField', 'StringField', 'IntegerField') %}
+        {{ f(size=55) }}
+        {% elif f.type in ('TextAreaField') %}
+        {{ f(cols="55", rows="6")|safe }}
+        {% else %}
+        Ojo, no hay para {{ f.type }}
+        {% endif %}
+        {% for error in f.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </td>
+</tr>
+{%- endmacro %}
+
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block app_content %}
+<style type="text/css">
+	.event-tabs{
+		margin: 20px;
+	}
+</style>	
+    <h1>{{ title }}</h1>
+
+    {% if form.errors.items() %}
+    <div class="alert alert-danger" role="danger">
+        {% for field, errors in form.errors.items() %}
+        {{ ', '.join(errors) }}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <p>
+        Para modificar la información de la Agrupacion, debe ir a
+        <a href="{{ url_for('main.EditMusicalEnsemble', id=obj.musical_ensemble.id) }}">Editar Agrupación "{{ obj.musical_ensemble.get_name() }}"</a>.
+        Abandonará esta página y cualquier cambio que no haya guardado.
+    </p>
+
+
+    <div class="container ">
+        <div class="row">
+
+            <div class="col-md-8">
+
+        
+            <div class="event-tabs">
+            <form action="" method="post">
+            {{ form.hidden_tag() }}
+
+                <ul class="nav nav-tabs" id="myTab">
+                    <li><a data-toggle="tab" href="#sectionBiograficos">{{ _("Biografía Extendida")}} </a></li>
+                    <li><a data-toggle="tab" href="#sectionPersonales">{{ _("Datos Agrupación") }}</a></li>
+                    <li><a data-toggle="tab" href="#sectionInvestigadores">{{ _("Investigación")}} </a></li>
+                    <li><a data-toggle="tab" href="#sectionMedia">{{ _("Media")}} </a></li>
+                    <li><a data-toggle="tab" href="#sectionImagenes">{{ _("Imágenes")}} </a></li>
+                </ul>
+        
+        
+                <div class="tab-content">
+
+                    
+                    <div id="sectionBiograficos" class="tab-pane fade in active">
+                    
+                        <h2>{{ _("Biografía Extendida") }} </h2>
+                    
+                    
+                        <table class="table">
+                            {{ form_field(form.biografia) }}
+                            {{ form_field(form.bibliografia) }}
+                            {{ form_field(form.archivos) }}
+                            {{ form_field(form.discografia) }}
+                            {{ form_field(form.links) }}
+                            {{ form_field(form.otros) }}
+                        </table>
+                    
+                    
+                    
+                        <br>
+                        {{ form.submit() }}
+                    </div>
+
+
+        
+                    <div id="sectionPersonales" class="tab-pane fade">
+                        <h2>{{ _("Datos Agrupación") }} </h2>
+                        <table class="table">
+                            {{ form_field(form.fundacion) }}
+                            {{ form_field(form.termino) }}
+                            {{ form_field(form.integrantes) }}
+                            {{ form_field(form.repertorio) }}
+                            {{ form_field(form.premios) }}
+
+                        </table>
+
+
+                        <br>
+                        {{ form.submit() }}
+        
+                    </div>
+
+
+
+                    <div id="sectionInvestigadores" class="tab-pane fade">
+                        <h2>{{ _("Investigación") }} </h2>
+                        <table class="table">
+
+                            {{ form_field(form.investigacion_autores) }}
+                            {{ form_field(form.investigacion_fecha) }}
+                            {{ form_field(form.investigacion_notas) }}
+                        </table>
+                        <br>
+                        {{ form.submit() }}
+
+                    </div>
+        
+                    </form>
+
+                    <div id="sectionMedia" class="tab-pane fade">
+                        <h2>{{ _("Media") }} </h2>
+        
+            <h3>{{ _("Agregar un archivo") }} </h3>
+            <br>
+            <form id="uploadform" method="post" enctype="multipart/form-data">
+                <label for="file">{{ _("Seleccionar un Archivo") }} </label>
+                <input name="file" type="file">
+                <input type="hidden" id="bio_musical_ensemble_id" name="bio_musical_ensemble_id" value="{{obj.id}}">
+                <br>
+                <div class="form-group">
+                    <label for="description">{{ _("Descripción") }}</label>
+                    <input type="text" class="form-control" id="description">
+                </div>
+                <button id="uploadButton" type="button">{{ _("Subir Archivo") }}</button>
+            </form>
+            <br>
+            <h3>{{ _("Archivos") }} </h3>
+            <table id="table-medialink" data-toggle="table" data-show-footer="false" data-only-info-pagination="false"
+                data-side-pagination="server" data-pagination="true" data-url={{ url_for("main.getMediaLinkListTable", id=obj.id,
+                id_type='bio_musical_ensemble' ) }}>
+                <thead>
+                    <tr>
+                        <th data-field="filename">{{ _("Archivo") }}</th>
+                        <th data-field="type">{{ _("Tipo") }} </th>
+                        <th data-field="description">{{ _("Descripción") }} </th>
+                        <th data-field="url" data-formatter="linkCol"></th>
+                        <th data-field="id" data-formatter="deleteFileCol"></th>
+                    </tr>
+                </thead>
+            </table>
+
+                        
+                    </div>
+
+                    <div id="sectionImagenes" class="tab-pane fade">
+                        <h2>{{ _("Imágenes") }} </h2>
+                    
+                        <h3>{{ _("Agregar un archivo") }} </h3>
+                        <br>
+                        <form id="uploadformimage" method="post" enctype="multipart/form-data">
+                            <label for="file">{{ _("Seleccionar un Archivo") }} </label>
+                            <input name="file" type="file">
+                            <input type="hidden" id="bio_musical_ensemble_id" name="bio_musical_ensemble_id" value="{{obj.id}}">
+                            <br>
+                            <div class="form-group">
+                                <label for="descriptionimage">{{ _("Descripción") }}</label>
+                                <input type="text" class="form-control" id="descriptionimage">
+                            </div>
+                            <button id="uploadButtonImage" type="button">{{ _("Subir Archivo") }}</button>
+                        </form>
+                        <br>
+                        <h3>{{ _("Imágenes") }} </h3>
+                        <table id="table-imagelink" data-toggle="table" data-show-footer="false" data-only-info-pagination="false"
+                            data-side-pagination="server" data-pagination="true" data-url={{ url_for("main.getImageLinkListTable",
+                            id=obj.id, id_type='bio_musical_ensemble' ) }}>
+                            <thead>
+                                <tr>
+                                    <th data-field="is_cover" data-formatter="isCoverCol">{{ "Portada" }}</th>
+                                    <th data-field="url" data-formatter="thumbnailCol">{{ _("Miniatura") }}</th>
+                                    <th data-field="filename">{{ _("Nombre") }}</th>
+                                    <th data-field="description">{{ _("Descripción") }} </th>
+                                    <!-- <th data-field="url" data-formatter="linkCol"></th> -->
+                                    <th data-field="id" data-formatter="deleteImageCol"></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    
+                    
+                    </div>
+                    
+                </div>
+            </div>
+        
+
+
+            </div>
+
+            <div class="col-md-4">
+            
+                <p style="margin-bottom: 80px"></p>
+                <h2>Agrupación</h2>
+                <table class="table ">
+                    <tr>
+                        <th class="col-2">Agrupación:</th>
+                        <td>{{obj.musical_ensemble.get_name()}}</td>
+                    </tr>
+                    <tr>
+                        <th>Tipo de agrupación:</th>
+                        <td>{{obj.musical_ensemble.musical_ensemble_type.get_name()}}</td>
+                    </tr>
+                    <tr>
+                        <th>Informacion Resumida:</th>
+                        <td>{{obj.musical_ensemble.additional_info}}</td>
+                    </tr>
+                </table>
+            
+                <a href="{{ url_for('main.EditMusicalEnsemble', id=obj.musical_ensemble.id) }}">Ir a Editar Agrupación</a>.
+
+            
+            
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+ 
+<hr >
+<a href="{{ url_for('main.viewBiografias')}}"> {{ _('Volver al listado de') }} {{ _('Biografías') }} </a>
+
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+    <link href="{{ url_for('static', filename = 'css/lib/select2.min.css') }}" rel="stylesheet" />
+    <script src="{{ url_for('static', filename = 'js/lib/select2.min.js') }}"></script>  
+    <script type = "text/javascript"  src = "{{ url_for('static', filename = 'js/flash_message.js') }}" ></script>
+    <script type = "text/javascript"  src = "{{ url_for('static', filename = 'js/dd_select2.js') }}" ></script>
+    <script src="{{url_for('static', filename='js/events.js')}}?rand={{rand}}"></script>
+{% endblock %}

@@ -6,7 +6,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from app import db, login
-
+from sqlalchemy.dialects.mysql import MEDIUMTEXT
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -189,6 +189,7 @@ class Person(db.Model):
                     secondary=nationality,
                     backref='people')    
     memberships = db.relationship('MusicalEnsembleMember', backref = 'person', lazy='dynamic')
+    bio_person = db.relationship('BioPerson', backref='person', lazy='dynamic', cascade="delete, merge, save-update")
     def __repr__(self):
         return 'Person(first_name="{}",last_name="{}")'.format(self.first_name,self.last_name)
     def get_name(self):
@@ -196,18 +197,41 @@ class Person(db.Model):
             return '{}, {}'.format(self.last_name,self.first_name) 
         else:
             return self.last_name if self.last_name else self.first_name
+
+    def has_bio(self):
+        return self.bio_person.count() == 1
+    def get_bio(self):
+        return self.bio_person.first()
     
 class MediaLink(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mime_type = db.Column(db.String(80))
     filename = db.Column(db.String(200))
     url = db.Column(db.String(512))
-    description = db.Column(db.String(150))
-    event_id = db.Column(db.Integer, db.ForeignKey('event.id'))   
+    description = db.Column(db.String(2000))
+    event_id                = db.Column(db.Integer, db.ForeignKey('event.id'))   
+    bio_person_id           = db.Column(db.Integer, db.ForeignKey('bio_person.id'))   
+    bio_musical_ensemble_id = db.Column(db.Integer, db.ForeignKey('bio_musical_ensemble.id'))   
     def get_name(self):
         return self.filename
     def __repr__(self):
         return 'MediaLink(mime_type="{}",filename="{}")'.format(self.mime_type,self.filename)    
+
+class ImageLink(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    mime_type = db.Column(db.String(80))
+    filename = db.Column(db.String(200))
+    url = db.Column(db.String(512))
+    description = db.Column(db.String(2000))
+    is_cover = db.Column( db.Boolean() )
+    event_id                = db.Column(db.Integer, db.ForeignKey('event.id'))   
+    bio_person_id           = db.Column(db.Integer, db.ForeignKey('bio_person.id'))   
+    bio_musical_ensemble_id = db.Column(db.Integer, db.ForeignKey('bio_musical_ensemble.id'))   
+    def get_name(self):
+        return self.filename
+    def __repr__(self):
+        return 'ImageLink(mime_type="{}",filename="{}")'.format(self.mime_type,self.filename)    
+
 
 class Activity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -371,10 +395,16 @@ class MusicalEnsemble(db.Model):
     members = db.relationship('MusicalEnsembleMember', backref='musical_ensemble', lazy='dynamic') 
     musical_ensemble_type_id = db.Column(db.Integer, db.ForeignKey('musical_ensemble_type.id'))    
     participants = db.relationship('Participant', backref='musical_ensemble', lazy='dynamic') 
+    bio_musical_ensemble = db.relationship('BioMusicalEnsemble', backref='musical_ensemble', lazy='dynamic', cascade="delete, merge, save-update")
+
     def get_name(self):
         return "{}".format(self.name)
     def get_short_name(self):
         return "{}".format(self.name)
+    def has_bio(self):
+        return self.bio_musical_ensemble.count() == 1
+    def get_bio(self):
+        return self.bio_musical_ensemble.first()        
     def __repr__(self):
         return 'MusicalEnsemble(name="{}")'.format(self.name) 
       
@@ -398,3 +428,100 @@ class MusicalEnsembleMember(db.Model):
             str_repr+="(activity={}) ".format(self.activity.name)
         str_repr+="musical_ensemble='{}'".format(self.musical_ensemble.name)
         return str_repr
+
+
+
+class BioPerson(db.Model):
+    """
+    Class for Biografias: Persona
+    Added in the context of CL3(2022) by jpgil
+    Requirements in https://github.com/jpgil/cl-concerts-db/issues/22 
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    person_id = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=False)  
+    medialinks = db.relationship('MediaLink', backref='bio_person', lazy='dynamic')     
+    imagelinks = db.relationship('ImageLink', backref='bio_person', lazy='dynamic')     
+
+    # Investigadores del cl-concert-db
+    investigacion_autores = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    investigacion_fecha = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    investigacion_notas = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+
+    # Datos personales
+    nombre_completo = db.Column(db.String(400))
+    nacimiento_y_muerte = db.Column(db.String(1000))
+    # fallecimiento = db.Column(db.String(800))
+    familia = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+
+    # Datos Profesionales
+    profesion = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    instrumento = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    estudios_formales = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    estudios_informales = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    trabajo = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    ensambles = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    premios = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    publicaciones = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+
+    # Biografia
+    biografia = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    bibliografia = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    archivos = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    discografia = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    links = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    otros = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+
+    def get_name(self):
+        return "{}".format(self.person.get_name()) if self.person else "ERROR -- person_id is Null"
+
+    def __repr__(self):
+        # return 'BioPerson(person_id="{}",name="{}")'.format(self.person.id, self.person.get_name())
+        return 'BioPerson(person_id="{}",name="{}",bio="{}")'.format(
+            self.person.id, 
+            self.person.get_name(),
+            self.biografia[:40]
+            )
+
+class BioMusicalEnsemble(db.Model):
+    """
+    Class for Biografias: Ensamble
+    Added in the context of CL3(2022) by jpgil
+    Requirements in https://github.com/jpgil/cl-concerts-db/issues/22 
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    musical_ensemble_id = db.Column(db.Integer, db.ForeignKey('musical_ensemble.id'), nullable=False)
+    medialinks = db.relationship('MediaLink', backref='bio_musical_ensemble', lazy='dynamic')     
+    imagelinks = db.relationship('ImageLink', backref='bio_musical_ensemble', lazy='dynamic')     
+
+    # Investigadores del cl-concert-db
+    investigacion_autores = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    investigacion_fecha = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    investigacion_notas = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+
+    # Datos ensamble
+    # nombre_completo = db.Column(db.String(400))
+    fundacion = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    termino = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    integrantes = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    # tipo_ensamble = db.Column(db.String(200))
+    repertorio = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    premios = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    publicaciones = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+
+    # Biografia
+    biografia = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    bibliografia = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    archivos = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    discografia = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    links = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+    otros = db.Column(MEDIUMTEXT(charset='utf8mb4'))
+
+    def get_name(self):
+        return "{}".format(self.musical_ensemble.get_name()) if self.musical_ensemble else "ERROR -- musical_ensemble_id is Null"
+
+    def __repr__(self):
+        return 'BioMusicalEnsemble(musical_ensemble_id="{}",name="{}",bio="{}")'.format(
+            self.musical_ensemble.id, 
+            self.musical_ensemble.get_name(),
+            self.biografia[:40]
+            )

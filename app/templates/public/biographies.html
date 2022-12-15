@@ -1,0 +1,78 @@
+{% macro vida(e) -%}
+{%
+if e.birth_year and e.death_year
+%}({{ e.birth_year }} - {{ e.death_year }}){%
+elif e.birth_year and not e.death_year
+%}( {{ e.birth_year }} - ){%
+elif not e.birth_year and e.death_year
+%}( - {{ e.death_year }}){%
+endif
+%}
+{%- endmacro %}
+
+{% extends 'public/layout_global.html' %}
+
+{% set title=_('Biografías') %}
+{% set sidebar='public/sidebar_bio.html' %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+<p>{{_("En esta sección encontrarás biografías de intérpretes y agrupaciones de música chilena docta del siglo XX, las que han sido redactadas en el marco del proyecto Fondo de la Música, Línea de investigación 583750 “Biografías de intérpretes chilenos de música docta, 1945-1995. Investigación y difusión de su aporte a la vida musical chilena” (2021/22). Las biografías se basan en una investigación realizada a partir de materiales archivísticos, entrevistas con los intérpretes y sus familiares. En ellas colaboraron, junto al equipo de trabajo, diversas investigadoras e investigadores, cuya autoría se indica en cada artículo. ¿Crees que otras personas o agrupaciones debieran figurar en esta sección y quieres colaborar con nosotros? No dudes en escribirnos a dfugellie@uahurtado.cl. ")}} </p>
+
+<div class="card">
+    <div class="card-header">
+        {{_("Personas")}}
+    </div>
+
+    <div class="card-body">
+        {% for x in bio_persons %}
+        <p>
+            {% set m=x.imagelinks.filter_by(is_cover=True).first() %}
+            {% if m %}
+            <img src="{{m.url}}" style="float: left; width: 100px; margin-top: 0.3em; margin-right: 0.8em;">
+            {% endif %}
+            <strong><a href="{{ url_for('public.bio_id', id=x.id) }}">
+                    {{ x.person.first_name }} {{ x.person.last_name }}</a></strong>
+            {{ vida(x.person) }}
+            <br>
+            {% if x.person.biography %}
+            {{ x.person.biography|replace('.', '')|safe }}.
+            {% endif %}
+            {{ x.biografia|truncate(270,False)|safe }}
+            <a href="{{ url_for('public.bio_id', id=x.id) }}">{{_("Acceder")}} &gt;&gt;</a>
+        </p>
+        <br class="clearfix">
+        {% endfor %}
+    </div>
+</div>
+
+<p></p>
+<p></p>
+
+<div class="card">
+    <div class="card-header">
+        {{_("Agrupaciones")}}
+    </div>
+
+    <div class="card-body">
+        {% for x in bio_ensembles %}
+        <p>
+            {% set m=x.imagelinks.filter_by(is_cover=True).first() %}
+            {% if m %}
+            <img src="{{m.url}}" style="float: left; width: 100px; margin-top: 0.3em; margin-right: 0.8em;">
+            {% endif %}
+            <strong><a href="{{ url_for('public.bio_ensemble_id', id=x.id) }}">
+                    {{ x.musical_ensemble.name }}</a></strong>
+            <br>
+            {{ x.biografia|truncate(300,False)|safe }}
+            <a href="{{ url_for('public.bio_ensemble_id', id=x.id) }}">{{_("Acceder")}} &gt;&gt;</a>
+        </p>
+        <br class="clearfix">
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock %}

@@ -118,20 +118,20 @@ nav.bg-primary {
 
 
 
-#results {
+#results, #biografias {
 	margin: 3em 0;
 	text-align: left;
 }
-#results table {
+#results table, #biografias table {
 	font-size: .9em;
 }
-#results h2 {
+#results h2, #biografias h2 {
 	margin-bottom: 1em;
 }
-#results .card {
+#results .card, #biografias .card {
 	margin: 2em 0;
 }
-#results .card p {
+#results .card p, #biografias .card p {
 	margin: 0.5em auto;
 }
 #results table a, #results li a {
@@ -140,7 +140,7 @@ nav.bg-primary {
 	text-decoration: underline;
 }
 
-#results table ul {
+#results table ul, #biografias table ul {
 	margin: 0;
 	padding: 0;
 }
@@ -150,7 +150,9 @@ nav.bg-primary {
 	padding: 0;
 	list-style: none;
 }
-
+#biografias li {
+    margin: 0 0 0.7em 0;
+}
 
 #main-content {
 	text-align: justify;

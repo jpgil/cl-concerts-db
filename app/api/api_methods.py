@@ -1,10 +1,10 @@
 from app.api import bp
-from flask import request, current_app, jsonify
+from flask import request, current_app, jsonify, flash
 from app import db
 from app.api.errors import bad_request, server_error
 from app.models import *
 from flask_babel import _
-from app import files_collection
+from app import files_collection, img_collection
 from app.main.routes import addHistoryEntry,getStringForModel
 from sqlalchemy import and_
 
@@ -158,9 +158,9 @@ def add_performance_detail():
     performance=Performance.query.filter_by(id=request.form['performance_id']).first()
     participant=Participant.query.filter_by(id=request.form['participant_id']).first()
     if not participant:
-        return bad_request(_('El participante no existe. ¿Fue borrado recientenmente? id:'))+str(equest.form['performance_id'])
+        return bad_request(_('El participante no existe. ¿Fue borrado recientenmente? id:'))+str(request.form['performance_id'])
     if not performance:
-        return bad_request(_('La participación no existe. ¿Fue borrada recientenmente? id:'))+str(equest.form['participant_id'])
+        return bad_request(_('La participación no existe. ¿Fue borrada recientenmente? id:'))+str(request.form['participant_id'])
     if participant in performance.participants:
         return bad_request(_('participante ya agregado'))
     addHistoryEntry('Agregado','Detalle de Interpretación: {} agregado a {} en {}'.format(participant.get_name(),
@@ -198,52 +198,174 @@ def delete_performance_detail():
 #    response.headers['Location'] = url_for('api.get_user', id=user.id)
     return response
 
+# Method improved to accept media links from other sources.
 @bp.route('/uploadajax', methods=['POST'])
 @login_required
 def upldfile():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))    
     if checkForKeys(['file'],request.files):
-        return bad_request(_('debe incluir al menos un archivo'))    
-    if checkForKeys(['event_id'],request.form):
-        return bad_request(_('debe incluir el id del evento'))
+        return bad_request(_('debe incluir al menos un archivo: %s' % repr(request.files) ))    
     if checkForKeys(['description'],request.form):
         return bad_request(_('debe incluir una descripcion'))   
     elif request.form['description'].strip() == '':
         return bad_request(_('debe incluir una descripcion'))   
+
+    # Search for ID, to discriminate byb type of requester
+    id_type, id_value = False, False
+    if 'event_id' in request.form.keys():
+        id_type, id_value = 'event', request.form['event_id']
+        folder_prefix = ''
+    elif 'bio_person_id' in request.form.keys():
+        id_type, id_value = 'bio_person', request.form['bio_person_id']
+        folder_prefix = 'bio_person/'
+    elif 'bio_musical_ensemble_id' in request.form.keys():
+        id_type, id_value = 'bio_musical_ensemble', request.form['bio_musical_ensemble_id']
+        folder_prefix = 'bio_musical_ensemble/'
+    else:
+        return bad_request('id_type no encontrado')
+
     files = request.files['file']
-    if files:
-        filename = files_collection.save(request.files['file'],folder=request.form['event_id'])
-        url = files_collection.url(filename)            
-        current_app.logger.info('FileName: ' + filename)
+    filename = files_collection.save(request.files['file'],folder='{}{}'.format( folder_prefix, id_value ))
+    url = files_collection.url(filename)            
+    current_app.logger.info('FileName: ' + filename)
+    if id_type == 'event':
         event=Event.query.filter_by(id=request.form['event_id']).first()
         db.session.add(MediaLink(event_id=int(request.form['event_id']), filename=filename, mime_type=files.mimetype,url=url, description=request.form['description']))
         addHistoryEntry('Agregado','Archivo: {} a {}'.format(request.files['file'],event.name))
-        db.session.commit()
+    elif id_type == 'bio_person':
+        db.session.add(MediaLink(bio_person_id=int( id_value ), filename=filename, mime_type=files.mimetype,url=url, description=request.form['description']))
+        addHistoryEntry('Agregado','Archivo: {} a bio_person_id={}'.format(request.files['file'],id_value))
+    elif id_type == 'bio_musical_ensemble':
+        db.session.add(MediaLink(bio_musical_ensemble_id=int( id_value ), filename=filename, mime_type=files.mimetype,url=url, description=request.form['description']))
+        addHistoryEntry('Agregado','Archivo: {} a bio_musical_ensemble={}'.format(request.files['file'],id_value))
+    else:
+        raise Exception('Algo muy mal ocurrio aqui')
+    db.session.commit()
     response = jsonify({})
     response.status_code = 201
 #    response.headers['Location'] = url_for('api.get_user', id=user.id)
     return response
         
+
+@bp.route('/uploadajaximage', methods=['POST'])
+@login_required
+def upldfileimage():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))    
+    if checkForKeys(['file'],request.files):
+        return bad_request(_('debe incluir al menos un archivo: %s' % repr(request.files) ))    
+    if checkForKeys(['description'],request.form):
+        return bad_request(_('debe incluir una descripcion'))   
+    elif request.form['description'].strip() == '':
+        return bad_request(_('debe incluir una descripcion'))   
+
+    # Search for ID, to discriminate byb type of requester
+    id_type, id_value = False, False
+    if 'bio_person_id' in request.form.keys():
+        id_type, id_value = 'bio_person', request.form['bio_person_id']
+        folder_prefix = 'images_bio_person/'
+    elif 'bio_musical_ensemble_id' in request.form.keys():
+        id_type, id_value = 'bio_musical_ensemble', request.form['bio_musical_ensemble_id']
+        folder_prefix = 'images_bio_musical_ensemble/'
+    else:
+        return bad_request('id_type no encontrado')
+
+    files = request.files['file']
+    try:
+        filename = img_collection.save(request.files['file'],folder='{}{}'.format( folder_prefix, id_value ))
+    except:
+        return bad_request("No es posible subir esa imagen")
+    url = img_collection.url(filename)            
+    current_app.logger.info('FileName: ' + filename)
+    if id_type == 'bio_person':
+        db.session.add(ImageLink(bio_person_id=int( id_value ), is_cover=False, filename=filename, mime_type=files.mimetype,url=url, description=request.form['description']))
+        addHistoryEntry('Agregado','Imagen: {} a bio_person_id={}'.format(request.files['file'],id_value))
+    elif id_type == 'bio_musical_ensemble':
+        db.session.add(ImageLink(bio_musical_ensemble_id=int( id_value ), is_cover=False, filename=filename, mime_type=files.mimetype,url=url, description=request.form['description']))
+        addHistoryEntry('Agregado','Imagen: {} a bio_musical_ensemble={}'.format(request.files['file'],id_value))
+    else:
+        raise Exception('Algo muy mal ocurrio aqui')
+    db.session.commit()
+    response = jsonify({})
+    response.status_code = 201
+    return response
+
+
+@bp.route('updatecover', methods=['POST', 'GET'])
+@login_required
+def updateCover():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))   
+
+    id_type = request.form['id_type']
+    id_bio = request.form['id_bio']
+    id_img = request.form['id_img']
+
+    # Remueve todos
+    if id_type=='bio_person':
+        imagelinks=ImageLink.query.filter_by(bio_person_id=id_bio)
+    elif id_type=='bio_musical_ensemble':
+        imagelinks=ImageLink.query.filter_by(bio_musical_ensemble_id=id_bio)
+    else:
+        return bad_request('%s not an id_type' % id_type )
+
+    if imagelinks:
+        for im in imagelinks.order_by(ImageLink.filename).all():
+            im.is_cover=False
+        #     print(imgelement)
+
+    # Asigna a img_id
+    thisImg = ImageLink.query.filter_by(id=id_img).first()
+    thisImg.is_cover = True
+
+    # Guarda
+    db.session.commit()
+
+    response = jsonify({})
+    response.status_code = 200
+    return response
+
 @bp.route('/medialink/delete', methods=['POST'])
 @login_required
 def deleteFile():
     if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
         return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))    
     if checkForKeys(['medialink_id'],request.form):
-        return bad_request(_('id de archivo no incluído'))
+        return bad_request(_('id de archivo no incluido'))
     file=MediaLink.query.filter_by(id=request.form['medialink_id']).first()        
     try:
-        os.remove(files_collection.path(file.filename))
-        addHistoryEntry('Eliminado','Archivo: {} de {}'.format(file.filename,file.event.name))
+        if os.path.exists(files_collection.path(file.filename)):
+            os.remove(files_collection.path(file.filename))
+        addHistoryEntry('Eliminado','Archivo: {} id = {}'.format(file.filename,file.id))
         db.session.delete(file)
         db.session.commit()
         response = jsonify({})
         response.status_code = 200
         return response
     except:
-        return server_error("Error removing {}".format(files_collection.path(file.filename)))
-  
+        return bad_request("Error removing {}".format(files_collection.path(file.filename)))
+
+@bp.route('/imagelink/delete', methods=['POST'])
+@login_required
+def deleteImage():
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        return bad_request(_('Su perfil debe ser de Administrador o Editor para realizar esta tarea'))    
+    if checkForKeys(['imagelink_id'],request.form):
+        return bad_request(_('id de archivo no incluído'))
+    file=ImageLink.query.filter_by(id=request.form['imagelink_id']).first()        
+    try:
+        if os.path.exists(img_collection.path(file.filename)):
+            os.remove(img_collection.path(file.filename))
+        addHistoryEntry('Eliminado','Imagen: {} id = {}'.format(file.filename,file.id))
+        db.session.delete(file)
+        db.session.commit()
+        response = jsonify({})
+        response.status_code = 200
+        return response
+    except:
+        return bad_request("Error removing {}".format(img_collection.path(file.filename)))
+
 @bp.route('/musicalensemblemember/add',methods=['POST'])
 @login_required
 def add_musical_ensemble_member():
@@ -355,7 +477,7 @@ def delete_check_element(model,id):
                 table_name=getStringForModel(soft_dep.__repr__().split('(')[0])
                 element_name=soft_dep.get_name()
                 message_soft_deps+='{}: {}<br>'.format(table_name,element_name)
-            message_soft_deps+='\n'+_('<h4>¿Está seguro que desea continuar?</h4>')+'\n'
+            message_soft_deps+='\n'+'<h4>'+_('¿Está seguro que desea continuar?')+'</h4>'+'\n'
         message_hard_deps=None
         if hard_deps:
             message_hard_deps=_('Este elemento está siendo usando en los siguientes objetos:\n')
@@ -364,7 +486,7 @@ def delete_check_element(model,id):
                 table_name=getStringForModel(hard_dep.__repr__().split('(')[0])
                 element_name=hard_dep.get_name()
                 message_hard_deps+='{}: {}<br>'.format(table_name,element_name)
-            message_hard_deps+='<hr>'+_('<h4>Por favor, elimine esas dependencias antes de continuar</h4>')+'\n'            
+            message_hard_deps+='<hr>'+'<h4>'+_('Por favor, elimine esas dependencias antes de continuar')+'</h4>'+'\n'            
         response = jsonify({ 'soft_deps': message_soft_deps, 'hard_deps': message_hard_deps} )
         response.status_code = 200
         return response
@@ -405,9 +527,15 @@ def delete_element(model,id):
             db.session.delete(participant)
             addHistoryEntry('Eliminado','Participante: {}'.format(participant.get_name()))
     table_name=getStringForModel(element.__repr__().split('(')[0])
-    addHistoryEntry('Eliminado','{}: {}'.format(table_name,element.get_name()[0:50]))
-    db.session.delete(element)
-    db.session.commit()
-    response = jsonify({})
-    response.status_code = 200
-    return response
+    try:
+        db.session.delete(element)
+        db.session.commit()
+        response = jsonify({})
+        response.status_code = 200
+        addHistoryEntry('Eliminado','{}: {}'.format(table_name,element.get_name()[0:50]))
+        return response
+    except Exception as ex:    
+        message=_('"Ocurrió un error tratando de borrar el elemento:')+str(ex)
+        addHistoryEntry('Error eliminando', message)
+        raise ex
+        return bad_request(message)

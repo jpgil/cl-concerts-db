@@ -1,7 +1,8 @@
+from distutils.command.config import config
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import os
-from flask import Flask, request, current_app
+from flask import Flask, request, current_app, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
@@ -9,7 +10,7 @@ from flask_mail import Mail
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_babel import Babel, lazy_gettext as _l
-from flask_uploads import UploadSet, configure_uploads, AllExcept
+from flask_uploads import UploadSet, configure_uploads, AllExcept, IMAGES
 #from elasticsearch import Elasticsearch
 from flask_caching import Cache
 from config import Config
@@ -30,7 +31,7 @@ babel = Babel()
 cache = Cache(config={'CACHE_TYPE': 'simple', 'CACHE_DEFAULT_TIMEOUT': 9999999999 })
 scheduler = BackgroundScheduler()
 files_collection = UploadSet('uploads', AllExcept(('exe', 'iso')))
-
+img_collection = UploadSet('uploads', IMAGES)
 
 
 def create_app(config_class=Config):
@@ -97,7 +98,16 @@ def create_app(config_class=Config):
 
 @babel.localeselector
 def get_locale():
-    return request.accept_languages.best_match(current_app.config['LANGUAGES'])
+    logger = logging.getLogger('werkzeug')
+    if request.args.get('language'): # If this function receives a language parameter, it changes the session language to that of the parameter
+        session['language'] = request.args.get('language')
+        logger.info(f"Changed language to {session['language']}")
 
+    if 'language' not in session.keys():
+        session['language'] = Config.DEFAULT_LANGUAGE
+        logger.info(f"DEFAULT Lang={Config.DEFAULT_LANGUAGE} loaded from CONFIG, because nothing was set before")
+
+    # logger.info(f"LANGUAGE FOR THIS REQUEST: {session['language']}")
+    return session['language'] # The function returns the language stored in config.py as "defaultlang"
 
 from app import models

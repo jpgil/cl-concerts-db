@@ -1,11 +1,11 @@
 {% extends 'public/layout_global.html' %}
 
-{% set title='Resultados de la búsqueda' %}
+{% set title=_('Conciertos') %}
 
 {% block content %}
 <h2>{{ title }}</h2>
 
-<p>Los resultados que se muestran a continuación pueden ser refinados con los filtros de búsqueda disponibles a la izquierda de esta página.</p>
+<p>{{_('En esta sección de Conciertos se presentan informaciones sobre más de 2.000 eventos (conciertos, pero también talleres, charlas y otros), realizados mayormente en Santiago de Chile entre 1945 y 1995. Esta base de datos se nutre de informaciones provenientes de programas de concierto, reseñas de prensa y revistas musicales y puede ser navegada a través de la Búsqueda rápida o usando los Filtros de Búsqueda a la izquierda de esta página.')}}</p>
 
 <table 
     class="table table-striped" 
@@ -24,16 +24,13 @@
 >
     <thead>
         <tr>
-            <th scope="col" data-field='title'>Evento</th>
-            <th scope="col" data-field='place'>Lugar</th>
-            <th scope="col" data-field='date'>Fecha</th>
+            <th scope="col" data-field='title'>{{_('Evento')}}</th>
+            <th scope="col" data-field='place'>{{_('Lugar')}}</th>
+            <th scope="col" data-field='date'>{{_('Fecha')}}</th>
         </tr>
     </thead>
 
 </table>
 
-<!-- <pre>{{ query|pprint }}</pre>
-
-<pre>{{ results|pprint }}</pre> -->
 
 {% endblock %}

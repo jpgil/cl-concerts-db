@@ -15,6 +15,13 @@ from sqlalchemy import or_, and_
 from werkzeug.local import LocalProxy
 from pyuca import Collator 
 import os
+import time
+
+
+# Used to refresh JS
+def randEvent():
+    return time.time()
+
 
 log = LocalProxy(lambda: current_app.logger)
 
@@ -65,7 +72,9 @@ def getStringForModel(model):
                     'MusicalEnsemble'     :  _('Agrupaciones Musicales'),
                     'MusicalEnsembleType' :  _('Tipo de Agrupaciones Musicales'),
                     'Performance'     : _('Participación'),
-                    'MusicalEnsembleMember' : _('Miembro de Agrupación Musical')                    
+                    'MusicalEnsembleMember' : _('Miembro de Agrupación Musical'),
+                    'BioPerson'       : _('Biografía de Personas'),
+                    'BioMusicalEnsemble'       : _('Biografía de Agrupación Musical'),
                     }    
     return string4model[model]
 
@@ -79,6 +88,13 @@ def viewElement(model):
 @login_required
 def viewHistory():
     return render_template('main/history.html')
+
+@bp.route('/view/biografias')
+@login_required
+def viewBiografias():
+    model = 'BioPerson'
+    return render_template('main/showbios.html',model1='BioPerson', model2='BioMusicalEnsemble')
+
 
 def getItemList(dbmodel,q,page):    
     itemslist=db.session.query(dbmodel).filter(dbmodel.name.ilike('%'+q+'%')).order_by(dbmodel.name.asc()).paginate(page, current_app.config['ITEMS_PER_PAGE'], False)
@@ -386,16 +402,22 @@ def getMusicalEnsembleMemberListTable(musical_ensemble_id):
     return jsonify(data)
 
 
-@bp.route('/listtable/medialink/<event_id>')
-def getMediaLinkListTable(event_id):
+@bp.route('/listtable/medialink/<id>/<id_type>')
+def getMediaLinkListTable(id, id_type='event'):
     limit = request.args.get('limit', 10, type=int)
     offset = request.args.get('offset', 0, type=int)
     data={ "rows": [], "total": 0 }
-    event=Event.query.filter_by(id=event_id).first()
-    if event:
-        data["total"]=event.medialinks.count()
-        medialinks=event.medialinks.order_by(MediaLink.filename).limit(limit).offset(offset).all()
-        for file in medialinks:
+    if id_type=='event':
+        medialinks=MediaLink.query.filter_by(event_id=id)
+    elif id_type=='bio_person':
+        medialinks=MediaLink.query.filter_by(bio_person_id=id)
+    elif id_type=='bio_musical_ensemble':
+        medialinks=MediaLink.query.filter_by(bio_musical_ensemble_id=id)
+    else:
+        raise Exception('%s not an id_type' % id_type )
+    if medialinks:
+        data["total"]=medialinks.count()
+        for file in medialinks.order_by(MediaLink.filename).limit(limit).offset(offset).all():
             (path,filename)=os.path.split(file.filename)
             data["rows"].append({ 'filename': filename ,
                 'description': file.description,
@@ -403,6 +425,32 @@ def getMediaLinkListTable(event_id):
                 'type': file.mime_type,
                 'url': file.url })
     return jsonify(data)
+
+@bp.route('/listtable/imagelink/<id>/<id_type>')
+def getImageLinkListTable(id, id_type=''):
+    limit = request.args.get('limit', 10, type=int)
+    offset = request.args.get('offset', 0, type=int)
+    data={ "rows": [], "total": 0 }
+    if id_type=='bio_person':
+        imagelinks=ImageLink.query.filter_by(bio_person_id=id)
+    elif id_type=='bio_musical_ensemble':
+        imagelinks=ImageLink.query.filter_by(bio_musical_ensemble_id=id)
+    else:
+        raise Exception('%s not an id_type' % id_type )
+    if imagelinks:
+        data["total"]=imagelinks.count()
+        for file in imagelinks.order_by(ImageLink.filename).limit(limit).offset(offset).all():
+            (path,filename)=os.path.split(file.filename)
+            data["rows"].append({ 'filename': filename ,
+                'description': file.description,
+                'id': file.id, 
+                'type': file.mime_type,
+                'is_cover': file.is_cover,
+                'id_type': id_type,
+                'id_bio': id,
+                'url': file.url })
+    return jsonify(data)
+
 
 @bp.route('/list/participants/<event_id>')
 def getParticipantsList(event_id):
@@ -441,7 +489,7 @@ def getMusicalEnsembleMemberList(musical_ensemble_id):
         for member in members:
             data["results"].append({ 
                 'name': member.person.get_name(),
-                'activity': member.activity.name if participant.activity else '',
+                'activity': member.activity.name if member.activity else '',
                 'id': member.id, 
                 'text': '{} ({})'.format(member.person.get_name(),member.activity.name if member.activity else '') })
     return jsonify(data)
@@ -483,7 +531,7 @@ def getHistoryTable():
                               "description" : entry.description })
     return jsonify(data)    
 
-def getTableData(requests,dbmodel,searchables):
+def getTableData(requests,dbmodel,searchables, joins=None):
     edit_button_string='<a href="{}" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>'
     delete_button_string='<a onclick="checkDeleteElement(\'{}\',\'{}\')" class="btn btn-default btn-sm" role="button"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>'
 
@@ -492,7 +540,14 @@ def getTableData(requests,dbmodel,searchables):
     order = request.args.get('order', '', type=str)
     search = request.args.get('search', '', type=str)
     filters=[]
-    query=dbmodel.query
+
+    # Dirty trick to filter by relationship attribute
+    # Seen in https://stackoverflow.com/questions/16589208/attributeerror-while-querying-neither-instrumentedattribute-object-nor-compa
+    if joins:
+        query = dbmodel.query.join(joins)
+    else:
+        query = dbmodel.query
+
     for field in searchables:
         filters.append(field.ilike('%{}%'.format(search)))
         query=query.order_by(field)
@@ -617,7 +672,16 @@ def getPersonTable():
 @bp.route('/listtable/MusicalPiece')
 def getMusicalPieceTable():
     return getMusicalPieceTableData(request)
-    
+
+@bp.route('/listtable/BioPerson')
+def getBioPersonTable():
+    # Tricky!!! need to do a join + query
+    return getTableData(request,BioPerson,[Person.last_name, Person.first_name], joins=Person)  
+
+@bp.route('/listtable/BioMusicalEnsemble')
+def getBioMusicalEnsembleTable():
+    # Tricky!!! need to do a join + query
+    return getTableData(request,BioMusicalEnsemble,[MusicalEnsemble.name], joins=MusicalEnsemble)  
    
 @bp.route('/list/performances/<event_id>')
 def getPerformancesList(event_id):
@@ -912,7 +976,12 @@ def EditMusicalEnsemble(id):
     elif request.method == 'GET':
         form.name.data = musical_ensemble.name.strip()
         form.additional_info.data= musical_ensemble.additional_info
-    return render_template('main/editmusicalensemble.html',form=form,title=_('Editar Agrupación Musical'),musical_ensemble_id=id,selectedElements=list2csv(selectedElements))    
+    return render_template('main/editmusicalensemble.html',
+    form=form,
+    title=_('Editar Agrupación Musical'),
+    musical_ensemble=musical_ensemble,
+    musical_ensemble_id=id,
+    selectedElements=list2csv(selectedElements))    
 
 @bp.route('/edit/musicalpiece/<id>', methods = ['GET','POST'])
 @login_required
@@ -1119,7 +1188,7 @@ def NewPerson():
         addHistoryEntry('Agregado','Persona: {} {}'.format(form.first_name.data,form.last_name.data))
         db.session.commit()
         flash(_('Tus cambios han sido guardados.'),'info')
-        return redirect(url_for('main.index',user=current_user.first_name))
+        return redirect(url_for('main.EditPerson',id=person.id))
     return render_template('main/editperson.html',form=form,title=_('Agregar Persona'),selectedElements="")
 
 @bp.route('/edit/person/<id>', methods = ['GET','POST'])
@@ -1147,14 +1216,14 @@ def EditPerson(id):
          addHistoryEntry('Modificado','Persona: {} {}'.format(form.first_name.data,form.last_name.data))
          db.session.commit()
          flash(_('Tus cambios han sido guardados.'),'info')
-         return redirect(url_for('main.index',user=current_user.first_name))
+         return redirect(url_for('main.EditPerson',id=id))
     elif request.method == 'GET':
          form.first_name.data = person.first_name
          form.last_name.data = person.last_name
          form.birth_year.data = person.birth_year
          form.death_year.data = person.death_year
          form.biography.data = person.biography
-    return render_template('main/editperson.html',form=form,title=_('Editar Persona'),selectedElements=list2csv(selectedElements),selectedElementGender=selectedElementGender)    
+    return render_template('main/editperson.html',person=person, form=form,title=_('Editar Persona'),selectedElements=list2csv(selectedElements),selectedElementGender=selectedElementGender)    
 
 
 @bp.route('/new/event', methods = ['GET','POST'])
@@ -1239,3 +1308,109 @@ def EditEvent(event_id):
 
 
 
+@bp.route('/new/bioperson/<person_id>', methods = ['GET','POST'])
+@login_required
+def NewBioPerson(person_id):
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
+        return redirect(url_for('users.login'))
+    
+    perico = Person.query.filter_by(id=person_id).first_or_404()
+    if perico.has_bio():
+        flash(_(perico.get_name() + ' ya tiene biografia. Mal ahí.'),'error')
+        return redirect(url_for('users.login'))
+
+    else:
+        bio = BioPerson()
+        bio.person_id = person_id
+        db.session.add(bio)
+        addHistoryEntry('Creado','Bio Extendida de Persona: {}'.format(perico.get_name()))
+        flash(_('Biografia Extendida creada. Por favor completala.'),'info')
+        db.session.commit()
+        return redirect(url_for('main.EditBioPerson',id=bio.id))
+
+@bp.route('/edit/bioperson/<id>', methods = ['GET','POST'])
+@login_required
+def EditBioPerson(id):
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
+
+    original_data=BioPerson.query.filter_by(id=id).first_or_404()
+    form = EditBioPersonForm(dbmodel=BioPerson,original_data=original_data)
+
+    if form.validate_on_submit():
+        form.populate_obj(original_data)
+
+        addHistoryEntry('Modificado','BioPerson: {}'.format(original_data.get_name()))
+        db.session.commit()
+        flash(_('Biografía de {} actualizada'.format(original_data.person.get_name())),'info')
+        # return redirect(url_for('main.EditBioPerson',id=id))
+        return redirect(url_for('main.viewBiografias'))
+        
+
+    else:
+        for x in ['nombre_completo', 'nacimiento_y_muerte', 'trabajo', 'links', 'otros', 'ensambles', 'premios', 'familia', 'profesion', 'publicaciones', 'instrumento', 'biografia', 'estudios_formales', 'bibliografia', 'investigacion_autores', 'estudios_informales', 'investigacion_fecha', 'archivos', 'investigacion_notas', 'discografia']:
+            form[x].data = original_data.__dict__[x]
+
+        return render_template('main/editbioperson.html', form=form, obj=original_data, rand=randEvent(), 
+        title=_('Editar Biografía de ') + original_data.person.get_name() )
+
+
+
+
+
+
+@bp.route('/new/biomusicalensemble/<musical_ensemble_id>', methods = ['GET','POST'])
+@login_required
+def NewBioMusicalEnsemble(musical_ensemble_id):
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
+        return redirect(url_for('users.login'))
+    
+    ensemble = MusicalEnsemble.query.filter_by(id=musical_ensemble_id).first_or_404()
+    if ensemble.has_bio():
+        flash(_(ensemble.get_name() + ' ya tiene biografia. Mal ahí.'),'error')
+        return redirect(url_for('users.login'))
+
+    else:
+        bio = BioMusicalEnsemble()
+        bio.musical_ensemble_id = musical_ensemble_id
+        db.session.add(bio)
+        addHistoryEntry('Creado','Bio Extendida de Agrupacion: {}'.format(ensemble.get_name()))
+        flash(_('Biografia Extendida creada. Por favor completala.'),'info')
+        db.session.commit()
+        return redirect(url_for('main.EditBioMusicalEnsemble',id=bio.id))
+
+
+@bp.route('/edit/biomusicalensemble/<id>', methods = ['GET','POST'])
+@login_required
+def EditBioMusicalEnsemble(id):
+    if (current_user.profile.name != 'Administrador' and  current_user.profile.name != 'Editor'):
+        flash(_('Debe ser Administrador/Editor para entrar a esta página'),'error')
+
+    original_data=BioMusicalEnsemble.query.filter_by(id=id).first_or_404()
+    # parent = original_data.person
+    form = EditBioMusicalEnsembleForm(dbmodel=BioMusicalEnsemble,original_data=original_data)
+
+    if form.validate_on_submit():
+        form.populate_obj(original_data)
+        
+            # original_data.__dict__[x]=form[x].data
+
+        addHistoryEntry('Modificado','BioMusicalEnsemble: {}'.format(original_data.get_name()))
+        db.session.commit()
+        flash(_('Biografía de {} actualizada'.format(original_data.musical_ensemble.get_name())),'info')
+        # return redirect(url_for('main.EditBioPerson',id=id))
+        return redirect(url_for('main.viewBiografias'))
+
+    else:
+        # for x in ['trabajo', 'links', 'otros', 'ensambles', 'premios', 'familia', 'profesion', 'publicaciones', 'instrumento', 'biografia', 'estudios_formales', 'bibliografia', 'investigacion_autores', 'estudios_informales', 'investigacion_fecha', 'archivos', 'investigacion_notas', 'discografia']:
+        #     form[x].data = original_data.__dict__[x]
+        for x in original_data.__dict__.keys():
+            try:
+                form[x].data = original_data.__dict__[x]
+            except:
+                pass
+
+        return render_template('main/editbiomusicalensemble.html', form=form, obj=original_data, rand=randEvent(), 
+        title=_('Editar Biografía de ') + original_data.musical_ensemble.get_name() )

@@ -1,4 +1,5 @@
 import logging
+from datetime import date
 from flask import request, session
 from app.public.test_db import TEST, TEST2
 from app.models import EventType, City, Gender, Country, PremiereType, InstrumentType, MusicalEnsembleType
@@ -145,6 +146,7 @@ class SideBarFilters:
     
     @property
     def all_filters(self):
+        today = date.today()
         all_f = []
         for key in self.filters:
             all_f += self.filters[key]
@@ -152,9 +154,9 @@ class SideBarFilters:
         all_f.append({'name': 'keywords', 'type': 'text',
                       'placeholder': 'keywords'} )
         all_f.append({'name': 'start_date', 'type': 'date',
-                      'placeholder': '[Desde]', 'default': '1/1/1945'} )
+                      'placeholder': '[Desde]', 'default': '1/1/1900'} )
         all_f.append({'name': 'end_date', 'type': 'date',
-                      'placeholder': '[Hasta]', 'default': '31/12/1995'})
+                      'placeholder': '[Hasta]', 'default': today.strftime("%d/%m/%Y") })
         return all_f
 
     @property
@@ -243,7 +245,7 @@ class SideBarFilters:
     @property
     def fecha(self):
         default = {
-            'start_date': '1/1/1945',
+            'start_date': '1/1/1900',
             'end_date': '31/12/1995'
         }
         response = {

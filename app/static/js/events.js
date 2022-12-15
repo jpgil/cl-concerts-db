@@ -109,12 +109,13 @@ function checkDeleteElement(model,id)
               message: no_deps_message,
               buttons: [
                 {
-                  label: 'Sí, eliminar',
+                  label: 'Sí, eliminar.',
                   cssClass: 'btn-primary',
                   action: function(dialogItself){
-                           deleteElement(model,id)
-                           dialogItself.close();
-                          }
+                      deleteElement(model,id);
+                      dialogItself.close();
+                      location.reload(true);
+                    }
                 },
                 {
                   label: 'Cancelar',
@@ -357,6 +358,9 @@ function deletePerformanceDetailCol(value, row, index){
 function deleteFileCol(value, row, index){
     return '<i class="glyphicon glyphicon-trash"  onclick="deleteFile('+value+')"></i>'               
 }
+function deleteImageCol(value, row, index) {
+    return '<i class="glyphicon glyphicon-trash"  onclick="deleteImage(' + value + ')"></i>'
+}
 
 function deletePerformanceDetail(performance_id,participant_id)
 {
@@ -370,15 +374,41 @@ function deletePerformanceDetail(performance_id,participant_id)
     });    
 }
 
-function deleteFile(medialink_id)
-{
-    $.post('/api/medialink/delete', { 'medialink_id':medialink_id } ).done( function(msg) { 
-            $('#table-medialink').bootstrapTable('refresh'); } )
-    .fail( function(xhr, textStatus, errorThrown) {
-        flash(xhr.responseText['message'],"error");
-    });    
+function deleteFile(medialink_id) {
+    $.post('/api/medialink/delete', { 'medialink_id': medialink_id }).done(function (msg) {
+        $('#table-medialink').bootstrapTable('refresh');
+    })
+        .fail(function (xhr, textStatus, errorThrown) {
+            flash(xhr.responseText['message'], "error");
+        });
+}
+function deleteImage(imagelink_id) {
+    $.post('/api/imagelink/delete', { 'imagelink_id': imagelink_id }).done(function (msg) {
+        $('#table-imagelink').bootstrapTable('refresh');
+    })
+        .fail(function (xhr, textStatus, errorThrown) {
+            flash(xhr.responseText['message'], "error");
+        });
 }
 
+function thumbnailCol(value, row, index) {
+    return '<img src="'+ value +'" height=150>'
+}
+function isCoverCol(value, row, index) {
+    if (value) checked = 'checked="checked"'
+    else checked = ''
+    return '<input type="checkbox" ' + checked + ' onclick="updateCover(' + row.id + ', ' + row.id_bio + ', \'' + row.id_type + '\')">'
+}
+
+function updateCover(id_img, id_bio, id_type) {
+    // alert(id_img + ' ' + id_bio + ' ' + id_type);
+    $.post('/api/updatecover', { 'id_img': id_img, 'id_bio': id_bio, 'id_type': id_type }).done(function (msg) {
+        $('#table-imagelink').bootstrapTable('refresh');
+    })
+        .fail(function (xhr, textStatus, errorThrown) {
+            flash(xhr.responseText, "error");
+        });
+}
 
 
 function linkCol(value, row, index){
@@ -392,6 +422,7 @@ $(function() {
         form_data.append("description",$('#description')[0].value)
 
         console.log($('#description'))
+        console.log(form_data)
         $.ajax({
             type: 'POST',
             url: '/api/uploadajax',
@@ -408,4 +439,29 @@ $(function() {
             flash(xhr.responseText,'error');
         });
     });
+    $('#uploadButtonImage').click(function () {
+        console.log('Te he invocado, oh Ajax');
+        event.preventDefault();
+        var form_data = new FormData($('#uploadformimage')[0]);
+        form_data.append("description", $('#descriptionimage')[0].value)
+
+        console.log($('#descriptionimage'))
+        console.log(form_data)
+        $.ajax({
+            type: 'POST',
+            url: '/api/uploadajaximage',
+            data: form_data,
+            contentType: false,
+            processData: false,
+            dataType: 'json'
+        }).done(function (data, textStatus, jqXHR) {
+
+            $('#table-imagelink').bootstrapTable('refresh');
+            $('#descriptionimage')[0].value = ''
+
+        }).fail(function (xhr, textStatus, errorThrown) {
+            flash(xhr.responseText, 'error');
+        });
+    });
+
 });
