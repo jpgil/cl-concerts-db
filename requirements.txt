@@ -15,7 +15,7 @@ distlib
 distro==1.4.0
 dominate==2.4.0
 fasteners==0.15
-Flask==1.1.1
+Flask==2.3.2
 Flask-Admin==1.5.3
 Flask-Babel==0.12.2
 Flask-Bootstrap==3.3.7.1
