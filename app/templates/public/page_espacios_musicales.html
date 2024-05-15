@@ -5,6 +5,7 @@
 
 {% block content %}
 
+<h1>{{ title }}</h1>
 
 <!-- <p class="text-right">
 <figure class="figure px-4 pt-4">
@@ -13,17 +14,6 @@
     <figcaption class="figure-caption text-right"></figcaption>
 </figure>
 </p> -->
-
-<a href="https://nodegoat.net/viewer.p/115/3929/types/all/geo/" target="_blank">
-    <figure class="figure px-4 pt-4">
-        <img src="{{ url_for('static', filename='public/images/espacios_musicales.jpg') }}"
-            class="figure-img img-fluid rounded" alt="">
-        <figcaption class="figure-caption text-right"></figcaption>
-    </figure>
-    </a>
-
-
-
 
 <p>{{_('En el marco del proyecto &quot;Espacios sonoros: Cartografía de la actividad musical
     docta en Chile entre 1973 y 1990&quot;, financiado por el Fondo de la Música del
@@ -39,6 +29,15 @@
 </p>
 
 <p><a href="https://nodegoat.net/viewer.p/115/3929/types/all/geo/" target="_blank">{{_('Visitar')}} {{_('Espacios Musicales')}}</a></p>
+
+<a href="https://nodegoat.net/viewer.p/115/3929/types/all/geo/" target="_blank">
+    <figure class="figure px-4 pt-4">
+        <img src="{{ url_for('static', filename='public/images/espacios_musicales.jpg') }}"
+            class="figure-img img-fluid rounded" alt="">
+        <figcaption class="figure-caption text-right"></figcaption>
+    </figure>
+    </a>
+
 
 <!-- <a href="https://nodegoat.net/viewer.p/115/3929/types/all/geo/" target="_blank">
     <figure class="figure px-4 pt-4">
