@@ -10,10 +10,8 @@
         <a class="dropdown-item" href="{{ url_for('public.show', page='page_citar') }}" id="m-citar">{{_('Cómo Citar')}}</a>
         <a class="dropdown-item" href="{{ url_for('public.show', page='page_enlaces') }}" id="m-enlaces">{{_('Enlaces de
           Interés')}}</a>
-      </div>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="{{ url_for('public.show', page='page_espacios_musicales') }}" id="m-conciertos">{{_('Espacios Musicales')}}</a>
+        <a class="dropdown-item" href="{{ url_for('public.show', page='page_espacios_musicales') }}" id="m-espmus">{{_('Espacios Musicales')}}</a>
+        </div>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="{{ url_for('public.search', update='search') }}" id="m-conciertos">{{_('Conciertos')}}</a>

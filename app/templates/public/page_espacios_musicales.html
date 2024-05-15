@@ -5,8 +5,6 @@
 
 {% block content %}
 
-<h2>{{ title }}</h2>
-
 
 <!-- <p class="text-right">
 <figure class="figure px-4 pt-4">
@@ -17,26 +15,37 @@
 </p> -->
 
 <a href="https://nodegoat.net/viewer.p/115/3929/types/all/geo/" target="_blank">
-<figure class="figure px-4 pt-4">
-    <img src="{{ url_for('static', filename='public/images/espacios_musicales.png') }}"
-        class="figure-img img-fluid rounded" alt="">
-    <figcaption class="figure-caption text-right"></figcaption>
-</figure>
-</a>
+    <figure class="figure px-4 pt-4">
+        <img src="{{ url_for('static', filename='public/images/espacios_musicales.jpg') }}"
+            class="figure-img img-fluid rounded" alt="">
+        <figcaption class="figure-caption text-right"></figcaption>
+    </figure>
+    </a>
+
+
+
 
 <p>{{_('En el marco del proyecto &quot;Espacios sonoros: Cartografía de la actividad musical
     docta en Chile entre 1973 y 1990&quot;, financiado por el Fondo de la Música del
     Ministerio de Cultura, Artes y Patrimonio de Chile, línea Investigación y Registro de
     la Música Nacional, se desarrolló un mapa digital interactivo a partir de eventos
     registrados en nuestra base de datos. El proyecto pretende relevar los
-    espacios que albergaron eventos relacionados con la música docta y que fueron
+    espacios que albergaron eventos relacionados con la música docta y que fueron
     utilizados por intérpretes, compositores y otros agentes de la música clásica
     (musicólogos, productores, etc.), durante la dictadura militar en Chile, para
-    así situarlos espacial y temporalmente. Este mapa fue realizado por
-    Constanza Toledo, Marco Marchant y Rocío Bustos gracias al software open-
-    access Nodegoat.')}}
+    así situarlos espacial y temporalmente. Este mapa fue realizado por
+    Constanza Toledo, Marco Marchant y Rocío Bustos gracias al software open-access 
+    Nodegoat.')}}
 </p>
 
-<a href="https://nodegoat.net/viewer.p/115/3929/types/all/geo/" target="_blank">{{_('Visitar')}} {{_('Espacios Musicales')}}</a>
+<p><a href="https://nodegoat.net/viewer.p/115/3929/types/all/geo/" target="_blank">{{_('Visitar')}} {{_('Espacios Musicales')}}</a></p>
 
+<!-- <a href="https://nodegoat.net/viewer.p/115/3929/types/all/geo/" target="_blank">
+    <figure class="figure px-4 pt-4">
+        <img src="{{ url_for('static', filename='public/images/espacios_musicales.png') }}"
+            class="figure-img img-fluid rounded" alt="">
+        <figcaption class="figure-caption text-right"></figcaption>
+    </figure>
+    </a> -->
+    
 {% endblock %}
