@@ -65,7 +65,7 @@ python-Levenshtein
 pytoml==0.1.21
 pytz==2019.2
 pyuca==1.2
-requests==2.27.0
+requests==2.32.0
 retrying==1.3.3
 six==1.12.0
 SQLAlchemy
